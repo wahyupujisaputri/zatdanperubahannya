@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zat dan Perubahannya - Media Belajar Interaktif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="error-log" style="color: red; background: #fee2e2; border: 2px solid #ef4444; padding: 10px; margin: 10px; font-family: monospace; display: none; z-index: 9999; position: relative;"></div>
+    <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+        var div = document.getElementById('error-log');
+        div.style.display = 'block';
+        div.innerHTML += 'Error: ' + message + ' at ' + source + ':' + lineno + ':' + colno + '<br>';
+        return false;
+    };
+    </script>
+
+    <!-- CONTAINER UTAMA -->
+    <main id="app-container">
+        
+        <!-- DASHBOARD (Peta Belajar) -->
+        <section id="view-dashboard" class="view active">
+            <header class="dashboard-header">
+                <h1>🔬 Petualangan Zat &amp; Perubahannya 🧪</h1>
+                <p>Pilih level petualangan belajarmu hari ini!</p>
+                <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:15px;">
+                    <button class="btn-icon btn-secondary" onclick="openLeaderboard()" style="font-size:1.1rem;">🏆 Papan Peringkat Kelas</button>
+                    <button class="btn-icon btn-secondary" onclick="openSettings()" style="font-size:1.1rem;">⚙️ Hubungkan Google Sheet</button>
+                </div>
+                <p id="sheet-status-text" style="margin-top:12px; font-size:1rem; font-weight:800; color:#e11d48; text-shadow: 0 1px 2px rgba(0,0,0,0.05);"></p>
+            </header>
+            
+            <div class="level-map">
+                <!-- Level 1 -->
+                <div class="level-card" onclick="startMeeting('p1')">
+                    <div class="level-icon">🔬</div>
+                    <h3>Pertemuan 1</h3>
+                    <p>Wujud Zat &amp; Model Partikel</p>
+                </div>
+                
+                <!-- Level 2 -->
+                <div class="level-card" onclick="startMeeting('p2')">
+                    <div class="level-icon">🔥</div>
+                    <h3>Pertemuan 2</h3>
+                    <p>Perubahan Wujud &amp; Titik Didih/Leleh</p>
+                </div>
+                
+                <!-- Level 3 -->
+                <div class="level-card" onclick="startMeeting('p3')">
+                    <div class="level-icon">🌡️</div>
+                    <h3>Pertemuan 3</h3>
+                    <p>Perubahan Fisika &amp; Kimia</p>
+                </div>
+                
+                <!-- Level 4 -->
+                <div class="level-card" onclick="startMeeting('p4')">
+                    <div class="level-icon">☀️</div>
+                    <h3>Pertemuan 4</h3>
+                    <p>Kerapatan Zat</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW PAPAN PERINGKAT (LEADERBOARD) -->
+        <section id="view-leaderboard" class="view">
+            <header class="dashboard-header">
+                <h1>🏆 Papan Peringkat Kelas 🏆</h1>
+                <p>Catatan rekor skor tertinggi siswa di komputer ini!</p>
+                <button class="btn-icon btn-secondary" onclick="closeLeaderboard()" style="margin-top:15px; font-size:1.1rem;">⬅ Kembali ke Dashboard</button>
+            </header>
+            
+            <div style="background:#ffffff; border:3px solid #cbd5e1; border-bottom:8px solid #cbd5e1; border-radius:28px; padding:2rem; max-width:600px; margin:20px auto; box-shadow:0 10px 20px rgba(0,0,0,0.02);">
+                <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+                    <button class="btn-syringe-opt active" id="btn-lead-p1" onclick="switchLeaderboardTab('p1')">P1 (Partikel)</button>
+                    <button class="btn-syringe-opt" id="btn-lead-p2" onclick="switchLeaderboardTab('p2')">P2 (Perubahan &amp; Titik Didih)</button>
+                    <button class="btn-syringe-opt" id="btn-lead-p3" onclick="switchLeaderboardTab('p3')">P3 (Fisika &amp; Kimia)</button>
+                    <button class="btn-syringe-opt" id="btn-lead-p4" onclick="switchLeaderboardTab('p4')">P4 (Kerapatan Zat)</button>
+                </div>
+                
+                <table style="width:100%; border-collapse:collapse; font-size:1.1rem; text-align:left;">
+                    <thead>
+                        <tr style="border-bottom:3px solid #cbd5e1; color:var(--text-muted); font-weight:800;">
+                            <th style="padding:12px;">Peringkat</th>
+                            <th style="padding:12px;">Nama Siswa</th>
+                            <th style="padding:12px; text-align:right;">Skor Kompetisi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-rows-box" style="font-weight:800;">
+                        <!-- Baris diisi secara dinamis oleh JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- VIEW PENGATURAN GOOGLE SHEET -->
+        <section id="view-settings" class="view">
+            <header class="dashboard-header">
+                <h1>⚙️ Hubungkan Google Sheet ⚙️</h1>
+                <p>Kirim nilai pretest, posttest, dan aktivitas siswa langsung ke spreadsheet Anda!</p>
+                <button class="btn-icon btn-secondary" onclick="closeSettings()" style="margin-top:15px; font-size:1.1rem;">⬅ Kembali ke Dashboard</button>
+            </header>
+            
+            <div style="background:#ffffff; border:3px solid #cbd5e1; border-bottom:8px solid #cbd5e1; border-radius:28px; padding:2rem; max-width:600px; margin:20px auto; box-shadow:0 10px 20px rgba(0,0,0,0.02); text-align:left;">
+                <h3 style="font-weight:900; color:var(--primary); margin-bottom:15px;">Cara Menghubungkan Google Sheet:</h3>
+                <ol style="margin-left: 20px; font-weight: 800; line-height: 1.7; color: var(--text); margin-bottom: 20px;">
+                    <li>Buka Google Sheet Anda: <a href="https://docs.google.com/spreadsheets/d/1aHHjUjSmVdV8kzBodMeKmUBivA862YjwoNXhTj5m9mc/edit?usp=sharing" target="_blank" style="color:var(--primary); text-decoration:underline;">Buka Google Sheet</a></li>
+                    <li>Pada menu atas Google Sheet, klik <strong>Ekstensi (Extensions)</strong> &gt; <strong>Apps Script</strong>.</li>
+                    <li>Hapus semua kode bawaan di dalam editor, lalu salin dan tempel kode script berikut:
+                        <pre style="background:#f1f5f9; padding:12px; border:2px solid #cbd5e1; border-radius:12px; font-size:0.85rem; overflow-x:auto; font-family:monospace; margin-top:10px; margin-bottom:10px; max-height:220px; font-weight: normal; color: #334155;">function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var data = JSON.parse(e.postData.contents);
+  var type = data.type;
+  
+  // Tentukan nama sheet berdasarkan kategori
+  var sheetName = "Aktivitas & Refleksi";
+  if (type === "Pretest") {
+    sheetName = "Pretest";
+  } else if (type === "Posttest") {
+    sheetName = "Posttest";
+  }
+  
+  // Ambil sheet atau buat jika belum ada
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+  }
+  
+  // Buat header kolom otomatis jika sheet masih kosong
+  if (sheet.getLastRow() === 0) {
+    if (type === "Pretest" || type === "Posttest") {
+      sheet.appendRow(["Tanggal & Waktu", "Nama Siswa", "Pertemuan", "Nilai Ujian", "Analisis Jawaban"]);
+    } else {
+      sheet.appendRow(["Tanggal & Waktu", "Nama Siswa", "Pertemuan", "Kategori", "Skor/Respon", "Tanggapan/Detail"]);
+    }
+  }
+  
+  // Tambahkan data baris baru
+  if (type === "Pretest" || type === "Posttest") {
+    sheet.appendRow([
+      new Date(),
+      data.name,
+      data.meeting,
+      data.score,
+      data.details
+    ]);
+  } else {
+    sheet.appendRow([
+      new Date(),
+      data.name,
+      data.meeting,
+      data.type,
+      data.score,
+      data.details
+    ]);
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({status: "success"}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+                    </li>
+                    <li>Klik ikon disket (Save project) di atas editor Apps Script.</li>
+                    <li>Klik tombol <strong>Terapkan (Deploy)</strong> &gt; <strong>Terapkan Baru (New deployment)</strong>.</li>
+                    <li>Klik ikon roda gigi (Select type) di sebelah "Terapkan Baru", lalu pilih <strong>Aplikasi Web (Web app)</strong>.</li>
+                    <li>Ubah kolom <strong>Siapa yang memiliki akses (Who has access)</strong> menjadi <strong>Siapa saja (Anyone)</strong>. Ini penting agar siswa dapat mengirim nilai secara otomatis!</li>
+                    <li>Klik tombol <strong>Terapkan (Deploy)</strong>, lalu setujui otorisasi jika diminta oleh Google.</li>
+                    <li>Salin <strong>URL Aplikasi Web (Web app URL)</strong> yang diberikan (formatnya: <code>https://script.google.com/macros/s/.../exec</code>).</li>
+                </ol>
+                
+                <hr style="border:0; border-top:2px dashed #cbd5e1; margin:20px 0;">
+                
+                <div>
+                    <label for="input-web-app-url" style="font-weight:900; display:block; margin-bottom:8px; font-size: 1.05rem;">URL Aplikasi Web (Google Apps Script URL):</label>
+                    <input type="text" id="input-web-app-url" placeholder="Paste URL di sini: https://script.google.com/macros/s/.../exec" style="width:100%; padding:14px; border:3px solid #cbd5e1; border-radius:16px; font-family:var(--font); font-size:1rem; outline:none; margin-bottom:15px; font-weight:800; box-sizing: border-box;">
+                    
+                    <button class="btn-icon" style="width:100%; font-size:1.15rem; padding: 12px;" id="btn-save-settings">Simpan &amp; Hubungkan 🔗</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW MEETING (WIZARD ENGINE) -->
+        <section id="view-meeting" class="view">
+            <!-- Header Pertemuan: Progress Bar & Bintang -->
+            <div class="meeting-header">
+                <button class="btn-icon btn-exit" onclick="exitMeeting()">Exit</button>
+                <div class="progress-container">
+                    <span id="meeting-progress-text">Langkah 1 dari 14</span>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="meeting-progress-fill"></div>
+                    </div>
+                </div>
+                <div class="stars-counter">
+                    <span class="star-icon">⭐</span>
+                    <span id="stars-count">0</span>
+                </div>
+            </div>
+
+            <!-- Area Konten Utama -->
+            <div class="meeting-body">
+                <!-- Panel Kiri: Avatar Asisten Ilmuwan -->
+                <div class="avatar-panel">
+                    <div class="avatar-bubble">
+                        <p id="avatar-speech">Halo! Saya Rara, asisten ilmuwanmu. Mari kita mulai belajar!</p>
+                    </div>
+                    <div class="avatar-sprite" id="avatar-sprite">🧑‍🔬</div>
+                </div>
+
+                <!-- Panel Kanan: Kartu Langkah Konten -->
+                <div class="step-card" id="step-card">
+                    <!-- HTML Dinamis disuntikkan di sini -->
+                </div>
+            </div>
+
+            <!-- Footer Pertemuan: Tombol Navigasi -->
+            <div class="meeting-footer">
+                <button class="btn-icon btn-secondary" id="btn-prev-step" onclick="prevStep()">Sebelumnya</button>
+                <button class="btn-icon btn-secondary hidden" id="btn-skip-pretest" onclick="skipToPretest()">Lewati ke Pretest ⏭</button>
+                <button class="btn-icon" id="btn-next-step" onclick="nextStep()">Lanjut ➔</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
