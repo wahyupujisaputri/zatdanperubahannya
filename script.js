@@ -2033,19 +2033,19 @@ function renderP1Missions(wrapper, btnNext) {
         });
         
     } else if (activeSubStep === 2) {
-        setAvatar("thinking", "Merger Lab Piston & Partikel: Tekan zat (Gas, Cair, Padat) untuk menguji kompresi piston sekaligus gerak partikelnya!");
+        setAvatar("thinking", "Merger Lab Piston & Partikel: Pilih zat di bawah (Padat, Cair, atau Gas), lalu klik tombol 'Tekan Piston / Jalankan Animasi!' untuk melihat efek kompresi!");
         
         const container = document.createElement("div");
         container.innerHTML = `
             <div style="display:flex; flex-direction:column; gap:20px; margin: 1.5rem 0;">
                 <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center;">
                     <div class="syringe-container" style="width:150px; padding:10px; margin:0;">
-                        <div class="syringe-visual" style="height:150px; width:45px;">
-                            <div class="syringe-plunger" id="syringe-plunger" style="bottom: 70%;">
+                        <div class="syringe-visual" style="height:150px; width:45px; position:relative;">
+                            <div class="syringe-plunger" id="syringe-plunger" style="bottom: 85%; transition: none;">
                                 <div class="plunger-handle"></div>
                                 <div class="plunger-seal"></div>
                             </div>
-                            <div class="syringe-fluid" id="syringe-fluid" style="height: 70%; background: #93c5fd;"></div>
+                            <div class="syringe-fluid" id="syringe-fluid" style="height: 85%; background: #fcd34d; transition: none;"></div>
                         </div>
                     </div>
                     <div class="simulation-panel" style="flex:1; min-width:200px; height:170px;">
@@ -2107,26 +2107,62 @@ function renderP1Missions(wrapper, btnNext) {
         
         let currentState = "padat";
         let isAnimating = false;
+        let animStartTime = null;
         let particles = [];
+        let tested = new Set();
+        
+        function playPistonSound() {
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                let t = audioCtx.currentTime;
+                let bufferSize = audioCtx.sampleRate * 0.8;
+                let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                let data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                let noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                
+                let filter = audioCtx.createBiquadFilter();
+                filter.type = "bandpass";
+                filter.frequency.setValueAtTime(1200, t);
+                filter.frequency.exponentialRampToValueAtTime(150, t + 0.8);
+                filter.Q.setValueAtTime(4, t);
+                
+                let gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.12, t);
+                gain.gain.exponentialRampToValueAtTime(0.005, t + 0.8);
+                
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                noise.start(t);
+            } catch (e) {
+                console.log("Audio play failed: ", e);
+            }
+        }
         
         function updateVisuals() {
+            // Reset to uncompressed top position
+            plunger.style.transition = "none";
+            fluid.style.transition = "none";
+            plunger.style.bottom = "85%";
+            fluid.style.height = "85%";
+            
             if (currentState === "padat") {
                 fluid.style.background = "#fcd34d";
-                plunger.style.bottom = "70%";
-                fluid.style.height = "70%";
-                feedback.innerText = "Padat: Piston tidak bisa ditekan karena partikelnya tersusun rapat tanpa sela.";
+                feedback.innerText = "Zat terpilih: Padat (Pasir). Klik 'Tekan Piston / Jalankan Animasi!' di bawah.";
                 highlightTableRow("tr-padat");
             } else if (currentState === "cair") {
                 fluid.style.background = "#93c5fd";
-                plunger.style.bottom = "62%";
-                fluid.style.height = "62%";
-                feedback.innerText = "Cair: Piston sangat sulit ditekan karena jarak partikelnya sudah cukup berdekatan.";
+                feedback.innerText = "Zat terpilih: Cair (Air). Klik 'Tekan Piston / Jalankan Animasi!' di bawah.";
                 highlightTableRow("tr-cair");
             } else {
-                fluid.style.background = "#e2e8f0";
-                plunger.style.bottom = "15%";
-                fluid.style.height = "15%";
-                feedback.innerText = "Gas: Piston sangat mudah ditekan karena jarak partikelnya sangat jauh (banyak ruang kosong).";
+                fluid.style.background = "#cbd5e1";
+                feedback.innerText = "Zat terpilih: Gas (Udara). Klik 'Tekan Piston / Jalankan Animasi!' di bawah.";
                 highlightTableRow("tr-gas");
             }
             initMisiParticles();
@@ -2146,31 +2182,60 @@ function renderP1Missions(wrapper, btnNext) {
         
         function initMisiParticles() {
             particles = [];
+            let targetBottom = 85;
+            if (currentState === "padat") targetBottom = 80;
+            else if (currentState === "cair") targetBottom = 70;
+            else targetBottom = 15;
+
+            let startYLimit = canvas.height * 0.15; // Plunger at 85% means fluid top is 15% from top of canvas
+            let endYLimit = canvas.height * (1 - targetBottom / 100);
+
             if (currentState === "padat") {
                 let cols = 8;
                 let rows = 4;
-                let spacing = 14;
-                let startX = canvas.width / 2 - (cols * spacing) / 2;
-                let startY = canvas.height / 2 - (rows * spacing) / 2 + 10;
+                let spacingX = (canvas.width - 40) / cols;
+                let spacingYStart = (canvas.height - startYLimit - 20) / rows;
+                let spacingYEnd = (canvas.height - endYLimit - 20) / rows;
+
                 for (let i = 0; i < 32; i++) {
                     let r = i % cols;
                     let c = Math.floor(i / cols);
-                    particles.push({ x: startX + r * spacing, y: startY + c * spacing, baseX: startX + r * spacing, baseY: startY + c * spacing });
+                    let x = 20 + r * spacingX + (Math.random() - 0.5) * 2;
+                    let yStart = startYLimit + 10 + c * spacingYStart;
+                    let yEnd = endYLimit + 10 + c * spacingYEnd;
+                    particles.push({
+                        x: x,
+                        y: yStart,
+                        yStart: yStart,
+                        yEnd: yEnd,
+                        baseX: x,
+                        baseY: yEnd
+                    });
                 }
             } else if (currentState === "cair") {
                 for (let i = 0; i < 30; i++) {
+                    let x = 15 + Math.random() * (canvas.width - 30);
+                    let yStart = startYLimit + 10 + Math.random() * (canvas.height - startYLimit - 25);
+                    let yEnd = endYLimit + 10 + Math.random() * (canvas.height - endYLimit - 25);
                     particles.push({
-                        x: 40 + Math.random() * (canvas.width - 80),
-                        y: canvas.height - 15 - Math.random() * 40,
+                        x: x,
+                        y: yStart,
+                        yStart: yStart,
+                        yEnd: yEnd,
                         vx: (Math.random() - 0.5) * 1.2,
                         vy: (Math.random() - 0.5) * 0.4
                     });
                 }
             } else {
                 for (let i = 0; i < 15; i++) {
+                    let x = 15 + Math.random() * (canvas.width - 30);
+                    let yStart = startYLimit + 10 + Math.random() * (canvas.height - startYLimit - 25);
+                    let yEnd = endYLimit + 10 + Math.random() * (canvas.height - endYLimit - 25);
                     particles.push({
-                        x: 15 + Math.random() * (canvas.width - 30),
-                        y: 15 + Math.random() * (canvas.height - 30),
+                        x: x,
+                        y: yStart,
+                        yStart: yStart,
+                        yEnd: yEnd,
                         vx: (Math.random() - 0.5) * 3.5,
                         vy: (Math.random() - 0.5) * 3.5
                     });
@@ -2178,66 +2243,115 @@ function renderP1Missions(wrapper, btnNext) {
             }
         }
         
-        function drawParticles() {
+        function drawParticles(tVal) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = currentState === "padat" ? "#eab308" : (currentState === "cair" ? "#3b82f6" : "#94a3b8");
             
+            let targetBottom = 85;
+            if (currentState === "padat") targetBottom = 80;
+            else if (currentState === "cair") targetBottom = 70;
+            else targetBottom = 15;
+            
+            let currentPct = 85 - (85 - targetBottom) * tVal;
+            let currentTopY = canvas.height * (1 - currentPct / 100);
+
             particles.forEach(p => {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
                 ctx.fill();
                 
-                if (isAnimating) {
+                if (tVal < 1) {
+                    p.y = p.yStart + (p.yEnd - p.yStart) * tVal;
+                    if (currentState === "gas" || currentState === "cair") {
+                        p.x += (Math.random() - 0.5) * 1.5;
+                        if (p.x < 10) p.x = 10;
+                        if (p.x > canvas.width - 10) p.x = canvas.width - 10;
+                    }
+                } else {
                     if (currentState === "padat") {
                         p.x = p.baseX + (Math.random() - 0.5) * 1.5;
                         p.y = p.baseY + (Math.random() - 0.5) * 1.5;
-                    } else if (currentState === "cair") {
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.y += (canvas.height - 20 - p.y) * 0.05;
-                        if (p.x < 10 || p.x > canvas.width - 10) p.vx *= -1;
                     } else {
                         p.x += p.vx;
                         p.y += p.vy;
                         if (p.x < 10 || p.x > canvas.width - 10) p.vx *= -1;
-                        if (p.y < 10 || p.y > canvas.height - 10) p.vy *= -1;
+                        if (p.y < currentTopY + 8) {
+                            p.y = currentTopY + 8;
+                            p.vy *= -1;
+                        }
+                        if (p.y > canvas.height - 10) {
+                            p.y = canvas.height - 10;
+                            p.vy *= -1;
+                        }
                     }
                 }
             });
         }
         
-        function tick() {
-            drawParticles();
-            if (isAnimating) {
+        function tick(timestamp) {
+            if (!animStartTime) animStartTime = timestamp;
+            let elapsed = timestamp - animStartTime;
+            let duration = 1200;
+            let progress = Math.min(1, elapsed / duration);
+            
+            let targetBottom = 85;
+            if (currentState === "padat") targetBottom = 80;
+            else if (currentState === "cair") targetBottom = 70;
+            else targetBottom = 15;
+            
+            let currentPct = 85 - (85 - targetBottom) * progress;
+            plunger.style.bottom = currentPct + "%";
+            fluid.style.height = currentPct + "%";
+            
+            drawParticles(progress);
+            
+            if (progress < 1) {
                 activeAnimationId = requestAnimationFrame(tick);
+            } else {
+                isAnimating = false;
+                if (currentState === "padat") {
+                    feedback.innerText = "Padat: Piston tidak bisa ditekan karena partikelnya tersusun rapat tanpa sela.";
+                } else if (currentState === "cair") {
+                    feedback.innerText = "Cair: Piston sangat sulit ditekan karena jarak partikelnya sudah cukup berdekatan.";
+                } else {
+                    feedback.innerText = "Gas: Piston sangat mudah ditekan karena jarak partikelnya sangat jauh (banyak ruang kosong).";
+                }
+                
+                function loopPhysics() {
+                    if (isAnimating) return;
+                    drawParticles(1);
+                    activeAnimationId = requestAnimationFrame(loopPhysics);
+                }
+                loopPhysics();
             }
         }
         
-        let tested = new Set();
+        function selectState(state) {
+            cancelAnimationFrame(activeAnimationId);
+            isAnimating = false;
+            animStartTime = null;
+            currentState = state;
+            updateVisuals();
+            drawParticles(0);
+        }
         
         document.getElementById("btn-part-padat").addEventListener("click", () => {
             SoundEffects.playClick();
             resetPartBtn();
             document.getElementById("btn-part-padat").classList.add("active");
-            currentState = "padat";
-            updateVisuals();
-            drawParticles();
+            selectState("padat");
         });
         document.getElementById("btn-part-cair").addEventListener("click", () => {
             SoundEffects.playClick();
             resetPartBtn();
             document.getElementById("btn-part-cair").classList.add("active");
-            currentState = "cair";
-            updateVisuals();
-            drawParticles();
+            selectState("cair");
         });
         document.getElementById("btn-part-gas").addEventListener("click", () => {
             SoundEffects.playClick();
             resetPartBtn();
             document.getElementById("btn-part-gas").classList.add("active");
-            currentState = "gas";
-            updateVisuals();
-            drawParticles();
+            selectState("gas");
         });
         
         function resetPartBtn() {
@@ -2245,12 +2359,16 @@ function renderP1Missions(wrapper, btnNext) {
         }
         
         document.getElementById("btn-press-syringe").addEventListener("click", () => {
+            if (isAnimating) return;
             SoundEffects.playClick();
+            playPistonSound();
+            
+            cancelAnimationFrame(activeAnimationId);
+            animStartTime = null;
+            isAnimating = true;
+            requestAnimationFrame(tick);
+            
             tested.add(currentState);
-            if (!isAnimating) {
-                isAnimating = true;
-                tick();
-            }
             if (tested.size === 3) {
                 enableNextButton(btnNext);
                 updateStars(15);
@@ -2261,7 +2379,7 @@ function renderP1Missions(wrapper, btnNext) {
         });
         
         updateVisuals();
-        drawParticles();
+        drawParticles(0);
         
     } else if (activeSubStep === 3) {
         setAvatar("thinking", "Ayo lakukan simulasi difusi teh celup dalam air panas! Celupkan teh untuk melihat partikel menyebar secara alami.");
