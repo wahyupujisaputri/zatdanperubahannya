@@ -1709,62 +1709,386 @@ function renderTujuan(card, btnNext) {
     `;
 }
 
-// 5.5 Stimulus Kedua (Stimulus Eksplorasi)
 function renderStimulus2(card, btnNext) {
-    enableNextButton(btnNext);
-    setAvatar("thinking", "Jawablah pertanyaan penting di bawah ini untuk membuka laboratorium Eksplorasi!");
+    disableNextButton(btnNext);
+    setAvatar("thinking", "Silakan klik tombol play untuk melihat animasi stimulus, lalu jawab pertanyaan penyelidikan!");
 
+    let stimulusText = "";
     let stimulusQuestion = "";
-    let mediaArt = "";
+    
     if (activeMeeting === "p1") {
-        stimulusQuestion = "Mengapa benda-benda pada Gambar 2.1 buku (jam dinding, gitar, parfum, minyak) dikelompokkan ke dalam wujud padat, cair, dan gas?";
-        mediaArt = "🕰️ 🎸 🕯️ 🥤";
+        stimulusText = "Bayangkan kamu masuk ke sebuah ruangan. Di salah satu sudut ruangan terdapat seseorang yang baru saja membuka botol parfum. Beberapa saat kemudian, kamu yang berada cukup jauh dari botol tersebut dapat mencium aromanya.";
+        stimulusQuestion = "Mengapa aroma parfum tersebut dapat menyebar dan tercium dari jarak jauh? Jelaskan perkiraanmu terkait gerakan partikel gas parfum tersebut!";
     } else if (activeMeeting === "p2") {
-        stimulusQuestion = "Menurut Buku Halaman 54-57, proses perubahan wujud apa saja yang terjadi saat es dipanaskan hingga mendidih, dan mengapa suhunya sempat tertahan konstan?";
-        mediaArt = "❄️ ➔ 🔥 ➔ 💧 ➔ 💨";
+        stimulusText = "Bayangkan kamu mengambil es batu dari freezer. Beberapa menit kemudian es tersebut berubah menjadi air. Jika air terus dipanaskan, air berubah menjadi uap. Namun, ketika uap mengalami pendinginan, uap dapat berubah kembali menjadi air.";
+        stimulusQuestion = "Perubahan wujud apa saja yang terjadi pada peristiwa di atas? Sebutkan prosesnya secara urut!";
     } else if (activeMeeting === "p3") {
-        stimulusQuestion = "Mengapa menyobek kertas disebut perubahan fisika, sedangkan membakar kertas disebut perubahan kimia?";
-        mediaArt = "📄 ➔ ✂️ VS 🔥";
-    } else if (activeMeeting === "p4") {
-        stimulusQuestion = "Mengapa kejatuhan air dalam volume tertentu tidak terasa sakit di kaki, sedangkan kejatuhan batu bata dengan volume yang sama terasa sangat sakit?";
-        mediaArt = "🧱 VS 💧";
+        stimulusText = "Setiap hari kita melihat berbagai perubahan. Es mencair, kertas dipotong, air mendidih, besi berkarat, makanan dimasak, dan kayu dibakar. Namun, tidak semua perubahan tersebut menghasilkan zat baru.";
+        stimulusQuestion = "Kelompokkan peristiwa di atas mana yang termasuk perubahan yang menghasilkan zat baru (perubahan kimia) dan yang tidak menghasilkan zat baru (perubahan fisika)!";
+    } else {
+        stimulusText = "Sebuah batu kecil dapat tenggelam di dalam air, sedangkan potongan kayu yang ukurannya lebih besar dapat terapung.";
+        stimulusQuestion = "Mengapa batu kecil tenggelam sedangkan kayu besar terapung? Tuliskan dugaan awalmu mengenai penyebabnya!";
     }
 
     card.innerHTML = `
         <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">🔬 Penyelidikan Awal Eksplorasi</h3>
-        <div class="video-player-sim" id="sim-video-player-2">
-            <div class="video-poster-art" id="video-poster-art-2">${mediaArt}</div>
-            <button class="video-play-btn" id="video-play-btn-2">▶</button>
-            <div class="video-controls">
-                <span class="video-time-label" id="video-time-label-2">0:00</span>
-                <div class="video-time-track">
-                    <div class="video-time-fill" id="video-time-fill-2"></div>
-                </div>
-                <span class="video-time-label">0:10</span>
+        <div class="video-player-sim" id="sim-video-player-2" style="height: 220px; position:relative; overflow:hidden; border-radius:24px; border:3px solid #cbd5e1; background:#f1f5f9;">
+            <canvas id="stimulus-canvas" style="width:100%; height:100%; display:block; background:#cbd5e1;"></canvas>
+            <div id="stimulus-play-overlay" style="position:absolute; top:0; left:0; right:0; bottom:0; display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(15, 23, 42, 0.65); color:white; font-family:var(--font); cursor:pointer; z-index:10; transition:all 0.3s ease;">
+                <div style="font-size:4rem; margin-bottom:10px;">▶</div>
+                <div style="font-weight:900; font-size:1.15rem; text-shadow:0 2px 4px rgba(0,0,0,0.5);">Klik untuk Jalankan Animasi Stimulus 🎬</div>
             </div>
         </div>
 
         <div class="hidden" id="stimulus-question-container-2" style="margin-top: 1.5rem; animation: fadeIn 0.4s ease;">
-            <p style="font-weight: 800; font-size: 1.15rem; margin-bottom: 1rem;">🤔 Pertanyaan: ${stimulusQuestion}</p>
+            <div style="background:#eff6ff; border:2px solid #3b82f6; border-radius:18px; padding:15px; margin-bottom:15px; text-align:left;">
+                <p style="font-weight:700; font-size:0.95rem; color:#1e293b; line-height:1.6; margin:0;">
+                    📖 <strong>Stimulus Keadaan:</strong><br>${stimulusText}
+                </p>
+            </div>
+            <p style="font-weight: 800; font-size: 1.15rem; margin-bottom: 1rem; text-align:left;">🤔 Pertanyaan Penyelidikan: ${stimulusQuestion}</p>
             <input type="text" id="stimulus-input-2" placeholder="Tuliskan pendapatmu di sini..." style="width:100%; padding:14px; border:3px solid #cbd5e1; border-radius:16px; font-family:var(--font); font-size:1rem; font-weight:800; outline:none; margin-bottom:1rem;">
-            <button class="btn-icon" id="btn-submit-stimulus-2">Kirim & Buka Eksplorasi ➔</button>
+            <button class="btn-icon" id="btn-submit-stimulus-2" style="width:100%;">Kirim & Buka Eksplorasi ➔</button>
         </div>
     `;
 
-    const playBtn = document.getElementById("video-play-btn-2");
-    const poster = document.getElementById("video-poster-art-2");
-    const fill = document.getElementById("video-time-fill-2");
-    const label = document.getElementById("video-time-label-2");
-    const qContainer = document.getElementById("stimulus-question-container-2");
+    const canvas = document.getElementById("stimulus-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = 220;
 
-    playBtn.addEventListener("click", () => {
+    let animStart = null;
+    let perfumeParticles = [];
+    let roomPersonEmoji = "😐";
+    let smokeParticles = [];
+    let stoneY = 20;
+    let woodY = 20;
+    let stoneVy = 0;
+    let woodVy = 0;
+    let stoneLanded = false;
+    let woodLanded = false;
+
+    function runAnimation(timestamp) {
+        if (!animStart) animStart = timestamp;
+        let elapsed = timestamp - animStart;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (activeMeeting === "p1") {
+            ctx.fillStyle = "#f8fafc";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "#cbd5e1";
+            ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+            
+            ctx.fillStyle = "#3b82f6";
+            ctx.fillRect(40, canvas.height - 90, 40, 60); 
+            ctx.fillStyle = "#1d4ed8";
+            ctx.fillRect(50, canvas.height - 110, 20, 20); 
+            
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 12px var(--font)";
+            ctx.fillText("Parfum Terbuka", 15, canvas.height - 120);
+
+            ctx.font = "40px sans-serif";
+            ctx.fillText(roomPersonEmoji, canvas.width - 80, canvas.height - 50);
+            ctx.font = "bold 12px var(--font)";
+            ctx.fillStyle = "#1e293b";
+            ctx.fillText("Kamu", canvas.width - 75, canvas.height - 100);
+
+            if (elapsed > 500 && perfumeParticles.length < 100) {
+                if (Math.random() < 0.3) {
+                    perfumeParticles.push({
+                        x: 60,
+                        y: canvas.height - 100,
+                        vx: 1.5 + Math.random() * 3,
+                        vy: (Math.random() - 0.5) * 2.5,
+                        color: `hsl(${270 + Math.random() * 65}, 85%, 65%)`,
+                        size: 3 + Math.random() * 4
+                    });
+                }
+            }
+
+            let reachedCount = 0;
+            perfumeParticles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += (Math.random() - 0.5) * 0.4;
+                
+                ctx.beginPath();
+                ctx.fillStyle = p.color;
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (p.x >= canvas.width - 80) {
+                    reachedCount++;
+                }
+            });
+
+            if (reachedCount > 10) {
+                roomPersonEmoji = "😍 🌸";
+            } else if (reachedCount > 1) {
+                roomPersonEmoji = "👃";
+            }
+
+        } else if (activeMeeting === "p2") {
+            ctx.fillStyle = "#f8fafc";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#ef4444";
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.arc(canvas.width/2 - 30 + i*15, canvas.height - 20, 8 + Math.sin(elapsed/100 + i)*3, 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            ctx.strokeStyle = "#475569";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2 - 50, 40);
+            ctx.lineTo(canvas.width/2 - 50, canvas.height - 30);
+            ctx.lineTo(canvas.width/2 + 50, canvas.height - 30);
+            ctx.lineTo(canvas.width/2 + 50, 40);
+            ctx.stroke();
+
+            let phaseTime = (elapsed % 9000) / 1000;
+
+            if (phaseTime < 3) {
+                let melt = phaseTime / 3;
+                ctx.fillStyle = "rgba(186, 230, 253, 0.85)";
+                ctx.fillRect(canvas.width/2 - 40, canvas.height - 80 + 30*melt, 80, 50 - 30*melt);
+                
+                ctx.fillStyle = "rgba(59, 130, 246, 0.55)";
+                ctx.fillRect(canvas.width/2 - 48, canvas.height - 30 - 30*melt, 96, 30*melt);
+
+                ctx.fillStyle = "#0284c7";
+                ctx.font = "bold 13px var(--font)";
+                ctx.fillText("Fase: Es Mencair (Menyerap Energi) ❄️➔💧", canvas.width/2 - 120, 25);
+            } else if (phaseTime < 6) {
+                ctx.fillStyle = "rgba(59, 130, 246, 0.55)";
+                ctx.fillRect(canvas.width/2 - 48, canvas.height - 60, 96, 30);
+
+                ctx.fillStyle = "white";
+                for(let i=0; i<6; i++) {
+                    let bx = canvas.width/2 - 40 + ((i*17 + elapsed/6) % 80);
+                    let by = canvas.height - 30 - ((i*12 + elapsed/2.5) % 30);
+                    ctx.beginPath();
+                    ctx.arc(bx, by, 3, 0, Math.PI*2);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = "rgba(226, 232, 240, 0.65)";
+                for(let i=0; i<10; i++) {
+                    let sx = canvas.width/2 - 30 + Math.sin(elapsed/100 + i)*20;
+                    let sy = canvas.height - 60 - ((i*15 + elapsed/3) % 90);
+                    if (sy > 40) {
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, 6 + Math.sin(elapsed/50)*2, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                }
+
+                ctx.fillStyle = "#d97706";
+                ctx.font = "bold 13px var(--font)";
+                ctx.fillText("Fase: Air Menguap (Menyerap Energi) 💧➔💨", canvas.width/2 - 120, 25);
+            } else {
+                ctx.fillStyle = "rgba(59, 130, 246, 0.55)";
+                ctx.fillRect(canvas.width/2 - 48, canvas.height - 45, 96, 15);
+
+                ctx.fillStyle = "#94a3b8";
+                ctx.fillRect(canvas.width/2 - 60, 50, 120, 10);
+                ctx.fillStyle = "#475569";
+                ctx.font = "bold 9px var(--font)";
+                ctx.fillText("KONDENSOR DINGIN", canvas.width/2 - 45, 45);
+
+                ctx.fillStyle = "rgba(226, 232, 240, 0.65)";
+                for(let i=0; i<6; i++) {
+                    let sx = canvas.width/2 - 20 + Math.sin(elapsed/80 + i)*15;
+                    let sy = canvas.height - 45 - ((i*20 + elapsed/4) % 110);
+                    if (sy > 60) {
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, 5, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                }
+
+                ctx.fillStyle = "#3b82f6";
+                for(let i=0; i<3; i++) {
+                    let dx = canvas.width/2 - 30 + i*30;
+                    let dy = 60 + ((elapsed/3.5 + i*40) % 90);
+                    if (dy < canvas.height - 45) {
+                        ctx.beginPath();
+                        ctx.arc(dx, dy, 4, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                }
+
+                ctx.fillStyle = "#059669";
+                ctx.font = "bold 13px var(--font)";
+                ctx.fillText("Mengembun: Uap Menjadi Air (Melepas Energi) 💨➔💧", canvas.width/2 - 145, 25);
+            }
+
+        } else if (activeMeeting === "p3") {
+            ctx.fillStyle = "#f8fafc";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2, 0);
+            ctx.lineTo(canvas.width/2, canvas.height);
+            ctx.stroke();
+
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 12px var(--font)";
+            ctx.fillText("Fisika (Kertas Digunting)", 10, 20);
+
+            let cutCycle = (elapsed % 4000) / 4000; 
+            ctx.fillStyle = "#ffffff";
+            ctx.strokeStyle = "#475569";
+            ctx.lineWidth = 2;
+            
+            if (cutCycle < 0.5) {
+                ctx.fillRect(30, 80, 100, 70);
+                ctx.strokeRect(30, 80, 100, 70);
+                ctx.font = "24px sans-serif";
+                ctx.fillText("✂️", 100 - cutCycle*60, 110);
+            } else {
+                let fall = (cutCycle - 0.5) * 2;
+                ctx.fillRect(30 - fall*15, 80 + fall*15, 48, 70);
+                ctx.strokeRect(30 - fall*15, 80 + fall*15, 48, 70);
+
+                ctx.fillRect(82 + fall*15, 80 + fall*15, 48, 70);
+                ctx.strokeRect(82 + fall*15, 80 + fall*15, 48, 70);
+            }
+            ctx.fillStyle = "#059669";
+            ctx.font = "bold 10px var(--font)";
+            ctx.fillText("Tetap kertas (Tidak ada zat baru)", 10, canvas.height - 15);
+
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 12px var(--font)";
+            ctx.fillText("Kimia (Kayu Dibakar)", canvas.width/2 + 10, 20);
+
+            let burnCycle = (elapsed % 4000) / 4000;
+            
+            ctx.fillStyle = burnCycle < 0.7 ? "#78350f" : "#1e293b"; 
+            ctx.fillRect(canvas.width/2 + 50, 120, 70, 15);
+            ctx.fillRect(canvas.width/2 + 60, 108, 50, 15);
+
+            if (burnCycle > 0.1) {
+                ctx.fillStyle = `rgb(${230 + Math.random()*25}, ${100 + Math.random()*50}, 0)`;
+                for (let i = 0; i < 5; i++) {
+                    ctx.beginPath();
+                    ctx.arc(canvas.width/2 + 65 + i*10, 110 - Math.random()*15, 8 + Math.random()*6, 0, Math.PI*2);
+                    ctx.fill();
+                }
+                
+                if (Math.random() < 0.25) {
+                    smokeParticles.push({
+                        x: canvas.width/2 + 60 + Math.random()*50,
+                        y: 100,
+                        vx: (Math.random() - 0.5)*1,
+                        vy: -1.2 - Math.random()*1.5,
+                        alpha: 1
+                    });
+                }
+            }
+
+            smokeParticles.forEach((sp, idx) => {
+                sp.x += sp.vx;
+                sp.y += sp.vy;
+                sp.alpha -= 0.015;
+                if (sp.alpha <= 0) {
+                    smokeParticles.splice(idx, 1);
+                } else {
+                    ctx.fillStyle = `rgba(100, 116, 139, ${sp.alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(sp.x, sp.y, 4 + (1 - sp.alpha)*8, 0, Math.PI*2);
+                    ctx.fill();
+                }
+            });
+
+            ctx.fillStyle = "#dc2626";
+            ctx.font = "bold 10px var(--font)";
+            ctx.fillText("Menghasilkan zat baru (Abu/Asap)", canvas.width/2 + 10, canvas.height - 15);
+
+        } else {
+            ctx.fillStyle = "#eff6ff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let waterTopY = 110;
+            ctx.fillStyle = "rgba(59, 130, 246, 0.4)";
+            ctx.fillRect(0, waterTopY, canvas.width, canvas.height - waterTopY);
+            
+            ctx.strokeStyle = "#3b82f6";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, waterTopY);
+            ctx.lineTo(canvas.width, waterTopY);
+            ctx.stroke();
+
+            if (elapsed % 6000 < 50) {
+                stoneY = 20;
+                woodY = 20;
+                stoneVy = 0;
+                woodVy = 0;
+                stoneLanded = false;
+                woodLanded = false;
+            }
+
+            if (!stoneLanded) {
+                stoneVy += 0.2;
+                if (stoneY >= waterTopY) {
+                    stoneVy *= 0.65;
+                }
+                stoneY += stoneVy;
+                if (stoneY >= canvas.height - 20) {
+                    stoneY = canvas.height - 20;
+                    stoneLanded = true;
+                }
+            }
+            
+            if (!woodLanded) {
+                woodVy += 0.15;
+                if (woodY >= waterTopY - 15) {
+                    let depth = woodY - (waterTopY - 15);
+                    woodVy -= depth * 0.08;
+                    woodVy *= 0.85;
+                }
+                woodY += woodVy;
+            }
+
+            ctx.fillStyle = "#64748b";
+            ctx.beginPath();
+            ctx.arc(canvas.width/3, stoneY, 12, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 9px var(--font)";
+            ctx.fillText("Batu", canvas.width/3 - 10, stoneY + 3);
+
+            ctx.fillStyle = "#b45309";
+            ctx.fillRect(canvas.width * 2/3 - 25, woodY, 50, 30);
+            ctx.strokeStyle = "#78350f";
+            ctx.strokeRect(canvas.width * 2/3 - 25, woodY, 50, 30);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 9px var(--font)";
+            ctx.fillText("Kayu", canvas.width * 2/3 - 11, woodY + 18);
+
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 11px var(--font)";
+            ctx.fillText("Batu Kecil: TENGGELAM (Massa Jenis Air < Batu)", 10, waterTopY - 45);
+            ctx.fillText("Kayu Besar: TERAPUNG (Massa Jenis Air > Kayu)", 10, waterTopY - 25);
+        }
+
+        activeAnimationId = requestAnimationFrame(runAnimation);
+    }
+
+    document.getElementById("stimulus-play-overlay").addEventListener("click", () => {
         SoundEffects.playClick();
-        playBtn.classList.add("hidden");
-        poster.style.transform = "scale(1.15)";
-        fill.style.width = "100%";
-        label.innerText = "0:10";
-        qContainer.classList.remove("hidden");
-        setAvatar("happy", "Silakan ketik pendapatmu untuk mulai melakukan eksperimen!");
+        document.getElementById("stimulus-play-overlay").style.display = "none";
+        document.getElementById("stimulus-question-container-2").classList.remove("hidden");
+        setAvatar("happy", "Perhatikan jalannya simulasi sains tersebut dengan seksama!");
+        activeAnimationId = requestAnimationFrame(runAnimation);
     });
 
     document.getElementById("btn-submit-stimulus-2").addEventListener("click", () => {
@@ -1773,6 +2097,7 @@ function renderStimulus2(card, btnNext) {
             alert("Tuliskan pendapatmu dulu ya!");
             return;
         }
+        cancelAnimationFrame(activeAnimationId);
         updateStars(10);
         sendDataToGoogleSheet({
             type: "Penyelidikan Awal",
@@ -1781,7 +2106,6 @@ function renderStimulus2(card, btnNext) {
         });
         setAvatar("celebrate", "Pendapatmu direkam! Laboratorium Eksplorasi telah dibuka. Klik Lanjut!");
         enableNextButton(btnNext);
-        nextStep();
     });
 }
 
