@@ -1542,39 +1542,51 @@ function renderStimulus1(card, btnNext) {
 function renderApersepsi(card, btnNext) {
     disableNextButton(btnNext);
 
-    let question = "";
-    let options = [];
-    let feedback = "";
-    
+    let qData = {};
     if (activeMeeting === "p1") {
-        question = "Berdasarkan Aktivitas 2.1 di buku, menurutmu apakah meja belajar kayu di kelas dan udara di dalam kelas kita termasuk materi?";
-        options = ["Ya, keduanya materi karena bermassa dan menempati ruang", "Bukan materi"];
-        feedback = "Bagus sekali! Semua benda di alam semesta yang memiliki massa dan menempati ruang dikenal sebagai **materi** (Buku IPA Halaman 46-47).";
+        qData = {
+            question: "Berdasarkan Aktivitas 2.1 di buku, menurutmu apakah meja belajar kayu di kelas dan udara di dalam kelas kita termasuk materi?",
+            options: ["Ya, keduanya materi karena bermassa dan menempati ruang", "Bukan materi"],
+            correctIdx: 0,
+            feedbackCorrect: "Bagus sekali! Meja kayu (padat) dan udara (gas) adalah materi karena keduanya memiliki massa dan menempati ruang (Buku IPA Halaman 46-47).",
+            feedbackIncorrect: "Kurang tepat. Sebenarnya meja kayu (padat) dan udara (gas) termasuk **materi**, karena semua benda di alam semesta yang memiliki massa dan menempati ruang dikenal sebagai materi (Buku IPA Halaman 46-47)."
+        };
     } else if (activeMeeting === "p2") {
-        question = "Pernahkah kamu membantu menjemur pakaian basah? Menurutmu apa yang terjadi pada partikel air pada pakaian tersebut?";
-        options = ["Air menyerap panas lalu menguap dari serat kain", "Air meresap hilang saja"];
-        feedback = "Tepat! Proses ini disebut **menguap** (evaporation), di mana partikel air menyerap energi panas dari matahari dan berubah wujud menjadi uap gas.";
+        qData = {
+            question: "Pernahkah kamu membantu menjemur pakaian basah? Menurutmu apa yang terjadi pada partikel air pada pakaian tersebut?",
+            options: ["Air menyerap panas lalu menguap dari serat kain", "Air meresap hilang saja"],
+            correctIdx: 0,
+            feedbackCorrect: "Tepat! Proses ini disebut **menguap** (evaporation), di mana partikel air menyerap energi panas dari matahari dan berubah wujud menjadi uap gas.",
+            feedbackIncorrect: "Kurang tepat. Air tidak hilang begitu saja, melainkan menyerap energi panas dari matahari sehingga partikel air bergerak cepat, melemahkan ikatannya, dan **menguap** ke udara sebagai gas."
+        };
     } else if (activeMeeting === "p3") {
-        question = "Menurutmu, mengapa besi padat yang sangat keras harus dipanaskan oleh tukang las hingga berpijar merah menyala?";
-        options = ["Agar besi meleleh menjadi cair sehingga mudah dibengkokkan", "Agar besi membeku kembali"];
-        feedback = "Tepat! Setiap zat memiliki titik leleh tersendiri. Besi harus dipanaskan sampai suhu titik lelehnya (1538°C) agar dapat mencair (Buku Halaman 59).";
+        qData = {
+            question: "Menurutmu, mengapa besi padat yang sangat keras harus dipanaskan oleh tukang las hingga berpijar merah menyala?",
+            options: ["Agar besi meleleh menjadi cair sehingga mudah dibengkokkan", "Agar besi membeku kembali"],
+            correctIdx: 0,
+            feedbackCorrect: "Tepat! Setiap zat memiliki titik leleh tersendiri. Besi harus dipanaskan sampai suhu titik lelehnya (1538°C) agar dapat mencair (Buku Halaman 59).",
+            feedbackIncorrect: "Kurang tepat. Tukang las memanaskan besi agar besi mencapai titik lelehnya (1538°C) dan berubah wujud menjadi cair sehingga mudah dibentuk atau disambung."
+        };
     } else if (activeMeeting === "p4") {
-        question = "Jika kalian memasukkan gula pasir ke dalam segelas air hangat lalu mengaduknya, apakah yang terjadi pada zat gula?";
-        options = ["Gula larut, merupakan perubahan fisika karena tidak terbentuk zat baru", "Terjadi perubahan kimia"];
-        feedback = "Benar sekali! Proses melarutkan gula adalah perubahan fisika karena rasa manis gula masih ada dan gula dapat diperoleh kembali dengan menguapkan airnya (Buku Halaman 62).";
+        qData = {
+            question: "Jika kalian memasukkan gula pasir ke dalam segelas air hangat lalu mengaduknya, apakah yang terjadi pada zat gula?",
+            options: ["Gula larut, merupakan perubahan fisika karena tidak terbentuk zat baru", "Terjadi perubahan kimia"],
+            correctIdx: 0,
+            feedbackCorrect: "Benar sekali! Proses melarutkan gula adalah perubahan fisika karena rasa manis gula masih ada dan gula dapat diperoleh kembali dengan menguapkan airnya (Buku Halaman 62).",
+            feedbackIncorrect: "Kurang tepat. Melarutkan gula adalah **perubahan fisika** karena rasa manis gula masih ada, tidak terbentuk zat baru, dan gula dapat diperoleh kembali dengan menguapkan airnya (Buku Halaman 62)."
+        };
     }
 
     card.innerHTML = `
         <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1.2rem;">🙋 Apersepsi: Hubungkan Pengalamanmu</h3>
-        <p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; line-height: 1.5;">${question}</p>
+        <p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; line-height: 1.5;">${qData.question}</p>
         
         <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:1.5rem;" id="apersepsi-options">
-            <button class="quiz-btn" data-idx="0" style="text-align:left; padding:15px;">👍 ${options[0]}</button>
-            <button class="quiz-btn" data-idx="1" style="text-align:left; padding:15px;">👎 ${options[1]}</button>
+            <button class="quiz-btn" data-idx="0" style="text-align:left; padding:15px;">👍 ${qData.options[0]}</button>
+            <button class="quiz-btn" data-idx="1" style="text-align:left; padding:15px;">👎 ${qData.options[1]}</button>
         </div>
 
-        <div class="quiz-feedback success-msg hidden" id="apersepsi-feedback">
-            ${feedback}
+        <div class="quiz-feedback hidden" id="apersepsi-feedback" style="padding:15px; border-radius:16px; font-weight:700; line-height:1.5;">
         </div>
     `;
 
@@ -1582,10 +1594,32 @@ function renderApersepsi(card, btnNext) {
         btn.addEventListener("click", () => {
             SoundEffects.playClick();
             document.querySelectorAll("#apersepsi-options button").forEach(b => b.disabled = true);
-            btn.classList.add("correct");
-            document.getElementById("apersepsi-feedback").classList.remove("hidden");
-            updateStars(5);
-            setAvatar("happy", "Terima kasih telah berbagi! Dapat ⭐ 5 Bintang Apersepsi!");
+            
+            const chosenIdx = parseInt(btn.getAttribute("data-idx"));
+            const isCorrect = (chosenIdx === qData.correctIdx);
+            
+            const feedbackEl = document.getElementById("apersepsi-feedback");
+            feedbackEl.classList.remove("hidden");
+            
+            if (isCorrect) {
+                btn.classList.add("correct");
+                feedbackEl.innerHTML = qData.feedbackCorrect;
+                feedbackEl.style.background = "#dcfce7";
+                feedbackEl.style.color = "#15803d";
+                feedbackEl.style.border = "2px solid #bbf7d0";
+                SoundEffects.playCorrect();
+                updateStars(5);
+                setAvatar("happy", "Terima kasih telah berbagi! Dapat ⭐ 5 Bintang Apersepsi!");
+            } else {
+                btn.classList.add("wrong");
+                feedbackEl.innerHTML = qData.feedbackIncorrect;
+                feedbackEl.style.background = "#fee2e2";
+                feedbackEl.style.color = "#b91c1c";
+                feedbackEl.style.border = "2px solid #fecaca";
+                SoundEffects.playWrong();
+                updateStars(2);
+                setAvatar("sad", "Terima kasih telah menjawab! Kamu mendapat bonus ⭐ 2 Bintang partisipasi.");
+            }
             enableNextButton(btnNext);
         });
     });
