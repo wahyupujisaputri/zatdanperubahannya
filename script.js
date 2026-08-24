@@ -740,6 +740,27 @@ const teacherSlidesDeck = {
                 <rect x="140" y="20" width="30" height="140" rx="3" fill="#10b981"/>
                 <text x="135" y="13" font-size="8" font-weight="black">Gajah (2000Gen)</text>
             </svg>`
+        },
+        {
+            title: "7. Kesimpulan Pertemuan 1",
+            content: "• <strong>Wujud Zat</strong>: Zat padat memiliki bentuk & volume tetap. Zat cair memiliki volume tetap tetapi bentuk berubah mengikuti wadah. Zat gas memiliki bentuk & volume yang selalu berubah.<br>• <strong>Model Partikel</strong>: Partikel zat padat sangat rapat, zat cair agak renggang, sedangkan zat gas sangat berjauhan.<br>• <strong>Difusi & Penciuman</strong>: Penyebaran partikel gas lebih cepat dibanding zat cair. Bau dideteksi oleh silia hidung lalu dikirim saraf pembau ke otak untuk diterjemahkan.",
+            graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
+                <rect x="35" y="30" width="130" height="140" rx="15" fill="#f8fafc" stroke="#a855f7" stroke-width="3"/>
+                <rect x="75" y="15" width="50" height="25" rx="5" fill="#f3e8ff" stroke="#a855f7" stroke-width="2"/>
+                <circle cx="100" cy="27" r="4" fill="#a855f7"/>
+                
+                <rect x="55" y="60" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 67 L63 71 L70 63" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="67" x2="145" y2="67" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                
+                <rect x="55" y="95" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 102 L63 106 L70 98" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="102" x2="145" y2="102" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                
+                <rect x="55" y="130" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 137 L63 141 L70 133" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="137" x2="145" y2="137" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+            </svg>`
         }
     ],
     p2: [
@@ -827,6 +848,27 @@ const teacherSlidesDeck = {
                 <rect x="135" y="110" width="30" height="30" fill="#64748b"/>
                 <text x="135" y="105" font-size="8" font-weight="bold">Oksigen</text>
             </svg>`
+        },
+        {
+            title: "7. Kesimpulan Pertemuan 2",
+            content: "• <strong>Perubahan Wujud</strong>: Mencair, menguap, menyublim (proses menyerap kalor). Membeku, mengembun, mengkristal (proses melepas kalor).<br>• <strong>Menguap vs Mendidih</strong>: Menguap hanya terjadi di permukaan zat cair pada suhu bebas. Mendidih terjadi di seluruh bagian zat cair tepat pada titik didihnya.<br>• <strong>Grafik Pemanasan</strong>: Saat perubahan wujud terjadi (meleleh/mendidih), suhu zat akan tetap konstan (garis mendatar) karena kalor digunakan untuk memutus ikatan antarpartikel.",
+            graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
+                <rect x="35" y="30" width="130" height="140" rx="15" fill="#f8fafc" stroke="#a855f7" stroke-width="3"/>
+                <rect x="75" y="15" width="50" height="25" rx="5" fill="#f3e8ff" stroke="#a855f7" stroke-width="2"/>
+                <circle cx="100" cy="27" r="4" fill="#a855f7"/>
+                
+                <rect x="55" y="60" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 67 L63 71 L70 63" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="67" x2="145" y2="67" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                
+                <rect x="55" y="95" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 102 L63 106 L70 98" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="102" x2="145" y2="102" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                
+                <rect x="55" y="130" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 137 L63 141 L70 133" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="137" x2="145" y2="137" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+            </svg>`
         }
     ],
     p3: [
@@ -901,6 +943,27 @@ const teacherSlidesDeck = {
                 <path d="M10 160 Q100 130 190 160" fill="none" stroke="#0ea5e9" stroke-width="4"/>
                 <text x="110" y="115" font-size="8" fill="#e11d48" font-weight="bold">Evaporasi ➔</text>
                 <text x="32" y="175" font-size="8" fill="#0369a1" font-weight="bold">Infiltrasi</text>
+            </svg>`
+        },
+        {
+            title: "7. Kesimpulan Pertemuan 3",
+            content: "• <strong>Perubahan Fisika</strong>: Komposisi zat tetap sama, tidak terbentuk zat baru, and reversible (contoh: es mencair, beras ditumbuk menjadi tepung).<br>• <strong>Perubahan Kimia</strong>: Terbentuk zat baru dengan sifat berbeda, and irreversible (contoh: sumbu lilin terbakar, besi berkarat). Ditandai dengan warna berubah, terbentuk gas/endapan, and perubahan suhu.<br>• <strong>Siklus Air</strong>: Melibatkan serangkaian perubahan fisika alami: Evaporasi (penguapan), Kondensasi (awan), Presipitasi (hujan), and Infiltrasi (meresap).",
+            graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
+                <rect x="35" y="30" width="130" height="140" rx="15" fill="#f8fafc" stroke="#a855f7" stroke-width="3"/>
+                <rect x="75" y="15" width="50" height="25" rx="5" fill="#f3e8ff" stroke="#a855f7" stroke-width="2"/>
+                <circle cx="100" cy="27" r="4" fill="#a855f7"/>
+                
+                <rect x="55" y="60" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 67 L63 71 L70 63" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="67" x2="145" y2="67" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                
+                <rect x="55" y="95" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 102 L63 106 L70 98" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="102" x2="145" y2="102" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                
+                <rect x="55" y="130" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 137 L63 141 L70 133" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="137" x2="145" y2="137" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
             </svg>`
         }
     ],
@@ -989,6 +1052,27 @@ const teacherSlidesDeck = {
                 <path d="M140 100 L140 140" stroke="#475569"/>
                 <text x="120" y="75" font-size="8" fill="white" font-weight="bold">Helium</text>
                 <text x="110" y="50" font-size="8" font-weight="bold">Melayang di Udara</text>
+            </svg>`
+        },
+        {
+            title: "7. Kesimpulan Pertemuan 4",
+            content: "• <strong>Kerapatan & Massa Jenis</strong>: Rumus massa jenis adalah &rho; = m / V (massa dibagi volume). Menunjukkan tingkat kerapatan partikel zat.<br>• <strong>Posisi Benda</strong>: Mengapung (&rho; benda &lt; &rho; cairan), Melayang (&rho; benda = &rho; cairan), and Tenggelam (&rho; benda &gt; &rho; cairan).<br>• <strong>Metode Archimedes</strong>: Menghitung volume benda padat tidak beraturan dengan mengukur volume air yang dipindahkan atau tumpah saat benda dimasukkan.",
+            graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
+                <rect x="35" y="30" width="130" height="140" rx="15" fill="#f8fafc" stroke="#a855f7" stroke-width="3"/>
+                <rect x="75" y="15" width="50" height="25" rx="5" fill="#f3e8ff" stroke="#a855f7" stroke-width="2"/>
+                <circle cx="100" cy="27" r="4" fill="#a855f7"/>
+                
+                <rect x="55" y="60" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 67 L63 71 L70 63" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="67" x2="145" y2="67" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                
+                <rect x="55" y="95" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 102 L63 106 L70 98" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="102" x2="145" y2="102" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                
+                <rect x="55" y="130" width="15" height="15" rx="3" fill="#34d399" stroke="#10b981" stroke-width="1.5"/>
+                <path d="M59 137 L63 141 L70 133" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="80" y1="137" x2="145" y2="137" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
             </svg>`
         }
     ]
