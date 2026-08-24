@@ -2407,3 +2407,576 @@ button:disabled {
     box-shadow: 0 4px 0px #13b3a4 !important;
     border-color: #13b3a4 !important;
 }
+
+/* ==========================================================================
+   PENGATURAN RESPONSIVITAS MOBILE (HP FRIENDLY)
+   ========================================================================== */
+
+/* Penyesuaian untuk Tablet & Smartphone (Max-Width: 768px) */
+@media (max-width: 768px) {
+    /* Main Layout & Wizard */
+    .view {
+        padding: 1rem 0.5rem;
+    }
+    
+    .step-card {
+        padding: 1.25rem !important;
+        min-height: auto !important;
+        border-radius: 20px !important;
+        border-bottom-width: 6px !important;
+    }
+
+    /* Avatar Panel (Asisten Rara): Penataan Horizontal agar hemat ruang vertikal */
+    .avatar-panel {
+        flex-direction: row !important;
+        width: 100% !important;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        position: static !important;
+        margin-bottom: 1.2rem;
+    }
+
+    .avatar-sprite {
+        font-size: 3.5rem !important;
+        margin: 0 !important;
+    }
+
+    .avatar-bubble {
+        width: auto !important;
+        flex: 1;
+        padding: 0.8rem 1.2rem !important;
+        border-radius: 18px !important;
+        border-bottom-width: 5px !important;
+    }
+
+    /* Sembunyikan panah gelembung obrolan karena tata letak berubah menjadi horizontal */
+    .avatar-bubble::after, .avatar-bubble::before {
+        display: none !important;
+    }
+
+    /* Canva Slide Deck */
+    .canva-deck {
+        height: 600px !important;
+        border-radius: 16px !important;
+        border-width: 4px !important;
+        margin: 1rem auto !important;
+    }
+
+    .canva-slide {
+        padding: 1rem !important;
+    }
+
+    .canva-slide-body {
+        flex-direction: column !important;
+        height: calc(100% - 65px) !important;
+        gap: 10px !important;
+    }
+
+    .canva-slide-text {
+        flex: none !important;
+        order: 1;
+    }
+
+    .canva-slide-content {
+        max-height: 180px !important;
+        font-size: 0.95rem !important;
+        padding: 0.8rem 1rem !important;
+        border-radius: 16px !important;
+    }
+
+    .canva-slide-graphic {
+        flex: 1 !important;
+        order: 2;
+        max-height: 190px !important;
+        padding: 6px !important;
+        border-radius: 16px !important;
+    }
+
+    .canva-slide-title {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.4rem !important;
+        padding-bottom: 5px !important;
+    }
+}
+
+/* Penyesuaian khusus Smartphone Kecil (Max-Width: 600px) */
+@media (max-width: 600px) {
+    /* Hilangkan margin kanan tombol ikon agar pembungkusan flex rapi */
+    .btn-icon {
+        margin-right: 0 !important;
+        padding: 0.55rem 1rem !important;
+        font-size: 0.9rem !important;
+        border-radius: 16px !important;
+    }
+
+    /* Halaman Peta Level */
+    .dashboard-header h1 {
+        font-size: 2rem !important;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-header p {
+        font-size: 0.95rem !important;
+    }
+
+    .dashboard-header button {
+        font-size: 0.9rem !important;
+        padding: 8px 14px !important;
+        width: 100%; /* Tombol dashboard memenuhi lebar */
+    }
+
+    .level-map {
+        gap: 1.2rem !important;
+        padding: 0.5rem !important;
+    }
+
+    .level-card {
+        padding: 1.5rem 1rem !important;
+        border-radius: 20px !important;
+        border-bottom-width: 5px !important;
+    }
+
+    .level-icon {
+        font-size: 3rem !important;
+    }
+
+    .level-card h3 {
+        font-size: 1.2rem !important;
+    }
+
+    /* Settings & Leaderboard Card containers */
+    section[id="view-leaderboard"] > div,
+    section[id="view-settings"] > div {
+        padding: 1.25rem !important;
+        border-radius: 20px !important;
+        margin: 10px auto !important;
+        border-bottom-width: 6px !important;
+    }
+
+    /* Header & Footer Wizard */
+    .meeting-header {
+        padding: 0.75rem 1rem !important;
+        border-radius: 16px !important;
+        margin-bottom: 1.2rem !important;
+        gap: 0.8rem !important;
+        border-bottom-width: 5px !important;
+    }
+
+    .btn-exit {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    .stars-counter {
+        padding: 4px 10px !important;
+        font-size: 1rem !important;
+        border-radius: 12px !important;
+        border-bottom-width: 4px !important;
+    }
+
+    .star-icon {
+        font-size: 1.15rem !important;
+    }
+
+    .progress-track {
+        height: 12px !important;
+        border-radius: 6px !important;
+    }
+
+    #meeting-progress-text {
+        font-size: 0.8rem !important;
+    }
+
+    .meeting-footer {
+        padding: 0.8rem 1rem !important;
+        border-radius: 16px !important;
+        gap: 0.6rem !important;
+        border-bottom-width: 5px !important;
+    }
+
+    /* Laboratorium Partikel & Canvas */
+    canvas {
+        height: 240px !important;
+        border-radius: 14px !important;
+    }
+
+    .slider-container {
+        margin: 1rem 0 !important;
+        font-size: 0.95rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .state-indicator {
+        font-size: 1.1rem !important;
+        padding: 0.8rem !important;
+        border-radius: 14px !important;
+    }
+
+    /* Kuis Opsi Vertikal (1 Kolom) */
+    .quiz-options {
+        grid-template-columns: 1fr !important;
+        gap: 0.6rem !important;
+    }
+
+    .quiz-btn {
+        padding: 10px 12px !important;
+        font-size: 0.9rem !important;
+        border-radius: 14px !important;
+        border-bottom-width: 4px !important;
+    }
+
+    .question-text {
+        font-size: 1.15rem !important;
+        margin-bottom: 1.2rem !important;
+    }
+
+    /* Game Mencocokkan */
+    .matching-game {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.6rem !important;
+    }
+
+    .match-item {
+        padding: 10px 8px !important;
+        font-size: 0.85rem !important;
+        border-radius: 12px !important;
+        border-bottom-width: 4px !important;
+    }
+
+    /* Syringe & Beaker Lab */
+    .btn-syringe-opt {
+        padding: 8px 12px !important;
+        font-size: 0.85rem !important;
+        border-radius: 14px !important;
+        border-bottom-width: 4px !important;
+    }
+
+    /* Teka Teki Silang (TTS) */
+    .crossword-grid {
+        grid-template-columns: repeat(6, 35px) !important;
+        grid-template-rows: repeat(5, 35px) !important;
+        gap: 3px !important;
+    }
+
+    .crossword-cell {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 0.9rem !important;
+        border-radius: 6px !important;
+        border-width: 2px !important;
+    }
+
+    .crossword-number {
+        font-size: 0.55rem !important;
+        top: 1px !important;
+        left: 2px !important;
+    }
+
+    /* Pecah Balon */
+    .balloon-arena {
+        height: 200px !important;
+        border-radius: 16px !important;
+    }
+
+    .balloon-item {
+        width: 60px !important;
+        height: 72px !important;
+        font-size: 0.75rem !important;
+        border-radius: 50% 50% 50% 50% / 40% 40% 60% 60% !important;
+    }
+
+    /* Siklus Air & Visualisasi Mekanisme */
+    .water-cycle-container {
+        height: 250px !important;
+        border-radius: 16px !important;
+    }
+
+    .water-cycle-node {
+        padding: 4px 8px !important;
+        font-size: 0.75rem !important;
+        border-radius: 10px !important;
+        border-bottom-width: 3px !important;
+    }
+
+    /* Penyesuaian khusus node silia/otak agar ke tengah */
+    #node-silia, #node-saraf, #node-otak {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+
+    /* Node presipitasi didekatkan ke tepi agar tidak tabrakan */
+    #node-pre {
+        right: 15px !important;
+    }
+
+    /* Game Ular Tangga */
+    .snakes-board {
+        gap: 4px !important;
+        padding: 8px !important;
+        border-radius: 16px !important;
+    }
+
+    .snakes-tile {
+        height: 52px !important;
+        font-size: 0.75rem !important;
+        padding: 2px 4px !important;
+        border-radius: 10px !important;
+        border-width: 2px !important;
+    }
+
+    .snakes-tile.active-player::after {
+        font-size: 1.5rem !important;
+    }
+
+    /* Beaker Lab P4 */
+    #p4-beaker {
+        width: 100px !important;
+        height: 130px !important;
+    }
+
+    #p4-beaker-water {
+        height: 60px !important;
+    }
+
+    #p4-beaker-line {
+        bottom: 55px !important;
+        width: 90px !important;
+    }
+
+    #p4-beaker-label {
+        bottom: 60px !important;
+        font-size: 0.65rem !important;
+    }
+
+    #p4-beaker-stone {
+        width: 24px !important;
+        height: 24px !important;
+        left: 38px !important;
+    }
+
+    /* Beaker Lab P4 M3 cards */
+    #p4-m3-card1, #p4-m3-card2 {
+        padding: 10px !important;
+        border-radius: 14px !important;
+        width: 100% !important;
+    }
+
+    /* Meja Kelas */
+    .classroom-bg {
+        padding: 0.8rem !important;
+        min-height: 180px !important;
+        border-radius: 16px !important;
+    }
+
+    .school-board {
+        font-size: 0.8rem !important;
+        padding: 8px !important;
+        border-width: 4px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .desks-row {
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin-top: 10px !important;
+    }
+
+    .classroom-desk {
+        width: 80px !important;
+        height: 40px !important;
+        box-shadow: 0 4px 0px #b45309 !important;
+    }
+
+    .classroom-desk::before, .classroom-desk::after {
+        height: 25px !important;
+        bottom: -25px !important;
+    }
+
+    /* Termometer & Skala Suhu */
+    .thermometer-sim-container {
+        gap: 1.5rem !important;
+        margin: 1rem 0 !important;
+    }
+
+    .thermometer-wrapper {
+        height: 240px !important;
+    }
+
+    .thermometer-glass {
+        height: 180px !important;
+        width: 20px !important;
+    }
+
+    .thermometer-scale-lines {
+        height: 180px !important;
+        left: -40px !important;
+    }
+
+    .scale-mark {
+        width: 8px !important;
+    }
+
+    .scale-mark span {
+        right: 12px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .thermometer-bulb {
+        width: 40px !important;
+        height: 40px !important;
+        margin-top: -4px !important;
+    }
+
+    .scales-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.6rem !important;
+    }
+
+    .scale-card {
+        padding: 0.8rem !important;
+        border-radius: 16px !important;
+    }
+
+    .scale-value {
+        font-size: 1.6rem !important;
+    }
+
+    .ref-btn {
+        padding: 6px 12px !important;
+        font-size: 0.85rem !important;
+        border-radius: 16px !important;
+    }
+
+    .ref-desc-text {
+        font-size: 0.9rem !important;
+        padding: 10px 14px !important;
+    }
+
+    /* Video Player */
+    .video-player-sim {
+        height: 180px !important;
+        border-radius: 14px !important;
+        margin: 1rem 0 !important;
+    }
+
+    .video-poster-art {
+        font-size: 2.5rem !important;
+    }
+
+    .video-play-btn {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 1.5rem !important;
+    }
+
+    /* Kalkulator Q=mcDT */
+    .calc-container {
+        padding: 1rem !important;
+        border-radius: 16px !important;
+    }
+
+    .calc-input-field {
+        padding: 8px 12px !important;
+        font-size: 1rem !important;
+    }
+
+    /* Tabel Ciri Zat: Convert wide tables into cards on Mobile */
+    .difference-table, 
+    .difference-table thead, 
+    .difference-table tbody, 
+    .difference-table th, 
+    .difference-table td, 
+    .difference-table tr {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .difference-table thead {
+        display: none !important;
+    }
+
+    .difference-table tr {
+        background: #ffffff !important;
+        border: 3px solid #cbd5e1 !important;
+        border-radius: 20px !important;
+        margin-bottom: 12px !important;
+        padding: 14px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .difference-table td {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border: none !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        padding: 10px 0 !important;
+        white-space: normal !important;
+        text-align: right !important;
+        font-size: 0.95rem !important;
+    }
+
+    .difference-table td:last-child {
+        border-bottom: none !important;
+    }
+
+    .difference-table td::before {
+        content: attr(data-label) !important;
+        font-weight: 900 !important;
+        color: var(--primary) !important;
+        text-align: left !important;
+        margin-right: 12px !important;
+    }
+
+    /* Papan Peringkat / Tab Pilihan */
+    #view-leaderboard table {
+        font-size: 0.9rem !important;
+    }
+
+    #view-leaderboard th, #view-leaderboard td {
+        padding: 8px !important;
+    }
+
+    /* Global Mobile-First Overrides for Portrait 360-430px */
+    html, body {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    .view {
+        padding: 12px !important;
+    }
+
+    .step-card {
+        width: 100% !important;
+        padding: 12px !important;
+        margin: 0 !important;
+        border-radius: 20px !important;
+    }
+
+    /* Enforce 44-48px touch sizes and readable font sizes */
+    .btn-icon, .quiz-btn, .btn-syringe-opt, .ref-btn, .video-play-btn, #btn-press-syringe, .drag-item {
+        min-height: 48px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1rem !important;
+    }
+
+    input[type="text"], input[type="number"], select, textarea {
+        min-height: 48px !important;
+        font-size: 16px !important;
+        width: 100% !important;
+        padding: 10px 14px !important;
+    }
+
+    /* Desktop/Tablet responsive layout compatibility */
+    .desks-row {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+}

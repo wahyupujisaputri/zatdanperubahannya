@@ -2309,6 +2309,7 @@ function renderP1Missions(wrapper, btnNext) {
             { id: "balon", text: "Balon Udara 🎈", type: "gas" }
         ];
         
+        let selectedItem = null;
         const itemsBox = document.getElementById("p1-items-box");
         items.sort(() => Math.random() - 0.5).forEach(item => {
             let div = document.createElement("div");
@@ -2317,10 +2318,29 @@ function renderP1Missions(wrapper, btnNext) {
             div.id = item.id;
             div.innerText = item.text;
             div.dataset.type = item.type;
+            
             div.addEventListener("dragstart", e => {
                 SoundEffects.playClick();
                 e.dataTransfer.setData("text/plain", e.target.id);
+                document.querySelectorAll(".drag-item").forEach(el => {
+                    el.style.border = "";
+                    el.style.boxShadow = "";
+                });
+                selectedItem = div;
             });
+            
+            // Touch/Tap click selection fallback
+            div.addEventListener("click", () => {
+                SoundEffects.playClick();
+                document.querySelectorAll(".drag-item").forEach(el => {
+                    el.style.border = "";
+                    el.style.boxShadow = "";
+                });
+                div.style.border = "3px solid #3b82f6";
+                div.style.boxShadow = "0 0 10px rgba(59, 130, 246, 0.5)";
+                selectedItem = div;
+            });
+            
             itemsBox.appendChild(div);
         });
         
@@ -2332,29 +2352,41 @@ function renderP1Missions(wrapper, btnNext) {
                 const id = e.dataTransfer.getData("text/plain");
                 const el = document.getElementById(id);
                 if (!el) return;
-                
-                const targetType = zone.id.replace("zone-", "");
-                if (el.dataset.type === targetType) {
-                    SoundEffects.playCorrect();
-                    zone.appendChild(el);
-                    el.classList.add("correct");
-                    el.draggable = false;
-                    correctCount++;
-                    updateStars(10);
-                    setAvatar("celebrate", "Hebat! Klasifikasimu benar!");
-                    
-                    if (correctCount === items.length) {
-                        enableNextButton(btnNext);
-                        setAvatar("celebrate", "Sempurna! Semua benda sekolah sudah di kelompoknya. Klik Lanjut!");
-                    }
-                } else {
-                    SoundEffects.playWrong();
-                    el.classList.add("wrong");
-                    setAvatar("sad", "Salah meja kelompok! Coba teliti lagi wujudnya.");
-                    setTimeout(() => el.classList.remove("wrong"), 1000);
-                }
+                handleMatch(el, zone);
+            });
+            
+            // Touch/Tap drop zone fallback
+            zone.addEventListener("click", () => {
+                if (!selectedItem) return;
+                handleMatch(selectedItem, zone);
             });
         });
+        
+        function handleMatch(el, zone) {
+            const targetType = zone.id.replace("zone-", "");
+            if (el.dataset.type === targetType) {
+                SoundEffects.playCorrect();
+                zone.appendChild(el);
+                el.classList.add("correct");
+                el.draggable = false;
+                el.style.border = "";
+                el.style.boxShadow = "";
+                selectedItem = null;
+                correctCount++;
+                updateStars(10);
+                setAvatar("celebrate", "Hebat! Klasifikasimu benar!");
+                
+                if (correctCount === items.length) {
+                    enableNextButton(btnNext);
+                    setAvatar("celebrate", "Sempurna! Semua benda sekolah sudah di kelompoknya. Klik Lanjut!");
+                }
+            } else {
+                SoundEffects.playWrong();
+                el.classList.add("wrong");
+                setAvatar("sad", "Salah meja kelompok! Coba teliti lagi wujudnya.");
+                setTimeout(() => el.classList.remove("wrong"), 1000);
+            }
+        }
         
     } else if (activeSubStep === 2) {
         setAvatar("thinking", "Merger Lab Piston & Partikel: Pilih zat di bawah (Padat, Cair, atau Gas), lalu klik tombol 'Tekan Piston / Jalankan Animasi!' untuk melihat efek kompresi!");
@@ -2397,22 +2429,22 @@ function renderP1Missions(wrapper, btnNext) {
                     </thead>
                     <tbody>
                         <tr id="tr-padat">
-                            <td>🧱 Padat</td>
-                            <td>Bentuk & Volume Tetap</td>
-                            <td>Tidak dapat ditekan</td>
-                            <td>Rapat teratur, berikatan kuat, bergetar</td>
+                            <td data-label="Wujud Zat">🧱 Padat</td>
+                            <td data-label="Bentuk & Volume">Bentuk & Volume Tetap</td>
+                            <td data-label="Dapat Ditekan?">Tidak dapat ditekan</td>
+                            <td data-label="Keadaan Partikel">Rapat teratur, berikatan kuat, bergetar</td>
                         </tr>
                         <tr id="tr-cair">
-                            <td>💧 Cair</td>
-                            <td>Bentuk Berubah, Volume Tetap</td>
-                            <td>Sangat sulit ditekan</td>
-                            <td>Agak renggang, bergeser terbatas</td>
+                            <td data-label="Wujud Zat">💧 Cair</td>
+                            <td data-label="Bentuk & Volume">Bentuk Berubah, Volume Tetap</td>
+                            <td data-label="Dapat Ditekan?">Sangat sulit ditekan</td>
+                            <td data-label="Keadaan Partikel">Agak renggang, bergeser terbatas</td>
                         </tr>
                         <tr id="tr-gas">
-                            <td>💨 Gas</td>
-                            <td>Bentuk & Volume Berubah</td>
-                            <td>Sangat mudah ditekan</td>
-                            <td>Sangat renggang, bebas bergerak cepat</td>
+                            <td data-label="Wujud Zat">💨 Gas</td>
+                            <td data-label="Bentuk & Volume">Bentuk & Volume Berubah</td>
+                            <td data-label="Dapat Ditekan?">Sangat mudah ditekan</td>
+                            <td data-label="Keadaan Partikel">Sangat renggang, bebas bergerak cepat</td>
                         </tr>
                     </tbody>
                 </table>
