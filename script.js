@@ -1,6 +1,6 @@
 // --- STATE APLIKASI ---
 let activeMeeting = null;
-let currentStep = 0;       // 0 sampai 13 (Total 14 langkah)
+let currentStep = 0;       // 0 sampai 14 (Total 15 langkah)
 let activeSubStep = 1;     // 1 sampai 4 (Misi Eksplorasi)
 let userStars = 0;
 let userAnswers = {};
@@ -1015,6 +1015,7 @@ const stepsNarrative = {
     missions: "Misi Eksplorasi Interaktif! Selesaikan keempat tantangan praktikum virtual ini untuk mengumpulkan koin bintang!",
     presentasi: "Ayo presentasikan temuan hasil penyelidikanmu hari ini di depan kelas! Ketik catatan presentasimu dulu, ya!",
     penguatan: "Mari dengar penjelasan penguatan materi dari guru lewat Slide Canva interaktif agar pemahamanmu makin mantap!",
+    kesimpulan: "Hebat! Sekarang mari kita rangkum poin-poin kesimpulan penting dari petualangan sains kita hari ini!",
     latihan: "Arena Kompetisi Bermain! Ayo tunjukkan kemampuan terbaikmu bersaing melawan teman kelas!",
     refleksi: "Tuliskan perasaanmu hari ini and kirim tanggapanmu ke Mentimeter Wall kelas!",
     posttest: "Ujian Akhir Kelas! Jawablah cepat dan tepat untuk mendapatkan skor tertinggi di podium kompetisi!",
@@ -1263,7 +1264,7 @@ function updateProgressBar() {
     const fillEl = document.getElementById("meeting-progress-fill");
     const textEl = document.getElementById("meeting-progress-text");
     
-    const percent = (currentStep / 13) * 100;
+    const percent = (currentStep / 14) * 100;
     if (fillEl) {
         fillEl.style.width = `${percent}%`;
     }
@@ -1271,9 +1272,9 @@ function updateProgressBar() {
         let stepNames = [
             "Splash Screen", "Stimulus Pembuka", "Apersepsi", "Motivasi Belajar", 
             "Tujuan Belajar", "Pretest Tantangan", "Stimulus Eksplorasi", "Misi Eksplorasi", 
-            "Presentasi Hasil", "Penguatan Guru", "Game Latihan", "Refleksi Mandiri", "Ujian Posttest", "Lencana Penutup"
+            "Presentasi Hasil", "Penguatan Guru", "Kesimpulan", "Game Latihan", "Refleksi Mandiri", "Ujian Posttest", "Lencana Penutup"
         ];
-        textEl.innerText = `Langkah ${currentStep + 1} dari 14: ${stepNames[currentStep]}`;
+        textEl.innerText = `Langkah ${currentStep + 1} dari 15: ${stepNames[currentStep]}`;
     }
 }
 
@@ -1316,16 +1317,17 @@ function renderCurrentStep() {
     else if (currentStep === 7) stepType = "missions";
     else if (currentStep === 8) stepType = "presentasi";
     else if (currentStep === 9) stepType = "penguatan";
-    else if (currentStep === 10) stepType = "latihan";
-    else if (currentStep === 11) stepType = "refleksi";
-    else if (currentStep === 12) stepType = "posttest";
-    else if (currentStep === 13) stepType = "penutup";
+    else if (currentStep === 10) stepType = "kesimpulan";
+    else if (currentStep === 11) stepType = "latihan";
+    else if (currentStep === 12) stepType = "refleksi";
+    else if (currentStep === 13) stepType = "posttest";
+    else if (currentStep === 14) stepType = "penutup";
     
     setAvatar("thinking", stepsNarrative[stepType]);
     
     const avatarPanel = document.querySelector(".avatar-panel");
     const stepCard = document.getElementById("step-card");
-    if (stepType === "penguatan") {
+    if (stepType === "penguatan" || stepType === "kesimpulan") {
         avatarPanel.style.display = "none";
         stepCard.style.width = "100%";
     } else {
@@ -1349,7 +1351,7 @@ function renderCurrentStep() {
         skipBtn.classList.add("hidden");
     }
     
-    if (currentStep === 13) {
+    if (currentStep === 14) {
         btnNext.innerHTML = "Selesai Petualangan ➔";
     } else {
         btnNext.innerHTML = "Lanjut ➔";
@@ -1392,15 +1394,18 @@ function renderCurrentStep() {
             renderPenguatanGuru(card, btnNext);
             break;
         case 10:
-            renderLatihan(card, btnNext);
+            renderKesimpulan(card, btnNext);
             break;
         case 11:
-            renderRefleksi(card, btnNext);
+            renderLatihan(card, btnNext);
             break;
         case 12:
-            renderPosttest(card, btnNext);
+            renderRefleksi(card, btnNext);
             break;
         case 13:
+            renderPosttest(card, btnNext);
+            break;
+        case 14:
             renderPenutup(card, btnNext);
             break;
     }
@@ -1418,7 +1423,7 @@ function nextStep() {
         }
     }
     
-    if (currentStep < 13) {
+    if (currentStep < 14) {
         currentStep++;
         activeSubStep = 1;
         renderCurrentStep();
@@ -5028,7 +5033,146 @@ function goCanvaSlide(idx) {
     }
 }
 
-// 10. Latihan Kompetisi (Mini Games Sesuai Bab)
+// 10. Kesimpulan Interaktif
+function renderKesimpulan(card, btnNext) {
+    enableNextButton(btnNext);
+    setAvatar("happy", "Ayo baca poin-poin kesimpulan di bawah! Klik tombol 'Paham! 👍' pada setiap poin untuk mendapatkan bonus bintang!");
+
+    let points = [];
+    if (activeMeeting === "p1") {
+        points = [
+            {
+                title: "Tiga Wujud Zat",
+                desc: "<b>Padat:</b> bentuk & volume tetap, tidak dapat ditekan.<br><b>Cair:</b> bentuk berubah mengikuti wadah, volume tetap, sulit ditekan.<br><b>Gas:</b> bentuk & volume berubah mengisi seluruh ruangan, mudah ditekan.",
+                icon: "📦"
+            },
+            {
+                title: "Model Partikel Zat",
+                desc: "<b>Zat Padat:</b> partikel sangat rapat, teratur, gaya tarik kuat.<br><b>Zat Cair:</b> partikel agak renggang, acak, gaya tarik sedang, dapat mengalir.<br><b>Zat Gas:</b> partikel sangat berjauhan, acak sekali, bergerak cepat bebas.",
+                icon: "⚛️"
+            },
+            {
+                title: "Peristiwa Difusi",
+                desc: "Proses penyebaran partikel secara spontan dari daerah berkonsentrasi tinggi ke konsentrasi rendah. Terjadi sangat cepat pada gas (misalnya aroma masakan yang menyebar di udara).",
+                icon: "💨"
+            }
+        ];
+    } else if (activeMeeting === "p2") {
+        points = [
+            {
+                title: "6 Perubahan Wujud",
+                desc: "<b>Menyerap Kalor (Panas):</b> Mencair (padat ke cair), Menguap (cair ke gas), Menyublim (padat ke gas).<br><b>Melepas Kalor:</b> Membeku (cair ke padat), Mengembun (gas ke cair), Mengkristal (gas ke padat).",
+                icon: "❄️"
+            },
+            {
+                title: "Menguap vs Mendidih",
+                desc: "<b>Menguap:</b> Terjadi hanya di permukaan cairan pada suhu berapapun.<br><b>Mendidih:</b> Terjadi di seluruh bagian cairan dan gelembung terbentuk pada suhu titik didih tertentu.",
+                icon: "💧"
+            },
+            {
+                title: "Grafik Pemanasan & Suhu Konstan",
+                desc: "Saat suatu zat mengalami perubahan wujud (meleleh atau mendidih), suhunya akan <b>tetap konstan/tidak naik</b>. Energi kalor sepenuhnya dipakai untuk memutus ikatan antarpartikel.",
+                icon: "📈"
+            }
+        ];
+    } else if (activeMeeting === "p3") {
+        points = [
+            {
+                title: "Perubahan Fisika vs Kimia",
+                desc: "<b>Perubahan Fisika:</b> Tidak menghasilkan zat baru, hanya bentuk/wujud berubah (contoh: lilin meleleh, es mencair).<br><b>Perubahan Kimia:</b> Menghasilkan zat baru dengan sifat kimia berbeda (contoh: kayu dibakar, nasi membusuk).",
+                icon: "🔄"
+            },
+            {
+                title: "4 Tanda Reaksi Kimia",
+                desc: "Reaksi kimia dapat diidentifikasi melalui tanda-tanda berikut:<br>1. Terbentuknya gas/gelembung.<br>2. Terbentuknya endapan.<br>3. Terjadi perubahan warna.<br>4. Terjadi perubahan suhu/energi panas.",
+                icon: "🧪"
+            },
+            {
+                title: "Siklus Air Alami",
+                desc: "Daur air melibatkan perubahan fisika: <b>Evaporasi</b> (penguapan), <b>Kondensasi</b> (uap air menjadi awan), <b>Presipitasi</b> (hujan), dan <b>Infiltrasi</b> (penyerapan air ke dalam tanah).",
+                icon: "🌧️"
+            }
+        ];
+    } else if (activeMeeting === "p4") {
+        points = [
+            {
+                title: "Kerapatan & Massa Jenis",
+                desc: "Kerapatan partikel ditunjukkan oleh Massa Jenis (&rho;), yaitu massa zat per satuan volume wadahnya: <b>&rho; = m / V</b>. Zat padat umumnya lebih rapat daripada zat cair dan gas.",
+                icon: "⚖️"
+            },
+            {
+                title: "Mengapung, Melayang, Tenggelam",
+                desc: "Benda akan <b>mengapung</b> jika &rho; benda < &rho; cairan.<br>Benda akan <b>melayang</b> jika &rho; benda = &rho; cairan.<br>Benda akan <b>tenggelam</b> jika &rho; benda > &rho; cairan.",
+                icon: "⛵"
+            },
+            {
+                title: "Metode Archimedes",
+                desc: "Volume benda padat yang tidak beraturan bentuknya dapat diukur secara akurat menggunakan gelas ukur berisi air dengan menghitung volume air yang tumpah atau dipindahkan oleh benda tersebut.",
+                icon: "🏺"
+            }
+        ];
+    }
+
+    let hasClaimedBonus = false;
+    let checkedStates = points.map(() => false);
+
+    let cardsHtml = points.map((p, idx) => `
+        <div class="kesimpulan-card" id="kes-card-${idx}" style="background:#fff; border:3px solid #e2e8f0; border-radius:20px; padding:1.5rem; display:flex; flex-direction:column; justify-content:space-between; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: all 0.3s ease;">
+            <div>
+                <div style="font-size: 2.5rem; margin-bottom: 10px; text-align:center;">${p.icon}</div>
+                <h4 style="font-size: 1.25rem; font-weight:900; color:var(--text); text-align:center; margin-bottom:10px;">${p.title}</h4>
+                <p style="font-size: 0.95rem; font-weight:700; color:var(--text-muted); line-height:1.5; text-align:left;">${p.desc}</p>
+            </div>
+            <button class="btn-icon" id="btn-paham-${idx}" style="margin-top: 15px; width:100%; font-size:1rem; padding:8px 12px; background:var(--primary);" onclick="markKesimpulanPaham(${idx})">Paham! 👍</button>
+        </div>
+    `).join("");
+
+    card.innerHTML = `
+        <h3 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; text-align:center;">📝 Kesimpulan Petualangan Hari Ini 💡</h3>
+        <p style="font-size:1.05rem; font-weight:700; color:var(--text-muted); text-align:center; margin-bottom:20px;">Bacalah rangkuman materi di bawah ini agar ingatanmu semakin kuat!</p>
+        
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; width:100%; margin-bottom:20px;">
+            ${cardsHtml}
+        </div>
+        
+        <div id="bonus-info" style="display:none; background:#ecfdf5; border:3px solid #10b981; border-radius:20px; padding:1.2rem; text-align:center; margin-top:15px; animation: float 3s ease-in-out infinite;">
+            <span style="font-size:1.8rem;">🎉</span>
+            <p style="font-size:1.15rem; font-weight:900; color:#065f46; margin: 5px 0 0 0;">Hebat! Kamu telah mereview seluruh kesimpulan. Bonus +5 Bintang telah ditambahkan!</p>
+        </div>
+    `;
+
+    window.markKesimpulanPaham = function(idx) {
+        SoundEffects.playClick();
+        if (checkedStates[idx]) return;
+
+        checkedStates[idx] = true;
+        const cCard = document.getElementById(`kes-card-${idx}`);
+        const cBtn = document.getElementById(`btn-paham-${idx}`);
+
+        if (cCard) {
+            cCard.style.borderColor = "var(--success)";
+            cCard.style.background = "#f0fdf4";
+        }
+        if (cBtn) {
+            cBtn.innerHTML = "Dipahami! ✔";
+            cBtn.style.background = "var(--success)";
+            cBtn.disabled = true;
+        }
+
+        if (checkedStates.every(v => v) && !hasClaimedBonus) {
+            hasClaimedBonus = true;
+            updateStars(5);
+            const bonusDiv = document.getElementById("bonus-info");
+            if (bonusDiv) {
+                bonusDiv.style.display = "block";
+            }
+            setAvatar("celebrate", "Bagus sekali! Semua kesimpulan sudah kamu pahami. Sekarang, bersiaplah untuk Game Latihan!");
+            btnNext.classList.add("btn-unlocked-pulse");
+        }
+    };
+}
+
+// 11. Latihan Kompetisi (Mini Games Sesuai Bab)
 function renderLatihan(card, btnNext) {
     enableNextButton(btnNext);
     
