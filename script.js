@@ -166,24 +166,108 @@ const meetingsConfig = {
         badgeName: "Ahli Partikel Level 1",
         badgeEmoji: "🔬",
         pretest: [
-            { q: "Rudi membawa bekal kue kering padat dan air sirup ke sekolah. Menurut Rudi, kedua benda tersebut menempati ruang kelas dan memiliki berat jika ditimbang. Konsep ilmiah apakah yang paling tepat untuk menggambarkan segala sesuatu yang memiliki massa dan menempati ruang?", a: ["Energi Listrik", "Materi / Zat", "Gaya Tarik", "Gelombang Suara"], c: 1 },
-            { q: "Saat sedang membersihkan kelas, Ani melihat jam dinding kayu, segelas teh manis, dan balon karet tiup yang mengambang. Dari pengamatan tersebut, Ani ingin mengelompokkan benda berdasarkan wujud padat. Benda manakah yang tergolong wujud padat?", a: ["Balon karet berisi gas", "Teh manis cair", "Jam dinding kayu", "Debu bertebaran di udara"], c: 2 },
-            { q: "Dalam suatu eksperimen, Siti menuangkan susu dari botol bulat ke gelas persegi. Bentuk susu berubah menyerupai gelas, namun volumenya di gelas ukur tetap 200 ml. Berdasarkan susunan partikel zat cair, mengapa hal ini terjadi?", a: ["Partikel zat cair terikat sangat rapat dan tidak dapat bergetar", "Partikel zat cair agak renggang dan dapat bergeser bebas terbatas", "Partikel zat cair terpisah sangat jauh dan terbang bebas", "Susu tersebut menyusut saat dituang"], c: 1 },
-            { q: "Budi duduk di bangku belakang kelas. Tiba-tiba ia mencium wangi semprotan parfum yang baru saja digunakan oleh gurunya yang berdiri di depan papan tulis. Peristiwa penyebaran partikel aroma ini disebut...", a: ["Pencairan", "Difusi", "Kondensasi", "Membeku"], c: 1 },
-            { q: "Saat berjalan di taman sekolah, hidung kita mendeteksi bau wangi bunga melati. Partikel gas melati masuk melalui lubang hidung kita dan pertama kali ditangkap oleh rambut-rambut halus yang disebut...", a: ["Otak besar", "Silia saraf pembau", "Bulbus penciuman", "Nostril luar"], c: 1 }
+            {
+                q: "Raka memasukkan batu ke dalam gelas yang berisi air. Setelah itu, ia menuangkan air ke dalam botol yang berbeda bentuk. Ia mengamati bahwa batu tetap memiliki bentuk yang sama, sedangkan bentuk air mengikuti wadahnya.\n\nBerdasarkan percobaan tersebut, kesimpulan yang paling tepat adalah ....",
+                a: [
+                    "batu dan air memiliki volume yang selalu berubah",
+                    "batu memiliki partikel yang lebih bebas bergerak daripada air",
+                    "partikel penyusun batu lebih terikat dibandingkan partikel penyusun air",
+                    "partikel air tidak memiliki gaya tarik-menarik"
+                ],
+                c: 2
+            },
+            {
+                q: "Tiga kelompok siswa mengamati partikel suatu zat.\n\nZat P: partikel sangat rapat dan hanya bergetar di tempat\nZat Q: partikel berdekatan tetapi dapat berpindah\nZat R: partikel berjauhan dan bergerak bebas\n\nJika ketiga zat dimasukkan ke dalam wadah tertutup, prediksi yang paling tepat adalah ....",
+                a: [
+                    "P dan Q mempertahankan bentuk, sedangkan R mengikuti bentuk wadah",
+                    "P mempertahankan bentuk dan volume, Q mempertahankan volume, sedangkan R mengisi seluruh ruang wadah",
+                    "P, Q, dan R semuanya mengikuti bentuk wadah",
+                    "Q mempertahankan bentuk dan R mempertahankan volume"
+                ],
+                c: 1
+            },
+            {
+                q: "Sebuah balon yang telah ditiup kemudian ditekan dengan tangan. Meskipun volumenya mengecil, balon masih dapat mengembang kembali ketika tekanan dilepaskan.\n\nPeristiwa tersebut menunjukkan bahwa ....",
+                a: [
+                    "partikel gas tidak memiliki massa",
+                    "partikel gas dapat dimampatkan karena memiliki jarak antarpartikel",
+                    "partikel gas tidak bergerak",
+                    "gas tidak menempati ruang"
+                ],
+                c: 1
+            },
+            {
+                q: "Dua buah gelas berisi air dengan volume yang sama. Gelas A diletakkan di ruangan bersuhu 20°C, sedangkan gelas B di ruangan bersuhu 35°C. Beberapa jam kemudian, volume air dalam gelas B lebih sedikit.\n\nPenjelasan yang paling tepat adalah ....",
+                a: [
+                    "partikel air pada gelas B berubah menjadi partikel baru",
+                    "partikel air pada gelas B bergerak lebih cepat sehingga lebih banyak meninggalkan permukaan",
+                    "air pada gelas A tidak memiliki energi",
+                    "suhu tidak memengaruhi gerak partikel zat"
+                ],
+                c: 1
+            },
+            {
+                q: "Seorang siswa menyemprotkan parfum di sudut kelas. Beberapa menit kemudian, siswa yang duduk cukup jauh dari sumber parfum dapat mencium aromanya.\n\nPeristiwa tersebut terjadi karena ....",
+                a: [
+                    "partikel parfum bergerak dari daerah berkonsentrasi tinggi menuju daerah berkonsentrasi lebih rendah",
+                    "udara menarik parfum secara langsung menuju hidung",
+                    "partikel parfum berubah menjadi oksigen",
+                    "hidung menghasilkan zat yang menarik parfum"
+                ],
+                c: 0
+            },
+            {
+                q: "Perhatikan dua kondisi berikut.\n\nKondisi 1: Parfum disemprotkan di ruangan yang tenang.\nKondisi 2: Parfum disemprotkan di ruangan yang memiliki kipas angin menyala.\n\nAroma parfum pada kondisi 2 cenderung lebih cepat tercium di bagian ruangan yang jauh dari sumber.\n\nAlasan yang paling tepat adalah ....",
+                a: [
+                    "kipas angin mengubah parfum menjadi gas baru",
+                    "aliran udara membantu perpindahan partikel parfum",
+                    "kipas angin meningkatkan massa partikel parfum",
+                    "partikel parfum berhenti berdifusi ketika terkena udara"
+                ],
+                c: 1
+            },
+            {
+                q: "Ketika ibu membuka tutup botol minyak kayu putih, seseorang yang berada di dekatnya dapat mencium aroma minyak tersebut. Agar aroma dapat terdeteksi oleh tubuh, urutan proses yang paling tepat adalah ....",
+                a: [
+                    "aroma → hidung → udara → reseptor penciuman",
+                    "molekul aroma → udara → rongga hidung → reseptor penciuman → impuls saraf → otak",
+                    "udara → otak → molekul aroma → hidung",
+                    "molekul aroma → paru-paru → lambung → otak"
+                ],
+                c: 1
+            },
+            {
+                q: "Dua siswa melakukan percobaan difusi menggunakan teh celup.\n\nGelas A berisi air dingin.\nGelas B berisi air panas.\n\nTeh celup dimasukkan tanpa diaduk. Warna air pada gelas B menyebar lebih cepat.\n\nKesimpulan yang paling sesuai dengan teori partikel adalah ....",
+                a: [
+                    "partikel air panas berukuran lebih kecil",
+                    "suhu yang lebih tinggi menyebabkan gerak partikel lebih cepat",
+                    "air panas memiliki massa lebih besar",
+                    "partikel teh hanya dapat bergerak dalam air panas"
+                ],
+                c: 1
+            },
+            {
+                q: "Seorang siswa mengatakan, \"Gas tidak mempunyai volume karena gas tidak terlihat.\"\n\nTanggapan yang paling tepat untuk membantah pernyataan tersebut adalah ....",
+                a: [
+                    "gas memiliki warna sehingga dapat dilihat",
+                    "gas memiliki volume karena menempati ruang, meskipun tidak selalu dapat dilihat",
+                    "gas tidak memiliki volume tetapi memiliki massa",
+                    "gas hanya memiliki volume jika berada di dalam air"
+                ],
+                c: 1
+            },
+            {
+                q: "Ketika seseorang mencium aroma makanan yang sedang dimasak dari ruangan lain, molekul aroma harus bergerak melalui udara hingga mencapai hidung.\n\nJika semua partikel udara tiba-tiba berhenti bergerak, kemungkinan yang paling tepat adalah ....",
+                a: [
+                    "aroma akan lebih cepat mencapai hidung",
+                    "aroma tetap mencapai hidung dengan kecepatan yang sama",
+                    "penyebaran aroma melalui difusi akan sangat terhambat",
+                    "molekul aroma langsung berubah menjadi cairan"
+                ],
+                c: 2
+            }
         ],
-        posttest: [
-            { q: "Roni mencoba memukul bangku kayu kelas dengan penggaris plastik, namun bangku kayu tersebut sama sekali tidak rusak atau berubah bentuk. Ditinjau dari keadaan partikelnya, mengapa zat padat mempertahankan bentuknya?", a: ["Partikel zat padat sangat ringan and mengalir bebas", "Partikel zat padat tersusun sangat rapat, teratur, dan memiliki ikatan antarpartikel yang sangat kuat", "Partikel zat padat berjarak renggang and mudah ditekan", "Kayu bangku menyerap plastik penggaris"], c: 1 },
-            { q: "Siti menuangkan 250 ml air mineral dari botol ke dalam termos kosong. Air tersebut mengalir dengan lancar dan langsung berubah bentuk mengikuti bagian dalam termos. Sifat wujud cair manakah yang menerangkan peristiwa tersebut?", a: ["Volume air bertambah karena wadah termos besar", "Volume tetap tetapi bentuk berubah karena partikel cair dapat bergeser bebas terbatas", "Bentuk tetap tetapi volume berubah", "Partikel air membeku membentuk termos"], c: 1 },
-            { q: "Saat upacara bendera di lapangan sekolah yang terik, Budi merasakan kulit wajahnya diterpa hembusan angin sejuk. Berdasarkan model partikel gas, hembusan angin yang dirasakan kulit Budi sebenarnya merupakan...", a: ["Partikel gas udara yang bergerak acak dan sangat cepat menumbuk kulit wajah", "Cairan embun yang menguap di pipi", "Benda padat yang menabrak wajah", "Sinar matahari yang memantul"], c: 0 },
-            { q: "Ani melakukan dua percobaan difusi: (1) meneteskan pewarna makanan ke dalam segelas air, dan (2) menyemprotkan pengharum ruangan di udara kelas. Percobaan manakah yang penyebaran partikelnya paling cepat merata, dan apa alasannya?", a: ["Percobaan 1, karena partikel air sangat rapat", "Percobaan 2, karena partikel gas bergerak lebih cepat and jarak antarpartikelnya sangat renggang", "Sama cepatnya karena keduanya zat cair", "Tidak ada yang menyebar"], c: 1 },
-            { q: "Roni memindahkan sesendok gula pasir dari toples silinder ke mangkok persegi. Sekumpulan gula pasir tersebut terlihat berubah mengikuti bentuk mangkok. Apakah butiran gula pasir termasuk zat cair?", a: ["Ya, karena bentuk sekumpulan gula pasir mengikuti mangkok", "Tidak, gula pasir tetap zat padat karena wujud setiap butiran individu gula pasir tidak berubah bentuk", "Ya, karena gula pasir mudah larut dalam air hangat", "Gula pasir adalah zat gas yang memadat"], c: 1 },
-            { q: "Di perpustakaan sekolah, Ani membaca buku fakta sains bahwa gajah Afrika memiliki indera penciuman tertajam di dunia. Berapakah jumlah gen pembau yang dimiliki gajah Afrika tersebut?", a: ["350 gen", "1100 gen", "2000 gen", "5 juta gen"], c: 2 },
-            { q: "Polisi melatih anjing pelacak K9 untuk membantu mendeteksi barang terlarang. Dibandingkan manusia yang memiliki 5 juta sel reseptor pembau, anjing K9 memiliki sel pembau sebanyak...", a: ["220 juta sel reseptor", "2000 sel reseptor", "1100 sel reseptor", "350 juta sel reseptor"], c: 0 },
-            { q: "Budi mencium aroma masakan kantin saat berada di ruang kelas. Jalur perambatan bau gas tersebut di dalam hidung Budi yang benar adalah...", a: ["Rongga hidung -> Silia -> Saraf pembau -> Otak", "Otak -> Saraf -> Rongga hidung", "Silia -> Rongga hidung -> Otak", "Saraf -> Silia -> Otak"], c: 0 },
-            { q: "Saat piston suntikan yang ditutup ujungnya berisi udara ditekan, piston dapat masuk sangat dalam. Namun, saat berisi pasir, piston tidak dapat bergerak. Kesimpulan numerasi kompresibilitas yang tepat adalah...", a: ["Gas paling mudah ditekan karena memiliki jarak antarpartikel yang sangat renggang", "Padat mudah ditekan karena keras", "Cair lebih mudah ditekan daripada gas", "Pasir berubah menjadi gas saat ditekan"], c: 0 },
-            { q: "Di bawah mikroskop sekolah, partikel di dalam sebongkah es batu (zat padat) terlihat selalu bergerak. Jenis pergerakan partikel zat padat tersebut adalah...", a: ["Terbang bebas ke segala arah mengisi ruang", "Hanya bergetar di tempatnya karena terikat sangat kuat", "Mengalir dan saling bertabrakan bebas", "Menguap hilang perlahan"], c: 1 }
-        ],
+        posttest: [],
         latihan: [
             { q: "Budi memiliki kubus besi bermassa 2 kg and volume 0,001 m³. Jika kubus tersebut diletakkan di lantai kelas atau dimasukkan ke dalam ember kosong, volume kubus besi tersebut tetap 0,001 m³. Mengapa zat padat mempertahankan volumenya?", a: ["Partikel zat padat bebas mengalir keluar wadah", "Partikel zat padat tersusun sangat rapat and teratur dengan gaya tarik kuat", "Partikel zat padat menyusut", "Kubus besi mencair di lantai"], c: 1 },
             { q: "Guru IPA membagikan data hasil percobaan menekan suntikan berisi udara, air, dan pasir. Hasilnya: udara dapat ditekan 8 ml, air ditekan 0,5 ml, pasir ditekan 0 ml. Berdasarkan data numerasi ini, wujud zat manakah yang kompresibilitasnya paling tinggi?", a: ["Pasir (Padat)", "Air (Cair)", "Udara (Gas)", "Semua sama"], c: 2 },
@@ -202,24 +286,108 @@ const meetingsConfig = {
         badgeName: "Master Perubahan & Suhu Zat",
         badgeEmoji: "🔥",
         pretest: [
-            { q: "Kapur barus di dalam lemari baju perlahan berkurang ukurannya and tercium bau harum tanpa mencair terlebih dahulu. Perubahan wujud apakah yang terjadi?", a: ["Menguap", "Menyublim", "Mengkristal", "Membeku"], c: 1 },
-            { q: "Budi memanaskan mentega padat di wajan. Apa yang terjadi pada partikel zat ketika mentega berubah dari padat menjadi cair?", a: ["Partikel merapat and diam", "Partikel menyerap energi panas untuk melonggarkan ikatan antarpartikel", "Partikel lenyap terbakar", "Partikel memadat keras"], c: 1 },
-            { q: "Suhu ketika suatu zat padat mulai meleleh berubah wujud menjadi zat cair pada tekanan normal disebut...", a: ["Titik didih", "Titik leleh", "Titik beku", "Suhu mutlak"], c: 1 },
-            { q: "Berapakah suhu mendidihnya air murni pada tekanan udara standar (1 atm)?", a: ["0°C", "80°C", "100°C", "150°C"], c: 2 },
-            { q: "Saat air sedang mendidih di panci, mengapa suhunya tertahan konstan meskipun api kompor terus memberikan panas?", a: ["Energi panas dari api padam", "Energi panas digunakan khusus untuk memutus/melemahkan ikatan antarpartikel air, bukan menaikkan suhu", "Termometernya rusak", "Suhu udara ruangan mendinginkannya"], c: 1 }
+            {
+                q: "Es batu diletakkan di atas meja. Setelah beberapa saat, es berubah menjadi air. Jika air tersebut terus dibiarkan, lama-kelamaan jumlahnya berkurang.\n\nPerubahan yang terjadi secara berurutan adalah ....",
+                a: [
+                    "membeku kemudian mengembun",
+                    "mencair kemudian menguap",
+                    "menyublim kemudian mencair",
+                    "menguap kemudian membeku"
+                ],
+                c: 1
+            },
+            {
+                q: "Saat memasak air, seorang siswa melihat adanya titik-titik air pada bagian bawah tutup panci. Ia menyimpulkan bahwa air dari panci berubah menjadi air baru pada tutup panci.\n\nAnalisis yang paling tepat terhadap kesimpulan tersebut adalah ....",
+                a: [
+                    "benar, karena air dapat terbentuk dari tutup panci",
+                    "benar, karena air pada panci hilang",
+                    "kurang tepat, karena uap air mengalami pendinginan dan mengembun menjadi titik-titik air",
+                    "salah, karena air tidak dapat berubah menjadi gas"
+                ],
+                c: 2
+            },
+            {
+                q: "Pada pagi hari, bagian luar gelas yang berisi es menjadi basah. Seorang siswa mengatakan bahwa air tersebut berasal dari es yang merembes melalui dinding gelas.\n\nBerdasarkan konsep perubahan wujud, pernyataan yang lebih tepat adalah ....",
+                a: [
+                    "air berasal dari uap air di udara yang mengalami pengembunan",
+                    "air berasal dari es yang menembus dinding gelas",
+                    "air berasal dari gelas yang mencair",
+                    "air terbentuk karena udara berubah menjadi es"
+                ],
+                c: 0
+            },
+            {
+                q: "Pakaian yang dijemur di bawah sinar matahari biasanya lebih cepat kering dibandingkan pakaian yang dijemur di tempat teduh.\n\nFaktor yang paling berpengaruh terhadap peristiwa tersebut adalah ....",
+                a: [
+                    "cahaya matahari mengubah air menjadi zat lain",
+                    "peningkatan suhu mempercepat penguapan air",
+                    "pakaian di bawah matahari memiliki massa lebih kecil",
+                    "air hanya dapat menguap jika terkena cahaya"
+                ],
+                c: 1
+            },
+            {
+                q: "Seorang siswa ingin mempercepat proses pengeringan pakaian basah. Ia memiliki tiga pilihan:\n\n1) melipat pakaian menjadi lebih kecil,\n2) membentangkan pakaian,\n3) menyimpan pakaian dalam lemari tertutup.\n\nPilihan yang paling efektif adalah ....",
+                a: [
+                    "1, karena air terperangkap di dalam pakaian",
+                    "2, karena memperluas permukaan yang terkena udara",
+                    "3, karena udara dalam lemari mempercepat penguapan",
+                    "semua sama efektif"
+                ],
+                c: 1
+            },
+            {
+                q: "Kamper yang diletakkan di dalam lemari lama-kelamaan semakin kecil hingga habis tanpa terlihat menjadi cair terlebih dahulu.\n\nPerubahan wujud yang terjadi adalah ....",
+                a: [
+                    "mencair",
+                    "menguap",
+                    "menyublim",
+                    "mengembun"
+                ],
+                c: 2
+            },
+            {
+                q: "Di daerah pegunungan, seseorang dapat melihat embun pada daun pada pagi hari. Pada malam sebelumnya, udara menjadi semakin dingin.\n\nHubungan yang paling tepat antara suhu and pembentukan embun adalah ....",
+                a: [
+                    "udara yang mendingin menyebabkan uap air kehilangan energi dan mengembun",
+                    "udara yang mendingin menyebabkan air menguap lebih cepat",
+                    "daun menghasilkan air ketika suhu turun",
+                    "uap air berubah langsung menjadi es pada semua kondisi"
+                ],
+                c: 0
+            },
+            {
+                q: "Seorang siswa memasukkan air ke dalam freezer. Beberapa jam kemudian, air berubah menjadi es.\n\nJika proses tersebut ditinjau berdasarkan gerak partikel, maka ....",
+                a: [
+                    "partikel air memperoleh energi sehingga bergerak semakin bebas",
+                    "partikel air kehilangan energi sehingga geraknya menjadi lebih terbatas",
+                    "partikel air berubah menjadi partikel baru",
+                    "jumlah partikel air bertambah"
+                ],
+                c: 1
+            },
+            {
+                q: "Pada pembuatan garam, air laut dibiarkan di tambak hingga sebagian besar airnya hilang dan tersisa kristal garam.\n\nPerubahan wujud yang paling berperan dalam proses tersebut adalah ....",
+                a: [
+                    "pembekuan",
+                    "pengembunan",
+                    "penguapan",
+                    "penyubliman"
+                ],
+                c: 2
+            },
+            {
+                q: "Dua es batu memiliki ukuran sama. Es A diletakkan di ruangan bersuhu 30°C, sedangkan Es B diletakkan di ruangan bersuhu 15°C. Es A mencair lebih cepat.\n\nKesimpulan yang paling tepat adalah ....",
+                a: [
+                    "suhu lingkungan yang lebih tinggi meningkatkan perpindahan energi ke es",
+                    "es A memiliki partikel yang lebih sedikit",
+                    "suhu tidak memengaruhi pencairan",
+                    "es B memiliki massa yang selalu lebih besar"
+                ],
+                c: 0
+            }
         ],
-        posttest: [
-            { q: "Panitia pentas seni sekolah menggunakan es kering (dry ice) padat untuk menciptakan asap di panggung. Perubahan wujud es kering ini adalah...", a: ["Mencair", "Menyublim (padat langsung menjadi gas)", "Mengkristal", "Mengembun"], c: 1 },
-            { q: "Es mencair pada suhu 0°C dan emas meleleh pada suhu 1064°C. Hal ini membuktikan bahwa...", a: ["Semua materi padat meleleh pada suhu yang sama", "Titik leleh setiap materi berbeda-beda dan dapat dijadikan penanda zat", "Emas lebih mudah mencair daripada es", "Es batu tidak memiliki titik leleh"], c: 1 },
-            { q: "Berdasarkan Grafik Pemanasan Air 2.13 di buku, pada suhu berapakah es mulai mengalami proses meleleh menjadi cair?", a: ["-20°C", "0°C (garis mendatar pertama)", "100°C", "120°C"], c: 1 },
-            { q: "Buku Halaman 55 membedakan menguap dengan mendidih. Manakah pernyataan yang benar mengenai penguapan?", a: ["Menguap terjadi di seluruh bagian air secara mendadak", "Menguap hanya terjadi di permukaan cairan and di bawah titik didihnya", "Menguap memerlukan suhu di atas 100°C", "Menguap menghasilkan endapan padat"], c: 1 },
-            { q: "Tetesan lilin cair yang jatuh di kertas karton perlahan mengeras menjadi padat kembali. Proses melepaskan panas ini disebut...", a: ["Membeku", "Mencair", "Mengembun", "Menyublim"], c: 0 },
-            { q: "Zat cair yang mendidih suhunya akan tetap konstan sampai semua zat berubah menjadi gas.", a: ["Benar", "Salah"], c: 0 },
-            { q: "Zat padat yang dipanaskan akan bergerak melambat karena ikatan partikelnya menguat.", a: ["Benar", "Salah"], c: 1 },
-            { q: "Berdasarkan data Tabel 2.2, wujud aluminium pada suhu 700°C adalah cair (titik leleh aluminium = 660°C).", a: ["Benar", "Salah"], c: 0 },
-            { q: "Saat mengembun, uap air gas melepaskan energi panas dan berubah wujud menjadi cair.", a: ["Benar", "Salah"], c: 0 },
-            { q: "Besi memiliki titik leleh 1535°C, sehingga besi berbentuk cair pada suhu 1000°C.", a: ["Benar", "Salah"], c: 1 }
-        ],
+        posttest: [],
         latihan: [
             { q: "Mengapa pakaian basah yang dijemur di bawah terik matahari dapat mengering?", a: ["Air meresap masuk serat kain lalu hilang", "Air di kain menyerap panas matahari lalu menguap menjadi gas uap air", "Air membeku jadi es padat", "Serat kain memakan partikel air"], c: 1 },
             { q: "Kapur barus menyublim karena menyerap energi panas dari udara sekitar.", a: ["Benar", "Salah"], c: 0 },
@@ -238,24 +406,108 @@ const meetingsConfig = {
         badgeName: "Ahli Perubahan Zat",
         badgeEmoji: "💧",
         pretest: [
-            { q: "Rudi menyobek selembar kertas bekas menjadi potongan-potongan kecil. Perubahan ini tergolong ke dalam...", a: ["Perubahan fisika", "Perubahan kimia", "Reaksi biologis", "Perubahan energi"], c: 0 },
-            { q: "Rudi kemudian membakar potongan kertas tadi dengan api hingga menjadi tumpukan abu hitam. Perubahan ini tergolong...", a: ["Perubahan fisika", "Perubahan kimia (reaksi kimia)", "Perubahan reversible", "Mekanik"], c: 1 },
-            { q: "Ibu melarutkan sesendok gula pasir ke dalam secangkir air teh hangat. Perubahan melarutkan gula ini termasuk...", a: ["Perubahan kimia karena timbul warna baru", "Perubahan fisika karena tidak terbentuk zat baru", "Biologi", "Membeku"], c: 1 },
-            { q: "Dalam reaksi kimia, zat mula-mula yang bereaksi disebut pereaksi, sedangkan zat baru yang dihasilkan disebut...", a: ["Katalis", "Produk / Hasil Reaksi", "Pelarut", "Indikator"], c: 1 },
-            { q: "Uap air di atmosfer bumi mengalami pendinginan hingga membentuk awan. Tahap siklus air ini disebut...", a: ["Evaporasi", "Kondensasi", "Presipitasi", "Infiltrasi"], c: 1 }
+            {
+                q: "Perhatikan beberapa peristiwa berikut.\n\n1) Kertas dipotong menjadi beberapa bagian.\n2) Kayu dibakar menjadi abu.\n3) Es mencair menjadi air.\n4) Besi berkarat.\n\nPeristiwa yang menunjukkan perubahan kimia adalah ....",
+                a: [
+                    "1 dan 3",
+                    "2 dan 4",
+                    "1 dan 2",
+                    "3 dan 4"
+                ],
+                c: 1
+            },
+            {
+                q: "Siti mencampurkan gula ke dalam air hingga gula tidak terlihat. Ia mengatakan bahwa gula telah mengalami perubahan kimia karena bentuk gula berubah.\n\nPenilaian yang paling tepat terhadap pernyataan Siti adalah ....",
+                a: [
+                    "benar, karena gula tidak dapat dipisahkan lagi",
+                    "benar, karena gula menghasilkan zat baru",
+                    "kurang tepat, karena gula larut dan masih dapat diperoleh kembali melalui penguapan air",
+                    "salah, karena gula tidak mengalami perubahan apa pun"
+                ],
+                c: 2
+            },
+            {
+                q: "Sebuah apel yang telah dipotong dibiarkan di udara terbuka. Beberapa waktu kemudian, permukaan apel berubah menjadi kecokelatan.\n\nPeristiwa tersebut lebih tepat dikategorikan sebagai perubahan kimia karena ....",
+                a: [
+                    "ukuran apel berubah",
+                    "terbentuk sifat atau zat baru akibat reaksi dengan oksigen",
+                    "apel kehilangan air",
+                    "apel menjadi lebih dingin"
+                ],
+                c: 1
+            },
+            {
+                q: "Seorang siswa membakar selembar kertas. Setelah terbakar, tersisa abu dan asap. Ketika abu tersebut dicampur dengan air, kertas tidak dapat kembali seperti semula.\n\nBerdasarkan ciri tersebut, pembakaran kertas merupakan ....",
+                a: [
+                    "perubahan fisika karena hanya mengubah bentuk",
+                    "perubahan fisika karena kertas tetap menjadi kertas",
+                    "perubahan kimia karena menghasilkan zat baru dan sulit dikembalikan",
+                    "perubahan wujud karena kertas berubah menjadi gas"
+                ],
+                c: 2
+            },
+            {
+                q: "Perhatikan kegiatan berikut:\n\nA: lilin dipotong menjadi beberapa bagian\nB: lilin dinyalakan hingga terbakar\nC: es batu dibiarkan mencair\nD: air dibekukan menjadi es\n\nKegiatan yang menghasilkan zat baru adalah ....",
+                a: [
+                    "A dan C",
+                    "B saja",
+                    "B dan D",
+                    "A, C, dan D"
+                ],
+                c: 1
+            },
+            {
+                q: "Ketika cuka dicampurkan dengan soda kue, muncul banyak gelembung gas. Suhu campuran juga mengalami perubahan.\n\nBerdasarkan pengamatan tersebut, alasan paling kuat bahwa terjadi perubahan kimia adalah ....",
+                a: [
+                    "kedua zat bercampur",
+                    "volume campuran berubah",
+                    "terbentuk gas dan terjadi perubahan energi yang menunjukkan terbentuknya zat baru",
+                    "warna wadah berubah"
+                ],
+                c: 2
+            },
+            {
+                q: "Seorang siswa mengamati proses berikut:\n\nAir laut → menguap → awan → hujan → sungai → laut\n\nJika suhu lingkungan meningkat secara signifikan, perubahan yang paling mungkin terjadi pada bagian awal siklus tersebut adalah ....",
+                a: [
+                    "penguapan air cenderung meningkat",
+                    "air laut langsung membeku",
+                    "pembentukan awan berhenti sepenuhnya",
+                    "air hujan tidak dapat kembali ke laut"
+                ],
+                c: 0
+            },
+            {
+                q: "Hujan turun di daerah pegunungan. Sebagian air mengalir melalui sungai menuju laut, sedangkan sebagian lainnya meresap ke dalam tanah.\n\nPeristiwa tersebut menunjukkan bahwa ....",
+                a: [
+                    "semua air hujan langsung menguap",
+                    "air hanya bergerak melalui sungai",
+                    "air dapat berpindah melalui berbagai proses dalam siklus air",
+                    "air tanah tidak berhubungan dengan siklus air"
+                ],
+                c: 2
+            },
+            {
+                q: "Pembangunan gedung dan jalan beton di kota menyebabkan semakin sedikit tanah yang dapat menyerap air hujan. Saat hujan deras, wilayah tersebut lebih mudah mengalami banjir.\n\nHubungan yang paling tepat dengan siklus air adalah ....",
+                a: [
+                    "permukaan kedap air mengurangi infiltrasi sehingga lebih banyak air menjadi aliran permukaan",
+                    "beton meningkatkan infiltrasi air ke tanah",
+                    "pembangunan gedung menghentikan proses evaporasi",
+                    "beton menyebabkan semua air hujan langsung menguap"
+                ],
+                c: 0
+            },
+            {
+                q: "Sebuah daerah mengalami penebangan hutan secara besar-besaran. Beberapa tahun kemudian, masyarakat mengamati bahwa saat hujan deras, banjir lebih mudah terjadi dan setelah hujan tanah menjadi lebih cepat kering.\n\nKesimpulan yang paling logis adalah ....",
+                a: [
+                    "pohon tidak memiliki hubungan dengan siklus air",
+                    "berkurangnya vegetasi dapat mengurangi penyerapan air ke tanah dan memengaruhi keseimbangan air di lingkungan",
+                    "pohon menyebabkan semua air hujan tertahan di daun",
+                    "penebangan hutan menghentikan siklus air secara keseluruhan"
+                ],
+                c: 1
+            }
         ],
-        posttest: [
-            { q: "Pada peristiwa menyobek kertas (perubahan fisika), bagaimanakah komposisi zat sebelum dan sesudah disobek?", a: ["Terbentuk zat jenis baru", "Komposisi zat sebelum dan sesudah perubahan adalah tetap sama (kertas)", "Kertas berubah menjadi abu", "Kertas berubah menjadi energi panas"], c: 1 },
-            { q: "Manakah di antara ciri berikut yang membedakan perubahan fisika dengan perubahan kimia?", a: ["Timbul gas berbau menyengat", "Terbentuk endapan putih di bawah tabung", "Perubahan fisika umumnya bersifat dapat kembali ke bentuk semula (reversible)", "Suhu zat menjadi sangat panas"], c: 2 },
-            { q: "Pembuatan tape singkong melalui fermentasi menghasilkan alkohol and gas karbon dioksida. Perubahan ini adalah...", a: ["Perubahan fisika", "Perubahan kimia (reaksi kimia)", "Perubahan mekanis", "Siklus air"], c: 1 },
-            { q: "Persamaan reaksi kata yang menggambarkan pembuatan donat yang benar adalah...", a: ["Donat -> Tepung + mentega + telur", "Tepung + mentega + telur + gula -> Donat", "Tepung + donat -> telur + gula", "Mentega + telur -> gula + tepung"], c: 1 },
-            { q: "Logam magnesium dimasukkan ke dalam larutan asam klorida bening. Terlihat gelembung gas muncul melimpah. Tanda reaksi kimia ini adalah...", a: ["Terbentuk endapan kuning", "Terbentuk gas", "Warna larutan memadat", "Cahaya menyala terang"], c: 1 },
-            { q: "Larutan natrium karbonat direaksikan dengan kalsium klorida menghasilkan kalsium karbonat putih. Padatan tidak larut di dasar tabung ini disebut...", a: ["Gas", "Endapan", "Cairan", "Pelarut"], c: 1 },
-            { q: "Pembakaran logam magnesium menghasilkan kilatan cahaya putih yang sangat terang dan panas. Tanda reaksi kimia ini adalah...", a: ["Perubahan energi berupa cahaya dan panas", "Terbentuknya es dingin", "Larutan menguap habis", "Terbentuk gelembung gas hidrogen"], c: 0 },
-            { q: "Saat kita mengunyah nasi, gigi kita memecah nasi (1) dan air liur mengurai karbohidrat nasi menjadi zat gula manis (2). Secara berurutan, proses (1) dan (2) adalah...", a: ["Fisika lalu Kimia", "Kimia lalu Fisika", "Keduanya Perubahan Fisika", "Keduanya Perubahan Kimia"], c: 0 },
-            { q: "Uap air di atmosfer mendingin membentuk awan kumpulan titik air. Tahap siklus air ini disebut...", a: ["Evaporasi", "Kondensasi (Pengembunan)", "Presipitasi", "Infiltrasi"], c: 1 },
-            { q: "Air hujan yang jatuh meresap ke dalam pori-pori tanah diserap oleh akar tumbuhan. Tahapan ini disebut...", a: ["Evaporasi", "Kondensasi", "Infiltrasi", "Limpasan (runoff)"], c: 2 }
-        ],
+        posttest: [],
         latihan: [
             { q: "Kelompok peristiwa manakah yang semuanya tergolong perubahan kimia?", a: ["Beras ditumbuk menjadi tepung terigu, es mencair", "Gula dilarutkan ke dalam teh, air menguap", "Menyalakan kembang api, besi berkarat, and pembusukan nasi", "Kaca jendela pecah, lilin meleleh"], c: 2 },
             { q: "Paku besi berkarat di udara lembap menghasilkan karat besi. Karat besi termasuk perubahan kimia karena...", a: ["Besi mengecil ukurannya", "Terbentuk zat baru karat besi yang berbeda sifatnya dengan besi semula", "Besi mencair menjadi air", "Hanya bentuk luarnya saja yang berubah"], c: 1 },
@@ -274,24 +526,108 @@ const meetingsConfig = {
         badgeName: "Ahli Kerapatan & Archimedes",
         badgeEmoji: "🏆",
         pretest: [
-            { q: "Apabila batu bata jatuh mengenai kaki terasa sakit, namun bila air dalam volume yang sama mengenai kakimu tidak sakit. Mengapa?", a: ["Air tidak memiliki berat", "Partikel pada zat padat (batu bata) tersusun lebih rapat dibanding zat cair", "Air merambat sangat lambat", "Partikel air berikatan sangat kuat"], c: 1 },
-            { q: "Konsep yang membedakan keadaan partikel-partikel dalam hal kerapatannya dalam suatu materi disebut...", a: ["Kekerasan", "Kerapatan atau Massa Jenis", "Daya hantar listrik", "Suhu zat"], c: 1 },
-            { q: "Massa jenis didefinisikan sebagai...", a: ["Perbandingan massa benda terhadap volumenya", "Panjang dikali lebar dikali tinggi", "Berat total benda dalam air", "Jumlah gelembung gas"], c: 0 },
-            { q: "Sebuah balok memiliki massa 120 gram. Dimensi balok tersebut adalah 6 cm x 4 cm x 5 cm (Volume = 120 cm³). Berapakah massa jenis balok tersebut?", a: ["1 g/cm³", "2 g/cm³", "10 g/cm³", "120 g/cm³"], c: 0 },
-            { q: "Benda yang memiliki massa jenis kurang dari massa jenis cairan di sekelilingnya akan...", a: ["Tenggelam", "Mengapung", "Melarut", "Menguap"], c: 1 }
+            {
+                q: "Dua benda memiliki ukuran yang sama. Benda A memiliki massa 80 gram, sedangkan benda B memiliki massa 120 gram.\n\nBerdasarkan informasi tersebut, pernyataan yang paling tepat adalah ....",
+                a: [
+                    "benda A memiliki kerapatan lebih besar karena massanya lebih kecil",
+                    "benda B memiliki kerapatan lebih besar karena massanya lebih besar pada volume yang sama",
+                    "kedua benda memiliki kerapatan yang sama karena ukurannya sama",
+                    "kerapatan tidak dipengaruhi oleh massa"
+                ],
+                c: 1
+            },
+            {
+                q: "Sebuah benda memiliki massa 240 gram and volume 80 cm³. Benda tersebut dimasukkan ke dalam cairan yang memiliki massa jenis 2 g/cm³.\n\nApa yang kemungkinan terjadi?",
+                a: [
+                    "benda mengapung karena massa jenis benda lebih kecil daripada cairan",
+                    "benda melayang karena massa jenis benda sama dengan cairan",
+                    "benda tenggelam karena massa jenis benda lebih besar daripada cairan",
+                    "benda tidak dapat dimasukkan ke dalam cairan"
+                ],
+                c: 2
+            },
+            {
+                q: "Perhatikan data berikut.\n\nBenda | Massa | Volume\nP | 100 g | 50 cm³\nQ | 120 g | 80 cm³\nR | 150 g | 100 cm³\nS | 200 g | 50 cm³\n\nBenda yang memiliki kerapatan paling besar adalah ....",
+                a: [
+                    "P",
+                    "Q",
+                    "R",
+                    "S"
+                ],
+                c: 3
+            },
+            {
+                q: "Dina memiliki sebuah balok kayu. Ketika balok tersebut dimasukkan ke dalam air, balok mengapung dengan sebagian volumenya berada di atas permukaan air.\n\nKesimpulan yang paling tepat adalah ....",
+                a: [
+                    "massa jenis kayu lebih besar daripada air",
+                    "massa jenis kayu sama dengan air",
+                    "massa jenis rata-rata kayu lebih kecil daripada air",
+                    "kayu tidak memiliki massa jenis"
+                ],
+                c: 2
+            },
+            {
+                q: "Seorang siswa mengukur massa dan volume sebuah batu.\n\nMassa batu = 150 gram\nVolume awal air = 50 mL\nVolume air setelah batu dimasukkan = 110 mL\n\nBerdasarkan data tersebut, massa jenis batu adalah ....",
+                a: [
+                    "1,5 g/cm³",
+                    "2,0 g/cm³",
+                    "2,5 g/cm³",
+                    "3,0 g/cm³"
+                ],
+                c: 2
+            },
+            {
+                q: "Empat benda memiliki data sebagai berikut.\n\nBenda | Massa Jenis\nA | 0,6 g/cm³\nB | 0,9 g/cm³\nC | 1,0 g/cm³\nD | 1,2 g/cm³\n\nKeempat benda dimasukkan ke dalam air dengan massa jenis 1 g/cm³. Prediksi yang paling tepat adalah ....",
+                a: [
+                    "A dan B mengapung, C melayang, D tenggelam",
+                    "A tenggelam, B mengapung, C melayang, D mengapung",
+                    "A, B, dan C mengapung, D melayang",
+                    "hanya A yang mengapung"
+                ],
+                c: 0
+            },
+            {
+                q: "Sebuah kapal terbuat dari logam yang massa jenisnya lebih besar daripada air. Namun, kapal tersebut dapat mengapung.\n\nPenjelasan yang paling tepat adalah ....",
+                a: [
+                    "logam kapal tidak memiliki massa",
+                    "kapal mengapung karena air berubah menjadi lebih rapat",
+                    "bentuk kapal membuat volume keseluruhannya besar sehingga massa jenis rata-rata kapal dapat lebih kecil daripada air",
+                    "logam selalu mengapung jika ukurannya besar"
+                ],
+                c: 2
+            },
+            {
+                q: "Seorang siswa memiliki tiga kubus dengan ukuran berbeda yang terbuat dari bahan yang sama.\n\nKubus A memiliki massa 50 g and volume 20 cm³.\nKubus B memiliki massa 100 g and volume 40 cm³.\nKubus C memiliki massa 150 g and volume 60 cm³.\n\nSiswa menyimpulkan bahwa kubus C memiliki kerapatan paling besar karena massanya paling besar.\n\nEvaluasi yang paling tepat terhadap kesimpulan tersebut adalah ....",
+                a: [
+                    "benar, karena kerapatan hanya ditentukan oleh massa",
+                    "benar, karena benda yang lebih berat selalu lebih rapat",
+                    "salah, karena ketiga kubus memiliki perbandingan massa dan volume yang sama sehingga kerapatannya sama",
+                    "salah, karena volume tidak berpengaruh terhadap kerapatan"
+                ],
+                c: 2
+            },
+            {
+                q: "Seorang siswa ingin mengetahui apakah sebuah benda terbuat dari aluminium atau besi. Ia mengukur massa benda sebesar 270 gram dan volumenya 100 cm³.\n\nDiketahui:\n\nmassa jenis aluminium ≈ 2,7 g/cm³\nmassa jenis besi ≈ 7,9 g/cm³\n\nBerdasarkan hasil pengukuran, kesimpulan yang paling tepat adalah ....",
+                a: [
+                    "benda kemungkinan besar terbuat dari aluminium",
+                    "benda kemungkinan besar terbuat dari besi",
+                    "benda pasti terbuat dari besi karena massanya besar",
+                    "benda tidak dapat diketahui jenis bahannya dari massa jenis"
+                ],
+                c: 0
+            },
+            {
+                q: "Dalam percobaan, seorang siswa memasukkan telur ke dalam air biasa dan telur tenggelam. Setelah sejumlah garam dilarutkan ke dalam air, telur perlahan naik hingga akhirnya mengapung.\n\nMengapa peristiwa tersebut terjadi?",
+                a: [
+                    "garam mengurangi massa telur",
+                    "garam mengubah volume telur menjadi lebih besar",
+                    "penambahan garam meningkatkan massa jenis air sehingga massa jenis air menjadi lebih besar daripada massa jenis telur",
+                    "garam menyebabkan telur kehilangan massa"
+                ],
+                c: 2
+            }
         ],
-        posttest: [
-            { q: "Walaupun emas dan es batu sama-sama zat padat, keduanya memiliki kerapatan partikel yang berbeda. Massa jenis suatu zat yang sama akan...", a: ["Berubah jika ukurannya dipotong kecil", "Tetap sama walaupun ukurannya berbeda", "Selalu sama untuk semua zat padat", "Lebih kecil di air hangat"], c: 1 },
-            { q: "Bandingkan 1 kg besi dengan 1 kg kapas. Manakah pernyataan yang benar?", a: ["1 kg besi lebih berat daripada 1 kg kapas", "Volume kapas jauh lebih besar daripada besi karena kerapatan kapas lebih rendah", "Volume besi lebih besar daripada kapas", "Kerapatan kapas sama dengan besi"], c: 1 },
-            { q: "Seorang ilmuwan jenius Archimedes menyelidiki kemurnian mahkota emas milik raja bernama Hiero dengan prinsip...", a: ["Menimbang massa mahkota menggunakan neraca magnet", "Mengukur volume air yang tumpah saat mahkota dimasukkan ke wadah air penuh", "Membakar mahkota hingga meleleh", "Mengukur kadar garam air"], c: 1 },
-            { q: "Di laboratorium, bagaimana cara yang tepat untuk menentukan volume benda yang bentuknya tidak beraturan seperti batu?", a: ["Memukulnya hingga hancur berkeping-keping", "Menggunakan gelas berpancur atau gelas ukur untuk menghitung selisih volume air", "Mengukurnya dengan penggaris biasa", "Menimbang massanya saja"], c: 1 },
-            { q: "Massa jenis air Laut Mati sangat tinggi (1,24 g/cm³) karena kandungan garamnya. Mengapa manusia mengapung santai di Laut Mati?", a: ["Keanapa air Laut Mati sangat dingin", "Karena massa jenis tubuh manusia (0,985 g/cm³) lebih kecil dari air Laut Mati", "Karena tubuh manusia tidak memiliki volume", "Karena air Laut Mati melarutkan tubuh manusia"], c: 1 },
-            { q: "Archimedes berteriak 'EUREKA!' yang berarti 'Saya telah menemukannya' setelah menemukan konsep massa jenis saat mandi.", a: ["Benar", "Salah"], c: 0 },
-            { q: "Massa jenis termasuk dalam besaran pokok dalam fisika.", a: ["Benar", "Salah"], c: 1 },
-            { q: "Benda tenggelam jika massa jenis benda lebih besar daripada massa jenis cairan di sekelilingnya.", a: ["Benar", "Salah"], c: 0 },
-            { q: "Es batu mengapung di air karena massa jenis es batu lebih kecil dari massa jenis air.", a: ["Benar", "Salah"], c: 0 },
-            { q: "Balon helium terbang melayang di udara karena gas helium memiliki kerapatan yang lebih tinggi dari udara sekitar.", a: ["Benar", "Salah"], c: 1 }
-        ],
+        posttest: [],
         latihan: [
             { q: "Berdasarkan Tabel 2.4 di buku, logam manakah yang paling rapat (massa jenis terbesar) di antara Aluminium, Besi, Kuningan, dan Emas?", a: ["Aluminium (2.7 g/cm³)", "Besi (7.9 g/cm³)", "Kuningan (8.4 g/cm³)", "Emas (19.3 g/cm³)"], c: 3 },
             { q: "Sebuah balok memiliki massa 240 gram dan volume 120 cm³. Massa jenis balok tersebut adalah...", a: ["0.5 g/cm³", "2 g/cm³ (diperoleh dari 240 g / 120 cm³)", "120 g/cm³", "360 g/cm³"], c: 1 },
@@ -306,6 +642,11 @@ const meetingsConfig = {
         ]
     }
 };
+
+meetingsConfig.p1.posttest = meetingsConfig.p1.pretest;
+meetingsConfig.p2.posttest = meetingsConfig.p2.pretest;
+meetingsConfig.p3.posttest = meetingsConfig.p3.pretest;
+meetingsConfig.p4.posttest = meetingsConfig.p4.pretest;
 
 // --- DATA SLIDES DECK GURU (CANVA-STYLE CAROUSEL) ---
 const teacherSlidesDeck = {
@@ -1426,7 +1767,7 @@ function showPretestQuestion(card, btnNext) {
     const list = meetingsConfig[activeMeeting].pretest;
     const item = list[currentPretestIdx];
     
-    setAvatar("thinking", `Pertanyaan ${currentPretestIdx + 1} dari 5. Pilih jawaban terbaikmu!`);
+    setAvatar("thinking", `Pertanyaan ${currentPretestIdx + 1} dari ${list.length}. Pilih jawaban terbaikmu!`);
 
     let optionsHtml = item.a.map((ans, idx) => `
         <button class="quiz-btn" style="text-align:left; padding:12px 18px;" onclick="selectPretest(${idx})">
@@ -1435,7 +1776,7 @@ function showPretestQuestion(card, btnNext) {
     `).join("");
 
     card.innerHTML = `
-        <div class="test-quiz-progress">Tantangan Pretest: Soal ${currentPretestIdx + 1}/5</div>
+        <div class="test-quiz-progress">Tantangan Pretest: Soal ${currentPretestIdx + 1}/${list.length}</div>
         <div class="question-text">${item.q}</div>
         <div style="display:flex; flex-direction:column; gap:10px;">
             ${optionsHtml}
@@ -1459,7 +1800,7 @@ function selectPretest(idx) {
     const correctChar = String.fromCharCode(65 + item.c);
     pretestAnalysis.push(`No ${currentPretestIdx + 1}: ${isCorrect ? '✅ Benar' : `❌ Salah (Pilih: ${chosenChar}, Kunci: ${correctChar})`}`);
     
-    if (currentPretestIdx < 4) {
+    if (currentPretestIdx < list.length - 1) {
         currentPretestIdx++;
         showPretestQuestion(document.getElementById("step-card"), document.getElementById("btn-next-step"));
     } else {
