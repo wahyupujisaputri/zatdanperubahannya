@@ -1804,7 +1804,7 @@ function showPretestQuestion(card, btnNext) {
     setAvatar("thinking", `Pertanyaan ${currentPretestIdx + 1} dari ${list.length}. Pilih jawaban terbaikmu!`);
 
     let optionsHtml = item.a.map((ans, idx) => `
-        <button class="quiz-btn" style="text-align:left; padding:12px 18px;" onclick="selectPretest(${idx})">
+        <button class="quiz-btn" style="text-align:left; padding:12px 18px;" id="pretest-opt-${idx}" onclick="selectPretest(${idx})">
             ${String.fromCharCode(65 + idx)}. ${ans}
         </button>
     `).join("");
@@ -1812,54 +1812,110 @@ function showPretestQuestion(card, btnNext) {
     card.innerHTML = `
         <div class="test-quiz-progress">Tantangan Pretest: Soal ${currentPretestIdx + 1}/${list.length}</div>
         <div class="question-text">${item.q}</div>
-        <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; flex-direction:column; gap:10px;" id="pretest-choices-box">
             ${optionsHtml}
         </div>
+        <div class="quiz-feedback hidden" id="pretest-feedback-box" style="margin-top:15px; padding:15px; border-radius:16px; font-weight:700;"></div>
+        <button class="btn-icon hidden" id="btn-next-pretest-question" style="width:100%; margin-top:15px;">Lanjut ➔</button>
     `;
 }
 
 function selectPretest(idx) {
     const list = meetingsConfig[activeMeeting].pretest;
     const item = list[currentPretestIdx];
+    
+    const buttons = document.querySelectorAll("#pretest-choices-box button");
+    buttons.forEach(b => b.disabled = true);
+    
     const isCorrect = (idx === item.c);
     
     if (isCorrect) {
         SoundEffects.playCorrect();
         pretestCorrectCount++;
+        document.getElementById(`pretest-opt-${idx}`).classList.add("correct");
     } else {
         SoundEffects.playWrong();
+        document.getElementById(`pretest-opt-${idx}`).classList.add("wrong");
+        document.getElementById(`pretest-opt-${item.c}`).classList.add("correct");
     }
     
     const chosenChar = String.fromCharCode(65 + idx);
     const correctChar = String.fromCharCode(65 + item.c);
     pretestAnalysis.push(`No ${currentPretestIdx + 1}: ${isCorrect ? '✅ Benar' : `❌ Salah (Pilih: ${chosenChar}, Kunci: ${correctChar})`}`);
     
-    if (currentPretestIdx < list.length - 1) {
-        currentPretestIdx++;
-        showPretestQuestion(document.getElementById("step-card"), document.getElementById("btn-next-step"));
+    const feedbackBox = document.getElementById("pretest-feedback-box");
+    const nextBtn = document.getElementById("btn-next-pretest-question");
+    
+    feedbackBox.classList.remove("hidden");
+    nextBtn.classList.remove("hidden");
+    
+    if (isCorrect) {
+        feedbackBox.className = "quiz-feedback success-msg";
+        feedbackBox.innerHTML = `🎉 <strong>Jawabanmu Benar!</strong>`;
+        feedbackBox.style.background = "#dcfce7";
+        feedbackBox.style.color = "#15803d";
+        feedbackBox.style.border = "2px solid #bbf7d0";
+        setAvatar("celebrate", "Bagus sekali! Jawabanmu tepat.");
     } else {
-        updateStars(15);
-        const pretestTotalQ = list.length;
-        const pretestScoreVal = Math.round((pretestCorrectCount / pretestTotalQ) * 100);
-        sendDataToGoogleSheet({
-            type: "Pretest",
-            score: pretestScoreVal + "/100",
-            details: `Jawaban benar: ${pretestCorrectCount} dari ${pretestTotalQ} soal. Analisis: ${pretestAnalysis.join(", ")}`
-        });
-        document.getElementById("step-card").innerHTML = `
-            <div style="text-align:center; padding: 2rem 0;">
-                <div style="font-size: 5rem; margin-bottom: 1.5rem;">🧠</div>
-                <h3 style="font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 1rem;">Pretest Selesai!</h3>
-                <p style="font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 2rem;">
-                    Bagus sekali! Uji kekuatan awal selesai. Kamu mendapatkan bonus ⭐ 15 Bintang!<br>
-                </p>
-                <button class="btn-icon" id="btn-pretest-finish">Lanjut ke Penyelidikan Awal ➔</button>
-            </div>
-        `;
-        document.getElementById("btn-pretest-finish").addEventListener("click", () => {
-            nextStep();
-        });
+        feedbackBox.className = "quiz-feedback error-msg";
+        feedbackBox.innerHTML = `❌ <strong>Kurang Tepat!</strong> Jawaban yang benar: <strong>${correctChar}. ${item.a[item.c]}</strong>`;
+        feedbackBox.style.background = "#fee2e2";
+        feedbackBox.style.color = "#b91c1c";
+        feedbackBox.style.border = "2px solid #fecaca";
+        setAvatar("sad", "Kurang tepat, tapi tetap semangat belajar!");
     }
+    
+    nextBtn.addEventListener("click", () => {
+        SoundEffects.playClick();
+        if (currentPretestIdx < list.length - 1) {
+            currentPretestIdx++;
+            showPretestQuestion(document.getElementById("step-card"), document.getElementById("btn-next-step"));
+        } else {
+            updateStars(15);
+            const pretestTotalQ = list.length;
+            const pretestScoreVal = Math.round((pretestCorrectCount / pretestTotalQ) * 100);
+            sendDataToGoogleSheet({
+                type: "Pretest",
+                score: pretestScoreVal + "/100",
+                details: `Jawaban benar: ${pretestCorrectCount} dari ${pretestTotalQ} soal. Analisis: ${pretestAnalysis.join(", ")}`
+            });
+            
+            let analysisHtml = pretestAnalysis.map((item, idx) => {
+                const isCorrect = item.includes("✅ Benar");
+                return `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:${isCorrect ? '#f0fdf4' : '#fef2f2'}; border:1px solid ${isCorrect ? '#bbf7d0' : '#fecaca'}; border-radius:10px; font-size:0.95rem; font-weight:700; color:${isCorrect ? '#15803d' : '#b91c1c'};">
+                        <span>Soal No. ${idx + 1}</span>
+                        <span>${isCorrect ? '✅ Benar' : '❌ Salah'}</span>
+                    </div>
+                `;
+            }).join("");
+
+            document.getElementById("step-card").innerHTML = `
+                <div style="text-align:center; padding: 1rem 0; max-height:550px; overflow-y:auto;">
+                    <div style="font-size: 5rem; margin-bottom: 1rem;">🧠</div>
+                    <h3 style="font-size: 1.8rem; font-weight: 900; color: var(--primary); margin-bottom: 0.5rem;">Pretest Selesai!</h3>
+                    <div style="background:var(--primary-light); color:var(--primary); font-size:2rem; font-weight:900; padding:10px 20px; border-radius:15px; display:inline-block; margin-bottom:1.2rem; border:2px solid var(--primary);">
+                        Nilai: ${pretestScoreVal} / 100
+                    </div>
+                    <p style="font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 1.5rem;">
+                        Bagus sekali! Uji kekuatan awal selesai. Kamu mendapatkan bonus ⭐ 15 Bintang!<br>
+                    </p>
+                    
+                    <div style="text-align:left; background:#f8fafc; border:2px solid #e2e8f0; border-radius:20px; padding:15px; margin-bottom:1.5rem; max-height: 250px; overflow-y: auto;">
+                        <h4 style="font-weight:900; color:var(--text); margin-top:0; margin-bottom:10px; font-size:1rem; border-bottom:2px solid #cbd5e1; padding-bottom:5px;">📊 Analisis Jawaban Per Nomor:</h4>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            ${analysisHtml}
+                        </div>
+                    </div>
+                    
+                    <button class="btn-icon" id="btn-pretest-finish" style="width:100%;">Lanjut ke Penyelidikan Awal ➔</button>
+                </div>
+            `;
+            document.getElementById("btn-pretest-finish").addEventListener("click", () => {
+                nextStep();
+            });
+        }
+    });
 }
 
 // 7. Misi Eksplorasi (Sub-wizard - 4 Level)
@@ -5174,13 +5230,27 @@ function showCompetitionPodium() {
     updateStars(starsReward);
     SoundEffects.playFanfare();
     
+    const playerRank = list.findIndex(item => item.isPlayer) + 1;
+    const posttestTotalQ = compQuestionsList.length;
+    const posttestScoreVal = Math.round((posttestCorrectCount / posttestTotalQ) * 100);
+    
+    let analysisHtml = posttestAnalysis.map((item, idx) => {
+        const isCorrect = item.includes("✅ Benar");
+        return `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:${isCorrect ? '#f0fdf4' : '#fef2f2'}; border:1px solid ${isCorrect ? '#bbf7d0' : '#fecaca'}; border-radius:10px; font-size:0.85rem; font-weight:700; color:${isCorrect ? '#15803d' : '#b91c1c'};">
+                <span>Soal No. ${idx + 1}</span>
+                <span>${isCorrect ? '✅ Benar' : '❌ Salah'}</span>
+            </div>
+        `;
+    }).join("");
+
     const card = document.getElementById("step-card");
     card.innerHTML = `
-        <div style="text-align:center;">
+        <div style="text-align:center; max-height:560px; overflow-y:auto; padding: 5px;">
             <h3 style="font-size:2.2rem; font-weight:900; color:var(--secondary); margin-bottom:1rem;">🏆 Hasil Kompetisi Kelas 🏆</h3>
-            <p style="font-size:1.15rem; font-weight:800; color:var(--text-muted);">Selamat! Kamu mendapatkan tambahan ⭐ ${starsReward} Bintang!</p>
+            <p style="font-size:1.15rem; font-weight:800; color:var(--text-muted); margin-bottom:15px;">Selamat! Kamu mendapatkan tambahan ⭐ ${starsReward} Bintang!</p>
             
-            <div class="podium-container">
+            <div class="podium-container" style="margin-bottom:20px;">
                 <div class="podium-step silver">
                     <span class="podium-badge">🥈</span>
                     <span class="podium-name">${p2.name}</span>
@@ -5200,19 +5270,27 @@ function showCompetitionPodium() {
                 </div>
             </div>
             
+            <!-- Analisis Jawaban Posttest -->
+            <div style="background:#f8fafc; border:3px solid #cbd5e1; border-radius:24px; padding:1.2rem; max-width:400px; margin:15px auto; text-align:left; box-sizing:border-box;">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #cbd5e1; padding-bottom:8px; margin-bottom:12px;">
+                    <span style="font-weight:900; font-size:1.05rem; color:var(--primary);">📊 Ujian Posttest Anda:</span>
+                    <span style="font-weight:900; font-size:1.2rem; background:var(--primary); color:white; padding:4px 10px; border-radius:10px;">Nilai: ${posttestScoreVal} / 100</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px; max-height: 150px; overflow-y: auto; padding-right:5px;">
+                    ${analysisHtml}
+                </div>
+            </div>
+
             <div style="background:#f8fafc; border:3px solid #cbd5e1; border-radius:24px; padding:1.5rem; max-width:400px; margin:20px auto;">
                 <p style="font-weight:900; margin-bottom:10px; font-size:1.05rem;">Simpan rekor skormu ke Papan Peringkat Kelas!</p>
                 <input type="text" id="leaderboard-name-input" placeholder="Ketik namamu..." style="width:100%; padding:10px; border:2px solid #cbd5e1; border-radius:12px; font-weight:800; font-family:var(--font); text-align:center; font-size:1.1rem; margin-bottom:12px; outline:none;">
                 <button class="btn-icon" style="width:100%;" id="btn-save-leaderboard-record">Simpan Rekor 🏆</button>
             </div>
             
-            <button class="btn-icon btn-secondary" id="btn-podium-continue">Lanjut Petualangan ➔</button>
+            <button class="btn-icon btn-secondary" id="btn-podium-continue" style="width:100%;">Lanjut Petualangan ➔</button>
         </div>
     `;
     
-    const playerRank = list.findIndex(item => item.isPlayer) + 1;
-    const posttestTotalQ = compQuestionsList.length;
-    const posttestScoreVal = Math.round((posttestCorrectCount / posttestTotalQ) * 100);
     sendDataToGoogleSheet({
         type: "Posttest",
         score: posttestScoreVal + "/100",
