@@ -5813,16 +5813,21 @@ function showFroggyQuestion(target, btnNext) {
     target.innerHTML = `
         <div class="hearts-row">Sisa Nyawa Katak: ${hearts}</div>
         <div class="pond-visual">
-            <!-- 5 Lilypads -->
-            <div class="lilypad-row">
+            <!-- 10 Lilypads -->
+            <div class="lilypad-row" style="gap: 2px;">
                 <div class="lilypad">1</div>
                 <div class="lilypad">2</div>
                 <div class="lilypad">3</div>
                 <div class="lilypad">4</div>
+                <div class="lilypad">5</div>
+                <div class="lilypad">6</div>
+                <div class="lilypad">7</div>
+                <div class="lilypad">8</div>
+                <div class="lilypad">9</div>
                 <div class="lilypad">🏁</div>
             </div>
             <!-- Frog Character -->
-            <div class="frog-char" id="froggy-char" style="left: ${5 + frogPad * 20}%;">🐸</div>
+            <div class="frog-char" id="froggy-char" style="left: ${5 + (frogPad / 9) * 80}%;">🐸</div>
         </div>
         
         <p style="font-weight:800; font-size:1.1rem; margin-bottom:15px; text-align:center;">
@@ -5843,7 +5848,7 @@ function answerFroggy(chosen, correct) {
     if (chosen === correct) {
         SoundEffects.playCorrect();
         frogPad++;
-        if (frogPad === 5) {
+        if (frogPad === 10) {
             updateStars(30);
             sendDataToGoogleSheet({
                 type: "Latihan",
@@ -5857,7 +5862,7 @@ function answerFroggy(chosen, correct) {
                     <p style="font-size:1.2rem; font-weight:800; margin-bottom:1.5rem;">Katak berhasil menyeberangi kolam dengan aman! Kamu memperoleh ⭐ 30 Bintang Latihan!</p>
                 </div>
             `;
-            btnNext.disabled = false;
+            enableNextButton(btnNext);
         } else {
             showFroggyQuestion(target, btnNext);
         }
@@ -5941,6 +5946,7 @@ function answerSnakes(chosen, correct) {
         SoundEffects.playCorrect();
         let dice = 1 + Math.floor(Math.random() * 3); // 1 s.d 3 langkah
         playerTile += dice;
+        if (playerTile > 10) playerTile = 10;
         alert(`Benar! Dadu bergulir: ${dice}. Token melangkah ke petak ${playerTile}.`);
         
         if (playerTile === 3) {
@@ -5950,31 +5956,45 @@ function answerSnakes(chosen, correct) {
             playerTile = 4;
             alert("🐍 Digigit Ular! Turun ke Petak 4.");
         }
-        
+    } else {
+        SoundEffects.playWrong();
+        alert("Jawaban salah! Token tetap diam di tempat.");
+    }
+    
+    snakesQuestionsIdx++;
+    
+    if (snakesQuestionsIdx === 10) {
         if (playerTile >= 10) {
-            playerTile = 10;
             updateStars(30);
             sendDataToGoogleSheet({
                 type: "Latihan",
                 score: "Token Sampai (Menang)",
-                details: "Menyelesaikan game Ular Tangga hingga petak 10"
+                details: "Menyelesaikan game Ular Tangga hingga petak 10 setelah 10 soal"
             });
             target.innerHTML = `
                 <div style="text-align:center; padding: 2rem 0;">
                     <div style="font-size: 5rem;">🎲🎉</div>
                     <h3 style="font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 1rem;">Kamu Menang!</h3>
-                    <p style="font-size:1.2rem; font-weight:800; margin-bottom:1.5rem;">Token berhasil mencapai petak finish ke-10! Dapat ⭐ 30 Bintang!</p>
+                    <p style="font-size:1.2rem; font-weight:800; margin-bottom:1.5rem;">Token berhasil mencapai petak finish ke-10 setelah menjawab 10 soal! Dapat ⭐ 30 Bintang!</p>
                 </div>
             `;
             enableNextButton(btnNext);
         } else {
-            snakesQuestionsIdx = (snakesQuestionsIdx + 1) % 10;
-            showSnakesQuestion(target, btnNext);
+            sendDataToGoogleSheet({
+                type: "Latihan",
+                score: "Belum Sampai (Gagal)",
+                details: `Menyelesaikan 10 soal Ular Tangga namun berakhir di petak ${playerTile}`
+            });
+            target.innerHTML = `
+                <div style="text-align:center; padding: 2rem 0;">
+                    <div style="font-size: 5rem;">😢🎲</div>
+                    <h3 style="font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 1rem;">Belum Mencapai Finish!</h3>
+                    <p style="font-size:1.2rem; font-weight:800; margin-bottom:1.5rem;">Kamu sudah menjawab 10 soal, namun tokenmu berakhir di petak ${playerTile} (belum mencapai finish petak 10).</p>
+                    <button class="btn-icon" onclick="startMeeting('p2')">Ulangi Kuis / Bab</button>
+                </div>
+            `;
         }
     } else {
-        SoundEffects.playWrong();
-        alert("Jawaban salah! Token tetap diam di tempat.");
-        snakesQuestionsIdx = (snakesQuestionsIdx + 1) % 10;
         showSnakesQuestion(target, btnNext);
     }
 }
@@ -6148,34 +6168,33 @@ function runBalloonPop(target, btnNext) {
 }
 
 function showBalloonRound(target, btnNext) {
-    let questionText = "";
-    let options = [];
-    let correctIdx = 0;
+    const list = meetingsConfig.p4.latihan;
+    const q = list[balloonRound - 1];
     
-    if (balloonRound === 1) {
-        questionText = "Pecahkan balon yang bertuliskan zat padat logam dengan MASSA JENIS TERBESAR (Paling Rapat)!";
-        options = ["Aluminium (2.7 g/cm³)", "Besi (7.9 g/cm³)", "Emas (19.3 g/cm³)", "Seng (7.14 g/cm³)"];
-        correctIdx = 2;
-    } else if (balloonRound === 2) {
-        questionText = "Pecahkan balon dengan pernyataan HUKUM MENGAPUNG & TENGGELAM yang benar!";
-        options = ["Benda tenggelam jika massa jenis benda &lt; cairan", "Benda mengapung jika massa jenis benda &lt; cairan", "Benda mengapung jika massa jenis benda &gt; cairan", "Es tenggelam dalam air murni"];
-        correctIdx = 1;
+    let balloonsHtml = "";
+    if (q.a.length === 4) {
+        balloonsHtml = `
+            <!-- 4 Balloons -->
+            <div class="balloon-item" style="left:10%; bottom:30px; background:#ef4444;" onclick="popBalloon(0, ${q.c})">${q.a[0]}</div>
+            <div class="balloon-item" style="left:32%; bottom:90px; background:#3b82f6;" onclick="popBalloon(1, ${q.c})">${q.a[1]}</div>
+            <div class="balloon-item" style="left:55%; bottom:50px; background:#10b981;" onclick="popBalloon(2, ${q.c})">${q.a[2]}</div>
+            <div class="balloon-item" style="left:76%; bottom:110px; background:#f59e0b;" onclick="popBalloon(3, ${q.c})">${q.a[3]}</div>
+        `;
     } else {
-        questionText = "Pecahkan balon yang bertuliskan alasan manusia dapat mengapung santai di LAUT MATI!";
-        options = ["Manusia memiliki selaput renang", "Air Laut Mati tidak memiliki gravitasi", "Massa jenis air Laut Mati sangat tinggi (1.24 g/cm³) karena kaya garam", "Tubuh manusia lebih rapat dibanding garam"];
-        correctIdx = 2;
+        // True/False (2 Balloons)
+        balloonsHtml = `
+            <!-- 2 Balloons -->
+            <div class="balloon-item" style="left:20%; bottom:60px; background:#10b981;" onclick="popBalloon(0, ${q.c})">${q.a[0]}</div>
+            <div class="balloon-item" style="left:60%; bottom:60px; background:#ef4444;" onclick="popBalloon(1, ${q.c})">${q.a[1]}</div>
+        `;
     }
     
     target.innerHTML = `
-        <div style="text-align:center; font-weight:850; margin-bottom:10px;">Ronde ${balloonRound}/3. Skor: ${balloonPoints} Poin</div>
-        <p style="font-weight:900; font-size:1.15rem; text-align:center; margin-bottom:15px; color:var(--primary);">${questionText}</p>
+        <div style="text-align:center; font-weight:850; margin-bottom:10px;">Ronde ${balloonRound}/10. Skor: ${balloonPoints} Poin</div>
+        <p style="font-weight:900; font-size:1.15rem; text-align:center; margin-bottom:15px; color:var(--primary);">${q.q}</p>
         
         <div class="balloon-arena">
-            <!-- 4 Balloons -->
-            <div class="balloon-item" style="left:10%; bottom:30px; background:#ef4444;" onclick="popBalloon(0, ${correctIdx})">${options[0]}</div>
-            <div class="balloon-item" style="left:32%; bottom:90px; background:#3b82f6;" onclick="popBalloon(1, ${correctIdx})">${options[1]}</div>
-            <div class="balloon-item" style="left:55%; bottom:50px; background:#10b981;" onclick="popBalloon(2, ${correctIdx})">${options[2]}</div>
-            <div class="balloon-item" style="left:76%; bottom:110px; background:#f59e0b;" onclick="popBalloon(3, ${correctIdx})">${options[3]}</div>
+            ${balloonsHtml}
         </div>
     `;
 }
@@ -6187,9 +6206,9 @@ function popBalloon(idx, correct) {
     if (idx === correct) {
         SoundEffects.playCorrect();
         balloonPoints += 10;
-        alert("💥 POOP! Jawaban Benar!");
+        alert("💥 POP! Jawaban Benar!");
         
-        if (balloonRound < 3) {
+        if (balloonRound < 10) {
             balloonRound++;
             showBalloonRound(target, btnNext);
         } else {
@@ -6197,7 +6216,7 @@ function popBalloon(idx, correct) {
             sendDataToGoogleSheet({
                 type: "Latihan",
                 score: balloonPoints + " Poin",
-                details: `Menyelesaikan game Pecah Balon dengan total skor: ${balloonPoints} Poin`
+                details: `Menyelesaikan game Pecah Balon 10 ronde dengan total skor: ${balloonPoints} Poin`
             });
             target.innerHTML = `
                 <div style="text-align:center; padding: 2rem 0;">
