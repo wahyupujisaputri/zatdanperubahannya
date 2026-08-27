@@ -1808,13 +1808,278 @@ function renderStimulus1(card, btnNext) {
             activeAnimationId = requestAnimationFrame(runAnimation);
         });
         
+    } else if (activeMeeting === "p4") {
+        setAvatar("happy", "Ayo amati simulasi benda dalam air ini! Kamu juga bisa langsung mengklik Lanjut.");
+        card.innerHTML = `
+            <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">💧 Simulasi Benda dalam Air</h3>
+            <div class="video-player-sim" id="sim-video-player-1" style="height: 240px; position:relative; overflow:hidden; border-radius:24px; border:3px solid #cbd5e1; background:#f1f5f9; display:block;">
+                <canvas id="stimulus-canvas-4" style="width:100%; height:100%; display:block; background:#eff6ff;"></canvas>
+                <div id="stimulus-play-overlay-4" style="position:absolute; top:0; left:0; right:0; bottom:0; display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(15, 23, 42, 0.65); color:white; font-family:var(--font); cursor:pointer; z-index:10; transition:all 0.3s ease;">
+                    <div style="font-size:4rem; margin-bottom:10px;">▶</div>
+                    <div style="font-weight:900; font-size:1.15rem; text-shadow:0 2px 4px rgba(0,0,0,0.5);">Klik untuk Jalankan Animasi Stimulus 🎬</div>
+                </div>
+            </div>
+            
+            <div class="hidden" id="stimulus-question-container-4" style="margin-top: 1.5rem; animation: fadeIn 0.4s ease;">
+                <div style="background:#eff6ff; border:2px solid #3b82f6; border-radius:18px; padding:18px; text-align:left;">
+                    <p style="font-weight:900; font-size:1.15rem; color:#1e3a8a; margin-bottom:0.8rem; display:flex; align-items:center; gap:8px;">
+                        🧑‍🏫 <span>Guru Mengajukan Pertanyaan Pemantik:</span>
+                    </p>
+                    <ul style="margin: 0; padding-left: 20px; font-weight: 800; line-height: 1.8; color: #1e293b; font-size: 1.05rem;">
+                        <li>“Mengapa batu tenggelam sedangkan kayu dapat mengapung?”</li>
+                        <li>“Apakah benda yang lebih berat selalu tenggelam?”</li>
+                        <li>“Mengapa dua benda yang ukurannya hampir sama dapat memiliki berat berbeda?”</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        const canvas = document.getElementById("stimulus-canvas-4");
+        const ctx = canvas.getContext("2d");
+        canvas.width = canvas.parentElement.clientWidth || 500;
+        canvas.height = 240;
+
+        let animStart = null;
+        let splashParticles = [];
+
+        // Define the 3 objects
+        let objects = [
+            {
+                name: "Batu",
+                color: "#64748b",
+                shape: "stone",
+                x: canvas.width * 0.25,
+                y: -30,
+                vy: 0,
+                radius: 18,
+                density: 2.5, // Sinks fast
+                status: "falling",
+                splashDone: false,
+                settledY: 200
+            },
+            {
+                name: "Kayu",
+                color: "#b45309",
+                shape: "wood",
+                x: canvas.width * 0.5,
+                y: -30,
+                vy: 0,
+                radius: 20,
+                density: 0.6, // Floats half-submerged
+                status: "falling",
+                splashDone: false,
+                settledY: 125,
+                osc: 0
+            },
+            {
+                name: "Bola Plastik",
+                color: "#ef4444",
+                shape: "ball",
+                x: canvas.width * 0.75,
+                y: -30,
+                vy: 0,
+                radius: 16,
+                density: 0.2, // Floats high
+                status: "falling",
+                splashDone: false,
+                settledY: 105,
+                osc: 0
+            }
+        ];
+
+        function createSplash(x, y) {
+            for (let i = 0; i < 15; i++) {
+                splashParticles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: -2 - Math.random() * 4,
+                    radius: 2 + Math.random() * 3,
+                    alpha: 1
+                });
+            }
+        }
+
+        function runAnimation(timestamp) {
+            if (!animStart) animStart = timestamp;
+            let elapsed = timestamp - animStart;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw beaker / glass tank container
+            const tankLeft = 40;
+            const tankRight = canvas.width - 40;
+            const tankBottom = 220;
+            const waterSurfaceY = 120;
+
+            // Draw background tank shadow
+            ctx.fillStyle = "rgba(219, 234, 254, 0.3)";
+            ctx.fillRect(tankLeft, waterSurfaceY, tankRight - tankLeft, tankBottom - waterSurfaceY);
+
+            // Draw water
+            ctx.fillStyle = "rgba(59, 130, 246, 0.4)";
+            ctx.fillRect(tankLeft, waterSurfaceY, tankRight - tankLeft, tankBottom - waterSurfaceY);
+
+            // Draw water surface line
+            ctx.strokeStyle = "#3b82f6";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(tankLeft, waterSurfaceY);
+            ctx.lineTo(tankRight, waterSurfaceY);
+            ctx.stroke();
+
+            // Draw glass tank walls
+            ctx.strokeStyle = "#94a3b8";
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(tankLeft, 50);
+            ctx.lineTo(tankLeft, tankBottom);
+            ctx.lineTo(tankRight, tankBottom);
+            ctx.lineTo(tankRight, 50);
+            ctx.stroke();
+
+            // Gravity & Physics simulation
+            const gravity = 0.3;
+            const dragWater = 0.85;
+
+            objects.forEach(obj => {
+                if (obj.status === "falling") {
+                    obj.vy += gravity;
+                    obj.y += obj.vy;
+
+                    // Hit water surface
+                    if (obj.y >= waterSurfaceY) {
+                        obj.status = "in-water";
+                        if (!obj.splashDone) {
+                            createSplash(obj.x, waterSurfaceY);
+                            SoundEffects.playClick();
+                            obj.splashDone = true;
+                        }
+                    }
+                } else if (obj.status === "in-water") {
+                    // In water physics
+                    if (obj.density > 1) {
+                        // Sinks
+                        obj.vy += (gravity * (1 - 1 / obj.density)); // Reduced acceleration in water
+                        obj.vy *= dragWater;
+                        obj.y += obj.vy;
+
+                        // Hit bottom of the tank
+                        let bottomLimit = tankBottom - obj.radius;
+                        if (obj.y >= bottomLimit) {
+                            obj.y = bottomLimit;
+                            obj.vy = -obj.vy * 0.2; // Small bounce
+                            if (Math.abs(obj.vy) < 0.2) {
+                                obj.vy = 0;
+                                obj.status = "settled";
+                            }
+                        }
+                    } else {
+                        // Floats
+                        // Buoyancy force pushes up
+                        let displacement = Math.min(Math.max((obj.y + obj.radius - waterSurfaceY) / (2 * obj.radius), 0), 1);
+                        let buoyantForce = (1 / obj.density) * gravity * displacement;
+                        
+                        obj.vy += (gravity - buoyantForce);
+                        obj.vy *= dragWater;
+                        obj.y += obj.vy;
+
+                        // Settle oscillation
+                        if (Math.abs(obj.vy) < 0.15 && Math.abs(obj.y - obj.settledY) < 2) {
+                            obj.status = "settled";
+                            obj.y = obj.settledY;
+                            obj.vy = 0;
+                        }
+                    }
+                } else if (obj.status === "settled") {
+                    // Small floating oscillation for wood and ball
+                    if (obj.density < 1) {
+                        obj.osc += 0.05;
+                        obj.y = obj.settledY + Math.sin(obj.osc) * 1.5;
+                    }
+                }
+
+                // Draw object
+                ctx.fillStyle = obj.color;
+                
+                if (obj.shape === "stone") {
+                    ctx.beginPath();
+                    ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (obj.shape === "wood") {
+                    ctx.fillRect(obj.x - obj.radius, obj.y - obj.radius * 0.7, obj.radius * 2, obj.radius * 1.4);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = "#78350f";
+                    ctx.strokeRect(obj.x - obj.radius, obj.y - obj.radius * 0.7, obj.radius * 2, obj.radius * 1.4);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = "rgba(255,255,255,0.4)";
+                    ctx.beginPath();
+                    ctx.arc(obj.x - 4, obj.y - 4, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Draw labels above objects
+                ctx.fillStyle = "#1e293b";
+                ctx.font = "bold 12px var(--font)";
+                ctx.textAlign = "center";
+                ctx.fillText(obj.name, obj.x, obj.y - obj.radius - 8);
+            });
+
+            // Draw and update splash particles
+            for (let i = splashParticles.length - 1; i >= 0; i--) {
+                let p = splashParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2; // gravity for splash
+                p.alpha -= 0.02;
+
+                if (p.alpha <= 0 || p.y > tankBottom) {
+                    splashParticles.splice(i, 1);
+                } else {
+                    ctx.fillStyle = `rgba(59, 130, 246, ${p.alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Draw tank labels
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 13px var(--font)";
+            ctx.textAlign = "left";
+            ctx.fillText("Keadaan Air", tankLeft + 15, waterSurfaceY - 10);
+            
+            ctx.font = "bold 12px var(--font)";
+            ctx.fillStyle = "#1d4ed8";
+            ctx.fillText("Massa Jenis Air = 1.0 g/cm³", tankLeft + 15, tankBottom - 15);
+
+            // Keep animating
+            let allSettled = objects.every(o => o.status === "settled");
+            if (!allSettled || elapsed < 10000) {
+                activeAnimationId = requestAnimationFrame(runAnimation);
+            } else {
+                setAvatar("happy", "Sekarang, coba diskusikan pertanyaan pemantik Guru di bawah ini!");
+            }
+        }
+
+        const playBtn4 = document.getElementById("stimulus-play-overlay-4");
+        playBtn4.addEventListener("click", () => {
+            SoundEffects.playClick();
+            playBtn4.classList.add("hidden");
+            document.getElementById("stimulus-question-container-4").classList.remove("hidden");
+            setAvatar("thinking", "Perhatikan bagaimana batu tenggelam, kayu terapung sebagian, dan bola plastik terapung tinggi!");
+            activeAnimationId = requestAnimationFrame(runAnimation);
+        });
+        
     } else {
         setAvatar("happy", "Ayo amati video pembuka ini! Kamu juga bisa langsung mengklik Lanjut.");
 
         let mediaArt = "";
         if (activeMeeting === "p1") mediaArt = "🕰️ 🎸 🕯️ 🥤";
         else if (activeMeeting === "p2") mediaArt = "❄️ ➔ 🔥 ➔ 💧 ➔ 💨";
-        else if (activeMeeting === "p4") mediaArt = "⚖️ 🧱 💧 🚢";
 
         card.innerHTML = `
             <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">📺 Video Apersepsi Pembuka</h3>
