@@ -1156,6 +1156,13 @@ const stepsNarrative = {
 
 // --- INISIALISASI AWAL ---
 document.addEventListener("DOMContentLoaded", () => {
+    // Set default Google Sheet URL if not set or invalid
+    const defaultUrl = "https://script.google.com/macros/s/AKfycbxFtPjiDgOXevfqnS9GvK4FsRW8FetqFSiiJ-otvlq7QTy6NUOPkRDOMrDLVN172xAOQg/exec";
+    const currentUrl = localStorage.getItem("googleSheetWebAppUrl");
+    if (!currentUrl || currentUrl === "null" || currentUrl === "undefined" || !currentUrl.startsWith("https://script.google.com/macros/s/")) {
+        localStorage.setItem("googleSheetWebAppUrl", defaultUrl);
+    }
+
     const savedStars = localStorage.getItem("userStars");
     if (savedStars) {
         userStars = parseInt(savedStars);
@@ -1168,8 +1175,9 @@ document.addEventListener("DOMContentLoaded", () => {
         SoundEffects.playClick();
         const urlInput = document.getElementById("input-web-app-url").value.trim();
         if (!urlInput) {
-            localStorage.removeItem("googleSheetWebAppUrl");
-            alert("Koneksi Google Sheet dihapus.");
+            const defaultUrl = "https://script.google.com/macros/s/AKfycbxFtPjiDgOXevfqnS9GvK4FsRW8FetqFSiiJ-otvlq7QTy6NUOPkRDOMrDLVN172xAOQg/exec";
+            localStorage.setItem("googleSheetWebAppUrl", defaultUrl);
+            alert("Koneksi Google Sheet diatur kembali ke default.");
             closeSettings();
             updateSheetStatus();
             return;
@@ -1223,12 +1231,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+const DEFAULT_GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxFtPjiDgOXevfqnS9GvK4FsRW8FetqFSiiJ-otvlq7QTy6NUOPkRDOMrDLVN172xAOQg/exec";
+
+function getGoogleSheetUrl() {
+    const savedUrl = localStorage.getItem("googleSheetWebAppUrl");
+    if (!savedUrl || savedUrl === "null" || savedUrl === "undefined" || !savedUrl.startsWith("https://script.google.com/macros/s/")) {
+        return DEFAULT_GOOGLE_SHEET_URL;
+    }
+    return savedUrl;
+}
+
 // --- SETTINGS GOOGLE SHEET UTILITIES ---
 function openSettings() {
     SoundEffects.playClick();
     document.getElementById("view-dashboard").classList.remove("active");
     document.getElementById("view-settings").classList.add("active");
-    const url = localStorage.getItem("googleSheetWebAppUrl") || "";
+    const url = getGoogleSheetUrl();
     document.getElementById("input-web-app-url").value = url;
 }
 
@@ -1239,7 +1257,7 @@ function closeSettings() {
 }
 
 function updateSheetStatus() {
-    const url = localStorage.getItem("googleSheetWebAppUrl") || "";
+    const url = getGoogleSheetUrl();
     const statusText = document.getElementById("sheet-status-text");
     if (statusText) {
         if (url) {
@@ -1262,7 +1280,7 @@ function getMeetingTitle() {
 }
 
 function sendDataToGoogleSheet(data) {
-    const url = localStorage.getItem("googleSheetWebAppUrl") || "";
+    const url = getGoogleSheetUrl();
     if (!url) {
         console.warn("Google Sheet Web App URL belum dikonfigurasi.");
         return;
@@ -1296,7 +1314,7 @@ function sendDataToGoogleSheet(data) {
 
 // --- FETCH ONLINE CLASSROOM DATA ---
 async function fetchOnlineClassroomData() {
-    const url = localStorage.getItem("googleSheetWebAppUrl") || "";
+    const url = getGoogleSheetUrl();
     if (!url) {
         onlineClassroomData = [];
         return [];
