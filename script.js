@@ -4,6 +4,40 @@ let currentStep = 0;       // 0 sampai 14 (Total 15 langkah)
 let activeSubStep = 1;     // 1 sampai 4 (Misi Eksplorasi)
 let userStars = 0;
 let userAnswers = {};
+const studentNamesList = [
+    "AHMAD ZAKI RAIHAN GUCHI",
+    "AHSAN HUSAINI AL ISLAMY",
+    "AL JAVAN WIRANANTA RUDHIRA",
+    "ALBERT VERLYO",
+    "ALDEBARAN RAFIF AL AYYUBI",
+    "ARKAN XAQUIL ATHALLAH",
+    "AYDIN KHALFANI",
+    "AYRA LITUHAYU NAVISA",
+    "BRIANNA RAYA ARDAFFI",
+    "CALYA NABIGHAH PASCA",
+    "DAVENDRA ANANTA PRASETYA",
+    "DENANDRA IQBAL ALVANO RASYA",
+    "FLAVIA SEKAR AQEELA ADITYA",
+    "GHINA MUFIDAH DWIHANA",
+    "GWEN SYAREEFA ANINDITA HARJANTO",
+    "KHANZA MAHIRA GANA",
+    "KRISTOFORUS TRALOWA RAKYANJALU",
+    "MARIA KANA SATRIO",
+    "MAYYASA KALEA",
+    "MUHAMMAD ZAFRAN ALIFANDRA",
+    "NADINE KIRANA MAHARANI",
+    "NAFIS ARFA AKMAL",
+    "NARARYA ABQARY KUSUMA",
+    "NATHIFA WIJARENI",
+    "PRAMA MADA OZORA",
+    "RAPHAEL AIDEN ROMMEL BANCIN KRISTANTO",
+    "REYGAN KHALFANI PUSOKO",
+    "SHAVIRA ARDINTA ZAHIDA",
+    "SYAFIQ RAFI'UL HIMAM",
+    "TRISTAN SAKTYANUGRA MASJHOER",
+    "VERONIKA DEWA PURNAMA",
+    "ZAHEEN ZAIMA REIZA"
+];
 let studentName = "";
 let pretestAnalysis = [];
 let posttestAnalysis = [];
@@ -1547,15 +1581,21 @@ function renderSplash(card, btnNext) {
     if (activeMeeting === "p1") {
         welcomeDesc = "Hari ini kita akan menyelidiki mengapa bangku kayu sekolah keras, botol air minum mengalir, dan udara balon tidak terlihat.";
     } else if (activeMeeting === "p2") {
-        welcomeDesc = "Hari ini kita akan menyelidiki keajaiban lilin meleleh, air menguap mendidih, uap membeku, dan es kering yang menyublim sesuai halaman 54-56 buku!";
+        welcomeDesc = "Hari ini kita akan menyelidiki keajaiban lilin meleleh, air menguap mendidih, uap membeku, es kering menyublim, serta menjelajahi laboratorium suhu ekstrem dan grafik pemanasan sesuai halaman 54-60 buku!";
     } else if (activeMeeting === "p3") {
-        welcomeDesc = "Hari ini kita akan menjelajahi laboratorium suhu ekstrem! Mengapa air mendidih tepat di 100°C? Dan bagaimana cara membaca grafik pemanasan sesuai halaman 57-60 buku?";
-    } else if (activeMeeting === "p4") {
         welcomeDesc = "Hari ini kita akan menyelidiki kertas sobek vs kertas terbakar, merakit siklus air, dan mendeteksi misteri 4 tanda reaksi kimia sesuai halaman 61-67 buku!";
+    } else if (activeMeeting === "p4") {
+        welcomeDesc = "Hari ini kita akan membandingkan kerapatan partikel, mengukur massa jenis zat padat dan cair menggunakan hukum Archimedes, serta menyelidiki syarat benda terapung dan tenggelam sesuai halaman 67-73 buku!";
     }
     
     const storedName = localStorage.getItem("studentName") || "";
     
+    let selectOptionsHtml = `<option value="" disabled ${!storedName ? 'selected' : ''}>-- Pilih Nama Lengkapmu --</option>`;
+    studentNamesList.forEach(name => {
+        const isSelected = (name === storedName) ? "selected" : "";
+        selectOptionsHtml += `<option value="${name}" ${isSelected}>${name}</option>`;
+    });
+
     card.innerHTML = `
         <div style="text-align: center; padding: 1rem 0;">
             <div style="font-size: 4.5rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite;">🧪</div>
@@ -1564,9 +1604,11 @@ function renderSplash(card, btnNext) {
                 ${welcomeDesc}
             </p>
             
-            <div style="background: #f8fafc; border: 3px solid #cbd5e1; border-radius: 20px; padding: 1.5rem; max-width: 400px; margin: 0 auto 2rem auto; text-align: left;">
-                <label for="student-name-input" style="font-weight: 900; display: block; margin-bottom: 8px; color: var(--text); font-size: 1.05rem;">📝 Masukkan Nama Lengkapmu:</label>
-                <input type="text" id="student-name-input" placeholder="Ketik nama lengkap..." value="${storedName}" style="width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:12px; font-weight:800; font-family:var(--font); text-align:center; font-size:1.1rem; outline:none; box-sizing: border-box;">
+            <div style="background: #f8fafc; border: 3px solid #cbd5e1; border-radius: 20px; padding: 1.5rem; max-width: 450px; margin: 0 auto 2rem auto; text-align: left;">
+                <label for="student-name-select" style="font-weight: 900; display: block; margin-bottom: 8px; color: var(--text); font-size: 1.05rem;">📝 Pilih Nama Lengkapmu:</label>
+                <select id="student-name-select" style="width:100%; padding:14px 12px; border:3px solid #cbd5e1; border-radius:16px; font-weight:800; font-family:var(--font); font-size:1.05rem; outline:none; box-sizing: border-box; background:white; cursor:pointer;">
+                    ${selectOptionsHtml}
+                </select>
             </div>
             
             <button class="btn-icon" style="font-size: 1.3rem; padding: 1rem 2.5rem;" id="btn-start-welcome">Mulai Belajar ➔</button>
@@ -1574,9 +1616,9 @@ function renderSplash(card, btnNext) {
     `;
     
     document.getElementById("btn-start-welcome").addEventListener("click", () => {
-        const nameInput = document.getElementById("student-name-input").value.trim();
-        if (nameInput.length < 2) {
-            alert("Harap masukkan nama lengkapmu terlebih dahulu (minimal 2 karakter)!");
+        const nameInput = document.getElementById("student-name-select").value;
+        if (!nameInput) {
+            alert("Harap pilih nama lengkapmu terlebih dahulu!");
             return;
         }
         SoundEffects.playClick();
@@ -1589,42 +1631,220 @@ function renderSplash(card, btnNext) {
 // 2. Stimulus Pembuka (Stimulus 1)
 function renderStimulus1(card, btnNext) {
     enableNextButton(btnNext);
-    setAvatar("happy", "Ayo amati video pembuka ini! Kamu juga bisa langsung mengklik Lanjut.");
-
-    let mediaArt = "";
-    if (activeMeeting === "p1") mediaArt = "🕰️ 🎸 🕯️ 🥤";
-    else if (activeMeeting === "p2") mediaArt = "❄️ ➔ 🔥 ➔ 💧 ➔ 💨";
-    else if (activeMeeting === "p3") mediaArt = "📉 🌡️ 0°C & 100°C";
-    else if (activeMeeting === "p4") mediaArt = "📄 ➔ ✂️ VS 🔥";
-
-    card.innerHTML = `
-        <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">📺 Video Apersepsi Pembuka</h3>
-        <div class="video-player-sim" id="sim-video-player-1">
-            <div class="video-poster-art" id="video-poster-art-1">${mediaArt}</div>
-            <button class="video-play-btn" id="video-play-btn-1">▶</button>
-            <div class="video-controls">
-                <span class="video-time-label" id="video-time-label-1">0:00</span>
-                <div class="video-time-track">
-                    <div class="video-time-fill" id="video-time-fill-1"></div>
+    
+    if (activeMeeting === "p3") {
+        setAvatar("happy", "Ayo amati fenomena genangan air ini! Kamu juga bisa langsung mengklik Lanjut.");
+        card.innerHTML = `
+            <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">☀️ Fenomena Genangan Air Menguap</h3>
+            <div class="video-player-sim" id="sim-video-player-1" style="height: 240px; position:relative; overflow:hidden; border-radius:24px; border:3px solid #cbd5e1; background:#cbd5e1; display:block;">
+                <canvas id="stimulus-canvas-1" style="width:100%; height:100%; display:block; background:#cbd5e1;"></canvas>
+                <div id="stimulus-play-overlay-1" style="position:absolute; top:0; left:0; right:0; bottom:0; display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(15, 23, 42, 0.65); color:white; font-family:var(--font); cursor:pointer; z-index:10; transition:all 0.3s ease;">
+                    <div style="font-size:4rem; margin-bottom:10px;">▶</div>
+                    <div style="font-weight:900; font-size:1.15rem; text-shadow:0 2px 4px rgba(0,0,0,0.5);">Klik untuk Jalankan Animasi Stimulus 🎬</div>
                 </div>
-                <span class="video-time-label">0:10</span>
             </div>
-        </div>
-    `;
+            
+            <div class="hidden" id="stimulus-question-container-1" style="margin-top: 1.5rem; animation: fadeIn 0.4s ease;">
+                <div style="background:#eff6ff; border:2px solid #3b82f6; border-radius:18px; padding:18px; text-align:left;">
+                    <p style="font-weight:900; font-size:1.15rem; color:#1e3a8a; margin-bottom:0.8rem; display:flex; align-items:center; gap:8px;">
+                        🧑‍🏫 <span>Guru Mengajukan Pertanyaan:</span>
+                    </p>
+                    <ul style="margin: 0; padding-left: 20px; font-weight: 800; line-height: 1.8; color: #1e293b; font-size: 1.05rem;">
+                        <li>“Ke mana perginya air dari genangan tersebut?”</li>
+                        <li>“Apakah air tersebut berubah menjadi zat baru?”</li>
+                        <li>“Mengapa pakaian yang basah dapat menjadi kering?”</li>
+                        <li>“Dari mana asal air hujan?”</li>
+                    </ul>
+                </div>
+            </div>
+        `;
 
-    const playBtn = document.getElementById("video-play-btn-1");
-    const poster = document.getElementById("video-poster-art-1");
-    const fill = document.getElementById("video-time-fill-1");
-    const label = document.getElementById("video-time-label-1");
+        const canvas = document.getElementById("stimulus-canvas-1");
+        const ctx = canvas.getContext("2d");
+        canvas.width = canvas.parentElement.clientWidth || 500;
+        canvas.height = 240;
 
-    playBtn.addEventListener("click", () => {
-        SoundEffects.playClick();
-        playBtn.classList.add("hidden");
-        poster.style.transform = "scale(1.15)";
-        fill.style.width = "100%";
-        label.innerText = "0:10";
-        setAvatar("happy", "Bagus! Kamu sudah menonton video pembuka. Klik Lanjut!");
-    });
+        let animStart = null;
+        let vaporParticles = [];
+
+        function runAnimation(timestamp) {
+            if (!animStart) animStart = timestamp;
+            let elapsed = timestamp - animStart;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw sky background (light blue)
+            ctx.fillStyle = "#e0f2fe";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw ground (asphalt/concrete)
+            ctx.fillStyle = "#64748b";
+            ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+
+            // Draw ground line
+            ctx.strokeStyle = "#475569";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height - 40);
+            ctx.lineTo(canvas.width, canvas.height - 40);
+            ctx.stroke();
+
+            // Calculate evaporation progress (lasts 8 seconds)
+            let duration = 8000;
+            let progress = Math.min(elapsed / duration, 1.0); // 0 to 1
+
+            // Draw Sun ☀️ at top right
+            let sunX = canvas.width - 60;
+            let sunY = 60;
+            let sunRadius = 25;
+            
+            // Sun glow
+            let sunGlow = 10 + Math.sin(elapsed / 200) * 4;
+            let grad = ctx.createRadialGradient(sunX, sunY, 5, sunX, sunY, sunRadius + sunGlow);
+            grad.addColorStop(0, "#fef08a");
+            grad.addColorStop(0.2, "#facc15");
+            grad.addColorStop(1, "rgba(253, 224, 71, 0)");
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, sunRadius + sunGlow, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Sun center
+            ctx.fillStyle = "#eab308";
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Sun rays
+            ctx.strokeStyle = "#eab308";
+            ctx.lineWidth = 3;
+            let rayCount = 8;
+            for (let i = 0; i < rayCount; i++) {
+                let angle = (i * Math.PI * 2 / rayCount) + (elapsed / 2000);
+                let startR = sunRadius + 5;
+                let endR = sunRadius + 15 + Math.sin(elapsed / 100 + i) * 3;
+                ctx.beginPath();
+                ctx.moveTo(sunX + Math.cos(angle) * startR, sunY + Math.sin(angle) * startR);
+                ctx.lineTo(sunX + Math.cos(angle) * endR, sunY + Math.sin(angle) * endR);
+                ctx.stroke();
+            }
+
+            // Draw water puddle (genangan air)
+            let maxPuddleWidth = canvas.width * 0.3;
+            if (maxPuddleWidth > 150) maxPuddleWidth = 150;
+            let maxPuddleHeight = 15;
+            let currentWidth = maxPuddleWidth * (1 - progress);
+            let currentHeight = maxPuddleHeight * (1 - progress);
+            let puddleX = canvas.width / 2;
+            let puddleY = canvas.height - 40;
+
+            if (currentWidth > 2) {
+                ctx.fillStyle = "rgba(59, 130, 246, 0.85)";
+                ctx.beginPath();
+                ctx.ellipse(puddleX, puddleY, currentWidth, currentHeight, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Highlight shine on water
+                ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                ctx.beginPath();
+                ctx.ellipse(puddleX - currentWidth*0.2, puddleY - currentHeight*0.2, currentWidth*0.5, currentHeight*0.3, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Generate vapor particles rising from the puddle
+            if (progress < 0.95 && Math.random() < 0.15) {
+                let spawnWidth = currentWidth * 0.8;
+                vaporParticles.push({
+                    x: puddleX + (Math.random() - 0.5) * spawnWidth,
+                    y: puddleY - 5,
+                    vy: -0.8 - Math.random() * 1.2,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    alpha: 0.8,
+                    size: 2 + Math.random() * 3
+                });
+            }
+
+            // Update and draw vapor particles
+            for (let i = vaporParticles.length - 1; i >= 0; i--) {
+                let vp = vaporParticles[i];
+                vp.x += vp.vx;
+                vp.y += vp.vy;
+                vp.alpha -= 0.01;
+                
+                if (vp.alpha <= 0 || vp.y < 20) {
+                    vaporParticles.splice(i, 1);
+                } else {
+                    ctx.fillStyle = `rgba(186, 230, 253, ${vp.alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(vp.x, vp.y, vp.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Display status text
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 13px var(--font)";
+            if (progress < 1) {
+                ctx.fillText("Keadaan: Panas matahari menguapkan genangan air...", 20, 30);
+                ctx.fillText(`Volume Air: ${Math.round((1 - progress) * 100)}%`, 20, 50);
+            } else {
+                ctx.fillText("Keadaan: Genangan air menguap sepenuhnya (kering)!", 20, 30);
+                ctx.fillText("Volume Air: 0%", 20, 50);
+            }
+
+            if (progress < 1) {
+                activeAnimationId = requestAnimationFrame(runAnimation);
+            } else {
+                setAvatar("happy", "Amatilah bagaimana genangan air menguap karena panas matahari. Sekarang, coba renungkan pertanyaan dari Guru!");
+            }
+        }
+
+        const playBtn1 = document.getElementById("stimulus-play-overlay-1");
+        playBtn1.addEventListener("click", () => {
+            SoundEffects.playClick();
+            playBtn1.classList.add("hidden");
+            document.getElementById("stimulus-question-container-1").classList.remove("hidden");
+            setAvatar("thinking", "Perhatikan air yang menguap dari genangan akibat panas matahari!");
+            activeAnimationId = requestAnimationFrame(runAnimation);
+        });
+        
+    } else {
+        setAvatar("happy", "Ayo amati video pembuka ini! Kamu juga bisa langsung mengklik Lanjut.");
+
+        let mediaArt = "";
+        if (activeMeeting === "p1") mediaArt = "🕰️ 🎸 🕯️ 🥤";
+        else if (activeMeeting === "p2") mediaArt = "❄️ ➔ 🔥 ➔ 💧 ➔ 💨";
+        else if (activeMeeting === "p4") mediaArt = "⚖️ 🧱 💧 🚢";
+
+        card.innerHTML = `
+            <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">📺 Video Apersepsi Pembuka</h3>
+            <div class="video-player-sim" id="sim-video-player-1">
+                <div class="video-poster-art" id="video-poster-art-1">${mediaArt}</div>
+                <button class="video-play-btn" id="video-play-btn-1">▶</button>
+                <div class="video-controls">
+                    <span class="video-time-label" id="video-time-label-1">0:00</span>
+                    <div class="video-time-track">
+                        <div class="video-time-fill" id="video-time-fill-1"></div>
+                    </div>
+                    <span class="video-time-label">0:10</span>
+                </div>
+            </div>
+        `;
+
+        const playBtn = document.getElementById("video-play-btn-1");
+        const poster = document.getElementById("video-poster-art-1");
+        const fill = document.getElementById("video-time-fill-1");
+        const label = document.getElementById("video-time-label-1");
+
+        playBtn.addEventListener("click", () => {
+            SoundEffects.playClick();
+            playBtn.classList.add("hidden");
+            poster.style.transform = "scale(1.15)";
+            fill.style.width = "100%";
+            label.innerText = "0:10";
+            setAvatar("happy", "Bagus! Kamu sudah menonton video pembuka. Klik Lanjut!");
+        });
+    }
 }
 
 // 3. Apersepsi
@@ -1650,19 +1870,22 @@ function renderApersepsi(card, btnNext) {
         };
     } else if (activeMeeting === "p3") {
         qData = {
-            question: "Menurutmu, mengapa besi padat yang sangat keras harus dipanaskan oleh tukang las hingga berpijar merah menyala?",
-            options: ["Agar besi meleleh menjadi cair sehingga mudah dibengkokkan", "Agar besi membeku kembali"],
-            correctIdx: 0,
-            feedbackCorrect: "Tepat! Setiap zat memiliki titik leleh tersendiri. Besi harus dipanaskan sampai suhu titik lelehnya (1538°C) agar dapat mencair (Buku Halaman 59).",
-            feedbackIncorrect: "Kurang tepat. Tukang las memanaskan besi agar besi mencapai titik lelehnya (1538°C) dan berubah wujud menjadi cair sehingga mudah dibentuk atau disambung."
-        };
-    } else if (activeMeeting === "p4") {
-        qData = {
             question: "Jika kalian memasukkan gula pasir ke dalam segelas air hangat lalu mengaduknya, apakah yang terjadi pada zat gula?",
             options: ["Gula larut, merupakan perubahan fisika karena tidak terbentuk zat baru", "Terjadi perubahan kimia"],
             correctIdx: 0,
             feedbackCorrect: "Benar sekali! Proses melarutkan gula adalah perubahan fisika karena rasa manis gula masih ada dan gula dapat diperoleh kembali dengan menguapkan airnya (Buku Halaman 62).",
             feedbackIncorrect: "Kurang tepat. Melarutkan gula adalah **perubahan fisika** karena rasa manis gula masih ada, tidak terbentuk zat baru, dan gula dapat diperoleh kembali dengan menguapkan airnya (Buku Halaman 62)."
+        };
+    } else if (activeMeeting === "p4") {
+        qData = {
+            question: "Mengapa sebuah kapal laut feri yang sangat besar dan terbuat dari besi yang berat dapat terapung di laut, sedangkan sebutir jarum kecil dari besi langsung tenggelam?",
+            options: [
+                "Karena kapal feri memiliki rongga udara besar yang menurunkan massa jenis totalnya sehingga lebih kecil dari air",
+                "Karena kapal feri ditarik oleh gaya gravitasi yang berbeda"
+            ],
+            correctIdx: 0,
+            feedbackCorrect: "Tepat sekali! Kapal feri memiliki lambung berongga udara yang sangat besar, sehingga volume totalnya besar dan membuat massa jenis rata-rata kapal lebih kecil daripada massa jenis air laut. Jarum besi padat tidak memiliki rongga sehingga tenggelam.",
+            feedbackIncorrect: "Kurang tepat. Kuncinya adalah **kerapatan (massa jenis)**. Kapal feri memiliki rongga udara besar yang membuat volume totalnya sangat besar, sehingga massa jenis rata-ratanya lebih kecil daripada air laut dan membuatnya terapung."
         };
     }
 
@@ -1727,11 +1950,11 @@ function renderMotivasi(card, btnNext) {
         motivasiText = "Es kering (dry ice) menyublim langsung dari padat menjadi uap gas karbon dioksida. Proses ini sering dimanfaatkan untuk efek kabut konser teater (Buku Halaman 56-57)!";
         animText = "💨 Kabut Konser Es Kering 💨";
     } else if (activeMeeting === "p3") {
-        motivasiText = "Air mendidih konstan pada 100°C. Namun, logam mulia emas baru mencair di suhu 1064°C, dan permata butuh suhu dahsyat 3550°C untuk meleleh (Tabel 2.2)!";
-        animText = "🪙 Emas Leleh: 1064°C | 💎 Permata Leleh: 3550°C";
-    } else if (activeMeeting === "p4") {
         motivasiText = "Setiap reaksi kimia memiliki tanda pasti! Larutan bening timbal (II) nitrat dicampur kalium iodida secara menakjubkan berubah menghasilkan warna kuning cerah timbal (II) iodida (Buku Halaman 66)!";
         animText = "🧪 Pereaksi ➔ Produk Kuning Cerah!";
+    } else if (activeMeeting === "p4") {
+        motivasiText = "Di Laut Mati, kadar garam sangat tinggi sehingga airnya memiliki kerapatan (massa jenis) yang sangat besar. Manusia dapat mengapung santai sambil membaca koran tanpa takut tenggelam!";
+        animText = "🌊 Mengapung Bebas di Laut Mati 🌊";
     }
 
     card.innerHTML = `
@@ -5465,56 +5688,98 @@ function answerSnakes(chosen, correct) {
 
 // --- GAME P3: TEKA TEKI SILANG (CROSSWORD) ---
 function runCrossword(target, btnNext) {
+    const gridRows = 7;
+    const gridCols = 10;
+    
+    const cellConfig = {
+        "0-7": { letter: "K", number: 2 },
+        "0-9": { letter: "F", number: 3 },
+        "1-1": { letter: "E", number: 1 },
+        "1-2": { letter: "V", number: 8 },
+        "1-3": { letter: "A", number: 9 },
+        "1-4": { letter: "P", number: 10 },
+        "1-5": { letter: "O" },
+        "1-6": { letter: "R" },
+        "1-7": { letter: "A" },
+        "1-8": { letter: "S", number: 6 },
+        "1-9": { letter: "I" },
+        "2-1": { letter: "S" },
+        "2-2": { letter: "O" },
+        "2-3": { letter: "S" },
+        "2-4": { letter: "A" },
+        "2-7": { letter: "R" },
+        "2-8": { letter: "E" },
+        "2-9": { letter: "S" },
+        "3-2": { letter: "L" },
+        "3-3": { letter: "A" },
+        "3-4": { letter: "H", number: 4 },
+        "3-5": { letter: "U" },
+        "3-6": { letter: "J" },
+        "3-7": { letter: "A" },
+        "3-8": { letter: "N" },
+        "3-9": { letter: "I" },
+        "4-2": { letter: "U" },
+        "4-3": { letter: "P" },
+        "4-4": { letter: "A" },
+        "4-7": { letter: "T" },
+        "4-8": { letter: "G" },
+        "4-9": { letter: "K" },
+        "5-2": { letter: "M" },
+        "5-4": { letter: "T" },
+        "5-5": { letter: "K", number: 5 },
+        "5-6": { letter: "I" },
+        "5-7": { letter: "M" },
+        "5-8": { letter: "I" },
+        "5-9": { letter: "A" },
+        "6-2": { letter: "E" }
+    };
+
+    let gridHtml = "";
+    for (let r = 0; r < gridRows; r++) {
+        for (let c = 0; c < gridCols; c++) {
+            const key = `${r}-${c}`;
+            const conf = cellConfig[key];
+            if (conf) {
+                const numSpan = conf.number ? `<span class="crossword-number">${conf.number}</span>` : "";
+                gridHtml += `
+                    <div class="crossword-cell-wrapper">
+                        ${numSpan}
+                        <input type="text" class="crossword-cell" maxlength="1" id="cell-${r}-${c}">
+                    </div>
+                `;
+            } else {
+                gridHtml += `<div class="crossword-cell black-cell"></div>`;
+            }
+        }
+    }
+
     target.innerHTML = `
-        <div style="display:flex; flex-direction:column; gap:15px; align-items:center;">
+        <div style="display:flex; flex-direction:column; gap:15px; align-items:center; width:100%;">
             <!-- Grid Crossword -->
-            <div class="crossword-grid" style="grid-template-columns: repeat(6, 45px); grid-template-rows: repeat(5, 45px);">
-                <!-- Row 0: F(1) I S I K(2) A -->
-                <div class="crossword-cell-wrapper"><span class="crossword-number">1</span><input type="text" class="crossword-cell" maxlength="1" id="cell-0-0"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-0-1"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-0-2"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-0-3"></div>
-                <div class="crossword-cell-wrapper"><span class="crossword-number">2</span><input type="text" class="crossword-cell" maxlength="1" id="cell-0-4"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-0-5"></div>
-                
-                <!-- Row 1: [Black] [Black] [Black] [Black] I [Black] -->
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-1-4"></div>
-                <div class="crossword-cell black-cell"></div>
-                
-                <!-- Row 2: [Black] [Black] [Black] [Black] M [Black] -->
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-2-4"></div>
-                <div class="crossword-cell black-cell"></div>
-                
-                <!-- Row 3: [Black] [Black] [Black] [Black] I [Black] -->
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-3-4"></div>
-                <div class="crossword-cell black-cell"></div>
-                
-                <!-- Row 4: [Black] H(3) U J A N -->
-                <div class="crossword-cell black-cell"></div>
-                <div class="crossword-cell-wrapper"><span class="crossword-number">3</span><input type="text" class="crossword-cell" maxlength="1" id="cell-4-1"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-4-2"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-4-3"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-4-4"></div>
-                <div class="crossword-cell-wrapper"><input type="text" class="crossword-cell" maxlength="1" id="cell-4-5"></div>
+            <div class="crossword-grid" style="--grid-cols: repeat(10, 42px); --grid-rows: repeat(7, 42px); --grid-cols-mobile: repeat(10, 31px); --grid-rows-mobile: repeat(7, 31px); gap: 5px; justify-content: center; margin: 1.5rem auto; display: grid;">
+                ${gridHtml}
             </div>
             
             <!-- Pertanyaan Clues -->
-            <div style="background:white; padding:15px; border-radius:18px; border:2px solid #cbd5e1; width:100%;">
-                <p><strong>1 Mendatar:</strong> Perubahan zat tanpa menghasilkan zat baru (6 Kotak)</p>
-                <p><strong>2 Menurun:</strong> Perubahan zat yang menghasilkan zat jenis baru (5 Kotak)</p>
-                <p><strong>3 Mendatar:</strong> Hasil presipitasi uap air di awan dalam siklus air (5 Kotak)</p>
+            <div style="background:white; padding:20px; border-radius:18px; border:2px solid #cbd5e1; width:100%; text-align:left; box-sizing:border-box; font-size:0.95rem; line-height:1.6;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div>
+                        <h4 style="margin:0 0 10px 0; color:var(--primary); font-weight:900; font-size:1.1rem;">➡️ MENDATAR:</h4>
+                        <p style="margin:4px 0;"><strong>1:</strong> Proses penguapan air permukaan karena panas matahari (9 Kotak)</p>
+                        <p style="margin:4px 0;"><strong>4:</strong> Hasil presipitasi uap air di awan dalam siklus air (5 Kotak)</p>
+                        <p style="margin:4px 0;"><strong>5:</strong> Perubahan zat yang menghasilkan zat jenis baru (5 Kotak)</p>
+                    </div>
+                    <div>
+                        <h4 style="margin:0 0 10px 0; color:var(--secondary); font-weight:900; font-size:1.1rem;">⬇️ MENURUN:</h4>
+                        <p style="margin:4px 0;"><strong>1:</strong> Zat air dalam wujud padat (2 Kotak)</p>
+                        <p style="margin:4px 0;"><strong>2:</strong> Kerusakan logam besi akibat bereaksi dengan air & oksigen (5 Kotak)</p>
+                        <p style="margin:4px 0;"><strong>3:</strong> Perubahan zat tanpa menghasilkan zat baru (6 Kotak)</p>
+                        <p style="margin:4px 0;"><strong>6:</strong> Logam anti karat yang sering dipakai melapisi atap seng (4 Kotak)</p>
+                        <p style="margin:4px 0;"><strong>8:</strong> Ukuran banyaknya ruang yang ditempati suatu materi (6 Kotak)</p>
+                        <p style="margin:4px 0;"><strong>9:</strong> Gas sisa pembakaran yang melayang di udara (4 Kotak)</p>
+                        <p style="margin:4px 0;"><strong>10:</strong> Alat pertukangan untuk melubangi atau mengukir kayu (5 Kotak)</p>
+                    </div>
+                </div>
             </div>
             
             <button class="btn-icon" style="width:100%;" id="btn-check-crossword">Periksa Teka-Teki ✍️</button>
@@ -5523,12 +5788,30 @@ function runCrossword(target, btnNext) {
     
     document.getElementById("btn-check-crossword").addEventListener("click", () => {
         const answers = {
-            m1: getGridWord(["0-0", "0-1", "0-2", "0-3", "0-4", "0-5"]),
-            m2: getGridWord(["0-4", "1-4", "2-4", "3-4", "4-4"]),
-            m3: getGridWord(["4-1", "4-2", "4-3", "4-4", "4-5"])
+            m1: getGridWord(["1-1", "1-2", "1-3", "1-4", "1-5", "1-6", "1-7", "1-8", "1-9"]), // EVAPORASI
+            m4: getGridWord(["3-4", "3-5", "3-6", "3-7", "3-8"]), // HUJAN
+            m5: getGridWord(["5-5", "5-6", "5-7", "5-8", "5-9"]), // KIMIA
+            d1: getGridWord(["1-1", "2-1"]), // ES
+            d2: getGridWord(["0-7", "1-7", "2-7", "3-7", "4-7"]), // KARAT
+            d3: getGridWord(["0-9", "1-9", "2-9", "3-9", "4-9", "5-9"]), // FISIKA
+            d6: getGridWord(["1-8", "2-8", "3-8", "4-8"]), // SENG
+            d8: getGridWord(["1-2", "2-2", "3-2", "4-2", "5-2", "6-2"]), // VOLUME
+            d9: getGridWord(["1-3", "2-3", "3-3", "4-3"]), // ASAP
+            d10: getGridWord(["1-4", "2-4", "3-4", "4-4", "5-4"]) // PAHAT
         };
         
-        if (answers.m1 === "FISIKA" && answers.m2 === "KIMIA" && answers.m3 === "HUJAN") {
+        if (
+            answers.m1 === "EVAPORASI" &&
+            answers.m4 === "HUJAN" &&
+            answers.m5 === "KIMIA" &&
+            answers.d1 === "ES" &&
+            answers.d2 === "KARAT" &&
+            answers.d3 === "FISIKA" &&
+            answers.d6 === "SENG" &&
+            answers.d8 === "VOLUME" &&
+            answers.d9 === "ASAP" &&
+            answers.d10 === "PAHAT"
+        ) {
             winTTS();
         } else {
             SoundEffects.playWrong();
@@ -5549,7 +5832,7 @@ function runCrossword(target, btnNext) {
         sendDataToGoogleSheet({
             type: "Latihan",
             score: "TTS Selesai (Menang)",
-            details: "Berhasil menyelesaikan teka-teki silang dengan benar"
+            details: "Berhasil menyelesaikan teka-teki silang dengan 10 soal secara benar"
         });
         target.innerHTML = `
             <div style="text-align:center; padding: 2rem 0;">

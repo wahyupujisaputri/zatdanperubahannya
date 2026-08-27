@@ -2228,8 +2228,8 @@ input[type=range]::-webkit-slider-thumb:hover {
 /* --- GAME 3: CROSSWORD (TTS) --- */
 .crossword-grid {
     display: grid;
-    grid-template-columns: repeat(6, 45px);
-    grid-template-rows: repeat(5, 45px);
+    grid-template-columns: var(--grid-cols, repeat(6, 45px));
+    grid-template-rows: var(--grid-rows, repeat(5, 45px));
     gap: 5px;
     justify-content: center;
     margin: 1.5rem auto;
@@ -2656,10 +2656,9 @@ button:disabled {
         border-bottom-width: 4px !important;
     }
 
-    /* Teka Teki Silang (TTS) */
     .crossword-grid {
-        grid-template-columns: repeat(6, 35px) !important;
-        grid-template-rows: repeat(5, 35px) !important;
+        grid-template-columns: var(--grid-cols-mobile, repeat(6, 35px)) !important;
+        grid-template-rows: var(--grid-rows-mobile, repeat(5, 35px)) !important;
         gap: 3px !important;
     }
 
