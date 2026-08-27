@@ -58,6 +58,19 @@ let compBots = [
     { name: "Roni", score: 0, accuracy: 0.60, thinkTime: 0, hasAnswered: false },
     { name: "Budi", score: 0, accuracy: 0.78, thinkTime: 0, hasAnswered: false }
 ];
+
+function initializeCompBots() {
+    const availableNames = studentNamesList.filter(name => name !== studentName);
+    const shuffled = [...availableNames].sort(() => Math.random() - 0.5);
+    const selectedNames = shuffled.slice(0, 4);
+
+    compBots = [
+        { name: selectedNames[0] || "Siti", score: 0, accuracy: 0.85, thinkTime: 0, hasAnswered: false },
+        { name: selectedNames[1] || "Andi", score: 0, accuracy: 0.72, thinkTime: 0, hasAnswered: false },
+        { name: selectedNames[2] || "Roni", score: 0, accuracy: 0.60, thinkTime: 0, hasAnswered: false },
+        { name: selectedNames[3] || "Budi", score: 0, accuracy: 0.78, thinkTime: 0, hasAnswered: false }
+    ];
+}
 let activeLeaderboardTab = "p1";
 
 // --- AUDIO SYNTHESIZER UTILITY (Web Audio API) ---
@@ -1171,27 +1184,38 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     if (!localStorage.getItem("ppgClassroomLeaderboard")) {
+        const getRandNames = (count) => {
+            const filtered = studentNamesList.filter(n => n !== studentName);
+            const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, count);
+        };
+        
+        const p1Names = getRandNames(4);
+        const p2Names = getRandNames(3);
+        const p3Names = getRandNames(3);
+        const p4Names = getRandNames(3);
+
         const defaultLeaderboard = {
             p1: [
-                { name: "Siti", score: 8850 },
-                { name: "Andi", score: 7920 },
-                { name: "Budi", score: 6510 },
-                { name: "Roni", score: 5800 }
+                { name: p1Names[0] || "Siti", score: 8850 },
+                { name: p1Names[1] || "Andi", score: 7920 },
+                { name: p1Names[2] || "Budi", score: 6510 },
+                { name: p1Names[3] || "Roni", score: 5800 }
             ],
             p2: [
-                { name: "Andi", score: 8410 },
-                { name: "Siti", score: 7850 },
-                { name: "Budi", score: 6920 }
+                { name: p2Names[0] || "Andi", score: 8410 },
+                { name: p2Names[1] || "Siti", score: 7850 },
+                { name: p2Names[2] || "Budi", score: 6920 }
             ],
             p3: [
-                { name: "Siti", score: 9120 },
-                { name: "Roni", score: 8250 },
-                { name: "Andi", score: 7530 }
+                { name: p3Names[0] || "Siti", score: 9120 },
+                { name: p3Names[1] || "Roni", score: 8250 },
+                { name: p3Names[2] || "Andi", score: 7530 }
             ],
             p4: [
-                { name: "Andi", score: 12580 },
-                { name: "Siti", score: 11020 },
-                { name: "Roni", score: 9810 }
+                { name: p4Names[0] || "Andi", score: 12580 },
+                { name: p4Names[1] || "Siti", score: 11020 },
+                { name: p4Names[2] || "Roni", score: 9810 }
             ]
         };
         localStorage.setItem("ppgClassroomLeaderboard", JSON.stringify(defaultLeaderboard));
@@ -1336,6 +1360,9 @@ function startMeeting(meetingId) {
     userAnswers = {};
     
     updateStars(0);
+    
+    studentName = localStorage.getItem("studentName") || "";
+    initializeCompBots();
     
     document.getElementById("view-dashboard").classList.remove("active");
     document.getElementById("view-meeting").classList.add("active");
@@ -1624,6 +1651,7 @@ function renderSplash(card, btnNext) {
         SoundEffects.playClick();
         studentName = nameInput;
         localStorage.setItem("studentName", studentName);
+        initializeCompBots();
         nextStep();
     });
 }
@@ -6190,6 +6218,15 @@ function popBalloon(idx, correct) {
 function renderRefleksi(card, btnNext) {
     disableNextButton(btnNext);
 
+    const availableNames = studentNamesList.filter(name => name !== studentName);
+    const shuffled = [...availableNames].sort(() => Math.random() - 0.5);
+    const selectedNames = shuffled.slice(0, 4);
+
+    const classmate1 = selectedNames[0] || "Siti";
+    const classmate2 = selectedNames[1] || "Andi";
+    const classmate3 = selectedNames[2] || "Budi";
+    const classmate4 = selectedNames[3] || "Roni";
+
     card.innerHTML = `
         <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem; text-align:center;">✍️ Refleksi Belajar Hari Ini</h3>
         <p style="font-weight: 800; margin-bottom: 10px; text-align:center;">Bagaimana perasaanmu setelah belajar petualangan hari ini?</p>
@@ -6210,9 +6247,9 @@ function renderRefleksi(card, btnNext) {
         <div class="hidden" id="menti-wall-container" style="animation:fadeIn 0.4s ease;">
             <h4 style="font-weight:900; font-size:1.1rem; color:var(--primary); margin-bottom:5px; text-align:center;">💬 MENTIMETER WALL KELAS</h4>
             <div class="menti-wall" id="menti-bubbles-box">
-                <div class="menti-bubble">Siti: Kuis katak lompat seru banget!</div>
-                <div class="menti-bubble">Andi: Sekarang aku tahu perbedaan fisika kimia.</div>
-                <div class="menti-bubble">Budi: Eksperimen teh celupnya keren!</div>
+                <div class="menti-bubble">${classmate1}: Kuis katak lompat seru banget!</div>
+                <div class="menti-bubble">${classmate2}: Sekarang aku tahu perbedaan fisika kimia.</div>
+                <div class="menti-bubble">${classmate3}: Eksperimen teh celupnya keren!</div>
             </div>
         </div>
     `;
@@ -6251,11 +6288,11 @@ function renderRefleksi(card, btnNext) {
         wall.classList.remove("hidden");
         
         const box = document.getElementById("menti-bubbles-box");
-        box.innerHTML += `<div class="menti-bubble player-bubble">Anda: ${textVal}</div>`;
+        box.innerHTML += `<div class="menti-bubble player-bubble">${studentName || "Anda"}: ${textVal}</div>`;
         
         // Add more fake comments after 1 sec
         setTimeout(() => {
-            box.innerHTML += `<div class="menti-bubble">Roni: Penjelasan slides guru membantuku paham.</div>`;
+            box.innerHTML += `<div class="menti-bubble">${classmate4}: Penjelasan slides guru membantuku paham.</div>`;
             box.scrollTop = box.scrollHeight;
         }, 1000);
         
@@ -6437,7 +6474,7 @@ function handlePlayerAnswer(playerChoiceIdx) {
 
 function renderLiveLeaderboard() {
     const list = [
-        { name: "Anda", score: compPlayerScore, isPlayer: true, hasAnswered: true },
+        { name: studentName || "Anda", score: compPlayerScore, isPlayer: true, hasAnswered: true },
         ...compBots.map(b => ({ name: b.name, score: b.score, isPlayer: false, hasAnswered: b.hasAnswered }))
     ];
     
@@ -6463,7 +6500,7 @@ function renderLiveLeaderboard() {
 function showCompetitionPodium() {
     clearInterval(compTimerInterval);
     const list = [
-        { name: "Anda", score: compPlayerScore, isPlayer: true },
+        { name: studentName || "Anda", score: compPlayerScore, isPlayer: true },
         ...compBots.map(b => ({ name: b.name, score: b.score, isPlayer: false }))
     ];
     list.sort((a, b) => b.score - a.score);
