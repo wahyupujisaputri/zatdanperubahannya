@@ -1192,42 +1192,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     
-    if (!localStorage.getItem("ppgClassroomLeaderboard")) {
-        const getRandNames = (count) => {
-            const filtered = studentNamesList.filter(n => n !== studentName);
-            const shuffled = [...filtered].sort(() => Math.random() - 0.5);
-            return shuffled.slice(0, count);
-        };
-        
-        const p1Names = getRandNames(4);
-        const p2Names = getRandNames(3);
-        const p3Names = getRandNames(3);
-        const p4Names = getRandNames(3);
-
-        const defaultLeaderboard = {
-            p1: [
-                { name: p1Names[0] || "Siti", score: 8850 },
-                { name: p1Names[1] || "Andi", score: 7920 },
-                { name: p1Names[2] || "Budi", score: 6510 },
-                { name: p1Names[3] || "Roni", score: 5800 }
-            ],
-            p2: [
-                { name: p2Names[0] || "Andi", score: 8410 },
-                { name: p2Names[1] || "Siti", score: 7850 },
-                { name: p2Names[2] || "Budi", score: 6920 }
-            ],
-            p3: [
-                { name: p3Names[0] || "Siti", score: 9120 },
-                { name: p3Names[1] || "Roni", score: 8250 },
-                { name: p3Names[2] || "Andi", score: 7530 }
-            ],
-            p4: [
-                { name: p4Names[0] || "Andi", score: 12580 },
-                { name: p4Names[1] || "Siti", score: 11020 },
-                { name: p4Names[2] || "Roni", score: 9810 }
-            ]
-        };
-        localStorage.setItem("ppgClassroomLeaderboard", JSON.stringify(defaultLeaderboard));
+    // Clean up old fake leaderboard data once
+    if (!localStorage.getItem("leaderboardCleanedV2")) {
+        localStorage.removeItem("ppgClassroomLeaderboard");
+        localStorage.setItem("leaderboardCleanedV2", "true");
     }
 });
 
@@ -1397,11 +1365,78 @@ function getBubbleHtml(name, details) {
 }
 
 // --- DATABASE PAPAN PERINGKAT KELAS LOCAL ---
-function openLeaderboard() {
+function getMeetingTitleById(id) {
+    if (id === "p1") return "Pertemuan 1: Wujud Zat & Model Partikel";
+    if (id === "p2") return "Pertemuan 2: Perubahan Wujud Zat, Titik Didih & Leleh";
+    if (id === "p3") return "Pertemuan 3: Perubahan Fisika, Kimia & Siklus Air";
+    if (id === "p4") return "Pertemuan 4: Kerapatan Zat (Massa Jenis)";
+    return "Umum";
+}
+
+function getMergedLeaderboard(tabId) {
+    const meetingTitle = getMeetingTitleById(tabId);
+    const scoresMap = new Map();
+    
+    // 1. Ambil data dari spreadsheet (onlineClassroomData)
+    if (Array.isArray(onlineClassroomData)) {
+        onlineClassroomData.forEach(row => {
+            if (row.meeting === meetingTitle && (row.type === "Posttest" || row.type === "Kompetisi")) {
+                let gamePoints = 0;
+                if (row.details) {
+                    const match = row.details.match(/Poin game:\s*(\d+)/);
+                    if (match) {
+                        gamePoints = parseInt(match[1]);
+                    }
+                }
+                if (gamePoints === 0 && row.score) {
+                    const scoreVal = parseInt(row.score);
+                    if (!isNaN(scoreVal)) {
+                        gamePoints = scoreVal * 10;
+                    }
+                }
+                if (row.name && row.name !== "Anonim") {
+                    scoresMap.set(row.name, Math.max(scoresMap.get(row.name) || 0, gamePoints));
+                }
+            }
+        });
+    }
+    
+    // 2. Ambil data dari local storage (ppgClassroomLeaderboard)
+    const localLeaderboard = JSON.parse(localStorage.getItem("ppgClassroomLeaderboard")) || {};
+    const localList = localLeaderboard[tabId] || [];
+    localList.forEach(item => {
+        if (item.name && item.name !== "Anonim") {
+            const scoreVal = parseInt(item.score) || 0;
+            scoresMap.set(item.name, Math.max(scoresMap.get(item.name) || 0, scoreVal));
+        }
+    });
+    
+    // 3. Ubah Map menjadi Array
+    const list = [];
+    scoresMap.forEach((score, name) => {
+        list.push({ name: name, score: score });
+    });
+    
+    // 4. Urutkan berdasarkan skor tertinggi
+    list.sort((a, b) => b.score - a.score);
+    return list;
+}
+
+async function openLeaderboard() {
     SoundEffects.playClick();
     document.getElementById("view-dashboard").classList.remove("active");
     document.getElementById("view-leaderboard").classList.add("active");
+    
+    // Tampilkan data yang ada terlebih dahulu
     switchLeaderboardTab(activeLeaderboardTab);
+    
+    // Sinkronisasi data terbaru dari spreadsheet secara online
+    try {
+        await fetchOnlineClassroomData();
+        switchLeaderboardTab(activeLeaderboardTab);
+    } catch (e) {
+        console.warn("Gagal sinkronisasi data online papan peringkat:", e);
+    }
 }
 
 function closeLeaderboard() {
@@ -1420,16 +1455,13 @@ function switchLeaderboardTab(tabId) {
     });
     document.getElementById(`btn-lead-${tabId}`).classList.add("active");
     
-    const leaderboardData = JSON.parse(localStorage.getItem("ppgClassroomLeaderboard")) || {};
-    const list = leaderboardData[tabId] || [];
-    
-    list.sort((a, b) => b.score - a.score);
+    const list = getMergedLeaderboard(tabId);
     
     const tbody = document.getElementById("leaderboard-rows-box");
     tbody.innerHTML = "";
     
     if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" style="padding:15px; text-align:center; color:var(--text-muted);">Belum ada rekor skor dicatat.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" style="padding:15px; text-align:center; color:var(--text-muted); font-size:1.05rem;">Belum ada rekor skor dicatat.</td></tr>`;
         return;
     }
     
