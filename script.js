@@ -6257,8 +6257,16 @@ function renderRefleksi(card, btnNext) {
         </div>
 
         <div class="hidden" id="ref-opinion-container" style="animation:fadeIn 0.3s ease;">
-            <p style="font-weight:800; margin-bottom:8px;">Tuliskan apa yang kamu rasakan atau pelajari hari ini:</p>
-            <input type="text" id="ref-opinion-input" placeholder="Contoh: Sangat menyenangkan belajar partikel..." style="width:100%; padding:12px; border:3px solid #cbd5e1; border-radius:15px; font-weight:800; outline:none; font-family:var(--font); margin-bottom:12px;">
+            <div style="margin-bottom: 12px; text-align: left;">
+                <p style="font-weight:800; margin-bottom:8px;">1. Tuliskan apa yang kamu rasakan atau pelajari hari ini:</p>
+                <input type="text" id="ref-opinion-input" placeholder="Contoh: Sangat menyenangkan belajar partikel..." style="width:100%; padding:12px; border:3px solid #cbd5e1; border-radius:15px; font-weight:800; outline:none; font-family:var(--font); box-sizing: border-box;">
+            </div>
+            
+            <div style="margin-bottom: 15px; text-align: left;">
+                <p style="font-weight:800; margin-bottom:8px;">2. Setelah pembelajaran hari ini, hal apa yang masih ingin kamu ketahui atau coba cari tahu?</p>
+                <input type="text" id="ref-curiosity-input" placeholder="Contoh: Mengapa minyak goreng tidak larut dalam air..." style="width:100%; padding:12px; border:3px solid #cbd5e1; border-radius:15px; font-weight:800; outline:none; font-family:var(--font); box-sizing: border-box;">
+            </div>
+            
             <button class="btn-icon" style="width:100%;" id="btn-submit-ref-menti">Kirim ke Mentimeter Wall 🚀</button>
         </div>
 
@@ -6266,9 +6274,9 @@ function renderRefleksi(card, btnNext) {
         <div class="hidden" id="menti-wall-container" style="animation:fadeIn 0.4s ease;">
             <h4 style="font-weight:900; font-size:1.1rem; color:var(--primary); margin-bottom:5px; text-align:center;">💬 MENTIMETER WALL KELAS</h4>
             <div class="menti-wall" id="menti-bubbles-box">
-                <div class="menti-bubble">${classmate1}: Kuis katak lompat seru banget!</div>
-                <div class="menti-bubble">${classmate2}: Sekarang aku tahu perbedaan fisika kimia.</div>
-                <div class="menti-bubble">${classmate3}: Eksperimen teh celupnya keren!</div>
+                <div class="menti-bubble">${classmate1}: Kuis katak lompat seru banget! <br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: Mengapa sirup menyebar sendiri tanpa diaduk?</span></div>
+                <div class="menti-bubble">${classmate2}: Sekarang aku tahu perbedaan fisika kimia. <br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: Apakah besi bisa berkarat di luar angkasa?</span></div>
+                <div class="menti-bubble">${classmate3}: Eksperimen teh celupnya keren! <br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: Bagaimana es bisa menyublim jadi gas?</span></div>
             </div>
         </div>
     `;
@@ -6293,8 +6301,10 @@ function renderRefleksi(card, btnNext) {
 
     document.getElementById("btn-submit-ref-menti").addEventListener("click", () => {
         const textVal = document.getElementById("ref-opinion-input").value.trim();
-        if (textVal.length < 3) {
-            alert("Tuliskan perasaanmu dulu ya!");
+        const curiosityVal = document.getElementById("ref-curiosity-input").value.trim();
+        
+        if (textVal.length < 3 || curiosityVal.length < 3) {
+            alert("Harap jawab kedua pertanyaan refleksi terlebih dahulu ya!");
             return;
         }
         
@@ -6307,11 +6317,21 @@ function renderRefleksi(card, btnNext) {
         wall.classList.remove("hidden");
         
         const box = document.getElementById("menti-bubbles-box");
-        box.innerHTML += `<div class="menti-bubble player-bubble">${studentName || "Anda"}: ${textVal}</div>`;
+        box.innerHTML += `
+            <div class="menti-bubble player-bubble">
+                ${studentName || "Anda"}: ${textVal}
+                <br><span style="font-size:0.85rem; opacity:0.9; font-weight:700;">🔍 Ingin tahu: ${curiosityVal}</span>
+            </div>
+        `;
         
         // Add more fake comments after 1 sec
         setTimeout(() => {
-            box.innerHTML += `<div class="menti-bubble">${classmate4}: Penjelasan slides guru membantuku paham.</div>`;
+            box.innerHTML += `
+                <div class="menti-bubble">
+                    ${classmate4}: Penjelasan slides guru membantuku paham.
+                    <br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: Bagaimana cara kerja kapal selam terapung?</span>
+                </div>
+            `;
             box.scrollTop = box.scrollHeight;
         }, 1000);
         
@@ -6319,7 +6339,7 @@ function renderRefleksi(card, btnNext) {
         sendDataToGoogleSheet({
             type: "Refleksi",
             score: "-",
-            details: textVal
+            details: `Pelajari: ${textVal} | Ingin Tahu: ${curiosityVal}`
         });
         enableNextButton(btnNext);
         setAvatar("celebrate", "Refleksimu masuk Mentimeter kelas! Klik Lanjut ke Ujian Posttest!");
