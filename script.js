@@ -39,6 +39,7 @@ const studentNamesList = [
     "ZAHEEN ZAIMA REIZA"
 ];
 let studentName = "";
+let onlineClassroomData = [];
 let pretestAnalysis = [];
 let posttestAnalysis = [];
 let posttestCorrectCount = 0;
@@ -1293,6 +1294,90 @@ function sendDataToGoogleSheet(data) {
     });
 }
 
+// --- FETCH ONLINE CLASSROOM DATA ---
+async function fetchOnlineClassroomData() {
+    const url = localStorage.getItem("googleSheetWebAppUrl") || "";
+    if (!url) {
+        onlineClassroomData = [];
+        return [];
+    }
+    
+    try {
+        console.log("Mengambil data online dari Google Sheet...");
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Fetch failed with status " + response.status);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+            onlineClassroomData = data;
+            console.log("Data online berhasil disinkronisasi:", onlineClassroomData.length, "baris.");
+            return data;
+        }
+    } catch (e) {
+        console.warn("Gagal mengambil data online dari Google Sheet:", e);
+    }
+    return onlineClassroomData;
+}
+
+function getOnlinePosttestScores() {
+    const meetingTitle = getMeetingTitle();
+    const scoresMap = new Map();
+    
+    onlineClassroomData.forEach(row => {
+        if (row.type === "Posttest" && row.meeting === meetingTitle && row.name !== studentName) {
+            let gamePoints = 0;
+            if (row.details) {
+                const match = row.details.match(/Poin game:\s*(\d+)/);
+                if (match) {
+                    gamePoints = parseInt(match[1]);
+                }
+            }
+            if (gamePoints === 0 && row.score) {
+                const scoreVal = parseInt(row.score);
+                if (!isNaN(scoreVal)) {
+                    gamePoints = scoreVal * 10;
+                }
+            }
+            scoresMap.set(row.name, Math.max(scoresMap.get(row.name) || 0, gamePoints));
+        }
+    });
+    
+    const bots = [];
+    scoresMap.forEach((score, name) => {
+        bots.push({
+            name: name,
+            score: score,
+            accuracy: 0.8,
+            thinkTime: 0,
+            hasAnswered: true
+        });
+    });
+    
+    return bots;
+}
+
+async function syncOnlineData() {
+    await fetchOnlineClassroomData();
+    const onlineBots = getOnlinePosttestScores();
+    compBots = onlineBots;
+}
+
+function getBubbleHtml(name, details) {
+    let pelajari = details;
+    let inginTahu = "";
+    
+    if (details.includes("Pelajari:") && details.includes("Ingin Tahu:")) {
+        const parts = details.split("Ingin Tahu:");
+        pelajari = parts[0].replace("Pelajari:", "").trim();
+        if (pelajari.endsWith("|")) {
+            pelajari = pelajari.slice(0, -1).trim();
+        }
+        inginTahu = parts[1].trim();
+    }
+    
+    const inginTahuHtml = inginTahu ? `<br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: ${inginTahu}</span>` : "";
+    return `<div class="menti-bubble">${name}: ${pelajari}${inginTahuHtml}</div>`;
+}
+
 // --- DATABASE PAPAN PERINGKAT KELAS LOCAL ---
 function openLeaderboard() {
     SoundEffects.playClick();
@@ -1352,7 +1437,7 @@ function switchLeaderboardTab(tabId) {
 }
 
 // --- ENGINE NAVIGASI UTAMA WIZARD (13 LANGKAH) ---
-function startMeeting(meetingId) {
+async function startMeeting(meetingId) {
     SoundEffects.playClick();
     activeMeeting = meetingId;
     currentStep = 0;
@@ -1362,7 +1447,7 @@ function startMeeting(meetingId) {
     updateStars(0);
     
     studentName = localStorage.getItem("studentName") || "";
-    initializeCompBots();
+    await syncOnlineData();
     
     document.getElementById("view-dashboard").classList.remove("active");
     document.getElementById("view-meeting").classList.add("active");
@@ -6234,17 +6319,43 @@ function popBalloon(idx, correct) {
 }
 
 // 11. Refleksi (Emoji + Mentimeter Wall Tanggapan)
-function renderRefleksi(card, btnNext) {
+async function renderRefleksi(card, btnNext) {
     disableNextButton(btnNext);
 
-    const availableNames = studentNamesList.filter(name => name !== studentName);
-    const shuffled = [...availableNames].sort(() => Math.random() - 0.5);
-    const selectedNames = shuffled.slice(0, 4);
+    card.innerHTML = `
+        <div style="text-align:center; padding: 3rem 0;">
+            <div style="font-size:3.5rem; margin-bottom:1rem; animation: spin 2s linear infinite; display: inline-block;">⏳</div>
+            <p style="font-weight:800; font-size:1.15rem; color: var(--primary);">Memuat Mentimeter Wall Kelas...</p>
+            <p style="font-size:0.95rem; color: var(--text-muted); margin-top:5px;">Mengambil tanggapan dari teman sekelas...</p>
+        </div>
+    `;
+    
+    await fetchOnlineClassroomData();
+    
+    const meetingTitle = getMeetingTitle();
+    const realComments = [];
+    const seenNames = new Set();
+    
+    for (let i = onlineClassroomData.length - 1; i >= 0; i--) {
+        const row = onlineClassroomData[i];
+        if (row.type === "Refleksi" && row.meeting === meetingTitle && row.name !== studentName) {
+            if (!seenNames.has(row.name)) {
+                seenNames.add(row.name);
+                realComments.push(row);
+            }
+        }
+    }
+    
+    realComments.reverse();
 
-    const classmate1 = selectedNames[0] || "Siti";
-    const classmate2 = selectedNames[1] || "Andi";
-    const classmate3 = selectedNames[2] || "Budi";
-    const classmate4 = selectedNames[3] || "Roni";
+    let bubblesHtml = "";
+    if (realComments.length === 0) {
+        bubblesHtml = `<div style="text-align:center; padding: 15px; font-weight:800; color:var(--text-muted); font-size:0.95rem;" id="no-comments-placeholder">Belum ada respon dari teman sekelas. Jadilah yang pertama mengisi! ✍️</div>`;
+    } else {
+        realComments.forEach(c => {
+            bubblesHtml += getBubbleHtml(c.name, c.details);
+        });
+    }
 
     card.innerHTML = `
         <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem; text-align:center;">✍️ Refleksi Belajar Hari Ini</h3>
@@ -6274,9 +6385,7 @@ function renderRefleksi(card, btnNext) {
         <div class="hidden" id="menti-wall-container" style="animation:fadeIn 0.4s ease;">
             <h4 style="font-weight:900; font-size:1.1rem; color:var(--primary); margin-bottom:5px; text-align:center;">💬 MENTIMETER WALL KELAS</h4>
             <div class="menti-wall" id="menti-bubbles-box">
-                <div class="menti-bubble">${classmate1}: Kuis katak lompat seru banget! <br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: Mengapa sirup menyebar sendiri tanpa diaduk?</span></div>
-                <div class="menti-bubble">${classmate2}: Sekarang aku tahu perbedaan fisika kimia. <br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: Apakah besi bisa berkarat di luar angkasa?</span></div>
-                <div class="menti-bubble">${classmate3}: Eksperimen teh celupnya keren! <br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: Bagaimana es bisa menyublim jadi gas?</span></div>
+                ${bubblesHtml}
             </div>
         </div>
     `;
@@ -6317,23 +6426,16 @@ function renderRefleksi(card, btnNext) {
         wall.classList.remove("hidden");
         
         const box = document.getElementById("menti-bubbles-box");
+        const placeholder = document.getElementById("no-comments-placeholder");
+        if (placeholder) placeholder.remove();
+        
         box.innerHTML += `
             <div class="menti-bubble player-bubble">
                 ${studentName || "Anda"}: ${textVal}
                 <br><span style="font-size:0.85rem; opacity:0.9; font-weight:700;">🔍 Ingin tahu: ${curiosityVal}</span>
             </div>
         `;
-        
-        // Add more fake comments after 1 sec
-        setTimeout(() => {
-            box.innerHTML += `
-                <div class="menti-bubble">
-                    ${classmate4}: Penjelasan slides guru membantuku paham.
-                    <br><span style="font-size:0.85rem; opacity:0.8; font-weight:700;">🔍 Ingin tahu: Bagaimana cara kerja kapal selam terapung?</span>
-                </div>
-            `;
-            box.scrollTop = box.scrollHeight;
-        }, 1000);
+        box.scrollTop = box.scrollHeight;
         
         updateStars(10);
         sendDataToGoogleSheet({
@@ -6346,11 +6448,20 @@ function renderRefleksi(card, btnNext) {
     });
 }
 
-// 12. Posttest
-function renderPosttest(card, btnNext) {
+async function renderPosttest(card, btnNext) {
     disableNextButton(btnNext);
     compType = "posttest";
     compQuestionsList = meetingsConfig[activeMeeting].posttest;
+    
+    card.innerHTML = `
+        <div style="text-align:center; padding: 3rem 0;">
+            <div style="font-size:3.5rem; margin-bottom:1rem; animation: spin 2s linear infinite; display: inline-block;">⏳</div>
+            <p style="font-weight:800; font-size:1.15rem; color: var(--primary);">Menghubungkan ke Papan Skor Kelas Online...</p>
+            <p style="font-size:0.95rem; color: var(--text-muted); margin-top:5px;">Mengambil data ujian teman sekelas...</p>
+        </div>
+    `;
+    
+    await syncOnlineData();
     startCompetitionQuiz(card);
 }
 
