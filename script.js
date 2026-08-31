@@ -1227,13 +1227,11 @@ function updateLevelCards() {
             unlocked = true;
         } else if (meetingId === "p3") {
             const p2Completed = localStorage.getItem("p2_completed") === "true";
-            const p3Accessed = localStorage.getItem("p3_accessed") === "true";
-            unlocked = p2Completed || p3Accessed;
+            unlocked = p2Completed;
             alertMsg = "Level ini terkunci! Selesaikan Pertemuan 2 terlebih dahulu.";
         } else if (meetingId === "p4") {
             const p3Completed = localStorage.getItem("p3_completed") === "true";
-            const p4Accessed = localStorage.getItem("p4_accessed") === "true";
-            unlocked = p3Completed || p4Accessed;
+            unlocked = p3Completed;
             alertMsg = "Level ini terkunci! Selesaikan Pertemuan 3 terlebih dahulu.";
         }
         
