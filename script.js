@@ -3,6 +3,7 @@ let activeMeeting = null;
 let currentStep = 0;       // 0 sampai 14 (Total 15 langkah)
 let activeSubStep = 1;     // 1 sampai 4 (Misi Eksplorasi)
 let userStars = 0;
+let maxStepReached = 0;
 let userAnswers = {};
 const studentNamesList = [
     "GURU",
@@ -1198,7 +1199,96 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.removeItem("ppgClassroomLeaderboard");
         localStorage.setItem("leaderboardCleanedV2", "true");
     }
+    
+    // Update level locks on startup
+    updateLevelCards();
 });
+
+// --- LEVEL LOCK & SCORE PERSISTENCE UTILITIES ---
+function updateLevelCards() {
+    const cards = ["p1", "p2", "p3", "p4"];
+    const originalContent = {
+        p1: { icon: "🔬", title: "Pertemuan 1", desc: "Wujud Zat & Model Partikel" },
+        p2: { icon: "🔥", title: "Pertemuan 2", desc: "Perubahan Wujud & Titik Didih/Leleh" },
+        p3: { icon: "🌡️", title: "Pertemuan 3", desc: "Perubahan Fisika & Kimia" },
+        p4: { icon: "☀️", title: "Pertemuan 4", desc: "Kerapatan Zat" }
+    };
+    
+    cards.forEach(meetingId => {
+        const card = document.getElementById("card-" + meetingId);
+        if (!card) return;
+        
+        let unlocked = false;
+        let alertMsg = "";
+        
+        if (meetingId === "p1") {
+            unlocked = true;
+        } else if (meetingId === "p2") {
+            unlocked = true;
+        } else if (meetingId === "p3") {
+            const p2Completed = localStorage.getItem("p2_completed") === "true";
+            const p3Accessed = localStorage.getItem("p3_accessed") === "true";
+            unlocked = p2Completed || p3Accessed;
+            alertMsg = "Level ini terkunci! Selesaikan Pertemuan 2 terlebih dahulu.";
+        } else if (meetingId === "p4") {
+            const p3Completed = localStorage.getItem("p3_completed") === "true";
+            const p4Accessed = localStorage.getItem("p4_accessed") === "true";
+            unlocked = p3Completed || p4Accessed;
+            alertMsg = "Level ini terkunci! Selesaikan Pertemuan 3 terlebih dahulu.";
+        }
+        
+        const orig = originalContent[meetingId];
+        if (unlocked) {
+            card.classList.remove("locked");
+            card.setAttribute("onclick", `startMeeting('${meetingId}')`);
+            card.innerHTML = `
+                <div class="level-icon">${orig.icon}</div>
+                <h3>${orig.title}</h3>
+                <p>${orig.desc}</p>
+            `;
+        } else {
+            card.classList.add("locked");
+            card.setAttribute("onclick", `alert('${alertMsg}')`);
+            card.innerHTML = `
+                <div class="level-icon" style="position: relative;">
+                    ${orig.icon}
+                    <span style="position: absolute; bottom: 0; right: 0; font-size: 2rem; background: rgba(255,255,255,0.9); border-radius: 50%; padding: 2px;">🔒</span>
+                </div>
+                <h3>${orig.title} (Terkunci)</h3>
+                <p>${orig.desc}</p>
+            `;
+        }
+    });
+}
+
+function saveScoreLocal(meetingId, name, type, score) {
+    if (!name || name.toLowerCase() === "guru") return;
+    const scores = JSON.parse(localStorage.getItem("ppgStudentScores")) || {};
+    if (!scores[meetingId]) {
+        scores[meetingId] = {};
+    }
+    if (!scores[meetingId][name]) {
+        scores[meetingId][name] = { pretest: null, posttest: null };
+    }
+    scores[meetingId][name][type] = score;
+    localStorage.setItem("ppgStudentScores", JSON.stringify(scores));
+}
+
+function saveMeetingProgress() {
+    if (!activeMeeting) return;
+    const progress = {
+        currentStep: currentStep,
+        activeSubStep: activeSubStep,
+        userAnswers: userAnswers,
+        pretestCorrectCount: typeof pretestCorrectCount !== 'undefined' ? pretestCorrectCount : 0,
+        currentPretestIdx: typeof currentPretestIdx !== 'undefined' ? currentPretestIdx : 0,
+        pretestAnalysis: typeof pretestAnalysis !== 'undefined' ? pretestAnalysis : [],
+        posttestCorrectCount: typeof posttestCorrectCount !== 'undefined' ? posttestCorrectCount : 0,
+        posttestAnalysis: typeof posttestAnalysis !== 'undefined' ? posttestAnalysis : [],
+        compPlayerScore: typeof compPlayerScore !== 'undefined' ? compPlayerScore : 0
+    };
+    localStorage.setItem(activeMeeting + "_progress", JSON.stringify(progress));
+}
 
 const DEFAULT_GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxFtPjiDgOXevfqnS9GvK4FsRW8FetqFSiiJ-otvlq7QTy6NUOPkRDOMrDLVN172xAOQg/exec";
 
@@ -1379,51 +1469,74 @@ function getMeetingTitleById(id) {
     return "Umum";
 }
 
+function parseScoreValue(scoreStr) {
+    if (!scoreStr) return 0;
+    const cleanStr = String(scoreStr).trim();
+    const match = cleanStr.match(/^(\d+)/);
+    if (match) {
+        return parseInt(match[1]);
+    }
+    const val = parseInt(cleanStr);
+    return isNaN(val) ? 0 : val;
+}
+
 function getMergedLeaderboard(tabId) {
     const meetingTitle = getMeetingTitleById(tabId);
     const scoresMap = new Map();
     
+    const updateScoreInMap = (name, type, val) => {
+        if (!name || name === "Anonim" || name.toLowerCase() === "guru") return;
+        if (!scoresMap.has(name)) {
+            scoresMap.set(name, { pretest: null, posttest: null });
+        }
+        const data = scoresMap.get(name);
+        if (data[type] === null || val > data[type]) {
+            data[type] = val;
+        }
+    };
+
     // 1. Ambil data dari spreadsheet (onlineClassroomData)
     if (Array.isArray(onlineClassroomData)) {
         onlineClassroomData.forEach(row => {
-            if (row.meeting === meetingTitle && (row.type === "Posttest" || row.type === "Kompetisi")) {
-                let gamePoints = 0;
-                if (row.details) {
-                    const match = row.details.match(/Poin game:\s*(\d+)/);
-                    if (match) {
-                        gamePoints = parseInt(match[1]);
-                    }
-                }
-                if (gamePoints === 0 && row.score) {
-                    const scoreVal = parseInt(row.score);
-                    if (!isNaN(scoreVal)) {
-                        gamePoints = scoreVal * 10;
-                    }
-                }
-                if (row.name && row.name !== "Anonim") {
-                    scoresMap.set(row.name, Math.max(scoresMap.get(row.name) || 0, gamePoints));
+            if (row.meeting === meetingTitle) {
+                const parsedVal = parseScoreValue(row.score);
+                if (row.type === "Pretest") {
+                    updateScoreInMap(row.name, "pretest", parsedVal);
+                } else if (row.type === "Posttest" || row.type === "Kompetisi") {
+                    updateScoreInMap(row.name, "posttest", parsedVal);
                 }
             }
         });
     }
     
-    // 2. Ambil data dari local storage (ppgClassroomLeaderboard)
-    const localLeaderboard = JSON.parse(localStorage.getItem("ppgClassroomLeaderboard")) || {};
-    const localList = localLeaderboard[tabId] || [];
-    localList.forEach(item => {
-        if (item.name && item.name !== "Anonim") {
-            const scoreVal = parseInt(item.score) || 0;
-            scoresMap.set(item.name, Math.max(scoresMap.get(item.name) || 0, scoreVal));
+    // 2. Ambil data dari local storage (ppgStudentScores)
+    const localScores = JSON.parse(localStorage.getItem("ppgStudentScores")) || {};
+    const meetingLocal = localScores[tabId] || {};
+    for (const name in meetingLocal) {
+        const item = meetingLocal[name];
+        if (item.pretest !== null && item.pretest !== undefined) {
+            updateScoreInMap(name, "pretest", item.pretest);
         }
-    });
+        if (item.posttest !== null && item.posttest !== undefined) {
+            updateScoreInMap(name, "posttest", item.posttest);
+        }
+    }
     
-    // 3. Ubah Map menjadi Array
+    // 3. Ubah Map menjadi Array & hitung Skor Akhir
     const list = [];
-    scoresMap.forEach((score, name) => {
-        list.push({ name: name, score: score });
+    scoresMap.forEach((data, name) => {
+        const pre = data.pretest !== null ? data.pretest : 0;
+        const post = data.posttest !== null ? data.posttest : 0;
+        const finalScore = Math.round(0.3 * pre + 0.7 * post);
+        list.push({
+            name: name,
+            pretest: pre,
+            posttest: post,
+            score: finalScore
+        });
     });
     
-    // 4. Urutkan berdasarkan skor tertinggi
+    // 4. Urutkan berdasarkan skor akhir tertinggi
     list.sort((a, b) => b.score - a.score);
     return list;
 }
@@ -1467,7 +1580,7 @@ function switchLeaderboardTab(tabId) {
     tbody.innerHTML = "";
     
     if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" style="padding:15px; text-align:center; color:var(--text-muted); font-size:1.05rem;">Belum ada rekor skor dicatat.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="padding:15px; text-align:center; color:var(--text-muted); font-size:1.05rem;">Belum ada rekor skor dicatat.</td></tr>`;
         return;
     }
     
@@ -1486,7 +1599,9 @@ function switchLeaderboardTab(tabId) {
             <tr style="border-bottom: 2px solid #f1f5f9; hover:background:#f8fafc;">
                 <td style="padding:12px;"><span class="rank-badge ${rankClass}">${rankLabel}</span></td>
                 <td style="padding:12px; color:var(--text);">${item.name}</td>
-                <td style="padding:12px; text-align:right; color:var(--primary); font-size:1.15rem;">${item.score.toLocaleString()} Poin</td>
+                <td style="padding:12px; text-align:center; color:var(--text-muted);">${item.pretest}%</td>
+                <td style="padding:12px; text-align:center; color:var(--text-muted);">${item.posttest}%</td>
+                <td style="padding:12px; text-align:right; color:var(--primary); font-size:1.15rem; font-weight:900;">${item.score} Poin</td>
             </tr>
         `;
     });
@@ -1496,11 +1611,40 @@ function switchLeaderboardTab(tabId) {
 async function startMeeting(meetingId) {
     SoundEffects.playClick();
     activeMeeting = meetingId;
-    currentStep = 0;
-    activeSubStep = 1;
-    userAnswers = {};
+    
+    // Check if there is saved progress and meeting is not completed
+    const isCompleted = localStorage.getItem(meetingId + "_completed") === "true";
+    const savedProgressJson = localStorage.getItem(meetingId + "_progress");
+    
+    if (savedProgressJson && !isCompleted) {
+        try {
+            const progress = JSON.parse(savedProgressJson);
+            currentStep = progress.currentStep !== undefined ? progress.currentStep : 0;
+            activeSubStep = progress.activeSubStep !== undefined ? progress.activeSubStep : 1;
+            userAnswers = progress.userAnswers || {};
+            pretestCorrectCount = progress.pretestCorrectCount !== undefined ? progress.pretestCorrectCount : 0;
+            currentPretestIdx = progress.currentPretestIdx !== undefined ? progress.currentPretestIdx : 0;
+            pretestAnalysis = progress.pretestAnalysis || [];
+            posttestCorrectCount = progress.posttestCorrectCount !== undefined ? progress.posttestCorrectCount : 0;
+            posttestAnalysis = progress.posttestAnalysis || [];
+            compPlayerScore = progress.compPlayerScore !== undefined ? progress.compPlayerScore : 0;
+        } catch (e) {
+            console.warn("Gagal memuat progress tersimpan:", e);
+            currentStep = 0;
+            activeSubStep = 1;
+            userAnswers = {};
+        }
+    } else {
+        currentStep = 0;
+        activeSubStep = 1;
+        userAnswers = {};
+    }
     
     updateStars(0);
+    
+    // Mark as accessed
+    localStorage.setItem(meetingId + "_accessed", "true");
+    updateLevelCards();
     
     studentName = localStorage.getItem("studentName") || "";
     await syncOnlineData();
@@ -1513,13 +1657,14 @@ async function startMeeting(meetingId) {
 
 function exitMeeting() {
     SoundEffects.playClick();
-    if (confirm("Apakah kamu yakin ingin keluar dari petualangan ini? Kemajuan belajarmu di pertemuan ini akan hilang.")) {
+    if (confirm("Kemajuan belajarmu di pertemuan ini akan otomatis disimpan. Apakah kamu yakin ingin keluar ke Dashboard?")) {
         clearInterval(particleInterval);
         clearInterval(compTimerInterval);
         
         document.getElementById("view-meeting").classList.remove("active");
         document.getElementById("view-dashboard").classList.add("active");
         activeMeeting = null;
+        updateLevelCards();
     }
 }
 
@@ -1573,6 +1718,11 @@ function enableNextButton(btn) {
 
 function disableNextButton(btn) {
     if (btn) {
+        if (currentStep < maxStepReached) {
+            btn.disabled = false;
+            btn.classList.add("btn-unlocked-pulse");
+            return;
+        }
         btn.disabled = true;
         btn.classList.remove("btn-unlocked-pulse");
     }
@@ -1587,6 +1737,8 @@ function skipToPretest() {
 
 function renderCurrentStep() {
     updateProgressBar();
+    maxStepReached = Math.max(maxStepReached, currentStep);
+    saveMeetingProgress();
     clearInterval(particleInterval);
     clearInterval(compTimerInterval);
     cancelAnimationFrame(activeAnimationId);
@@ -1631,7 +1783,7 @@ function renderCurrentStep() {
         btnPrev.classList.remove("hidden");
     }
     
-    if (currentStep >= 0 && currentStep <= 4) {
+    if (currentStep >= 0 && currentStep <= 4 && activeMeeting === "p1") {
         skipBtn.classList.remove("hidden");
     } else {
         skipBtn.classList.add("hidden");
@@ -1716,6 +1868,9 @@ function nextStep() {
     } else {
         document.getElementById("view-meeting").classList.remove("active");
         document.getElementById("view-dashboard").classList.add("active");
+        if (activeMeeting) {
+            localStorage.removeItem(activeMeeting + "_progress");
+        }
         activeMeeting = null;
     }
 }
@@ -2859,10 +3014,54 @@ function renderStimulus2(card, btnNext) {
 let currentPretestIdx = 0;
 let pretestCorrectCount = 0;
 function renderPretest(card, btnNext) {
+    const localScores = JSON.parse(localStorage.getItem("ppgStudentScores")) || {};
+    const studentMeetingScores = (localScores[activeMeeting] && localScores[activeMeeting][studentName]) || {};
+    const hasCompletedPretest = studentMeetingScores.pretest !== undefined && studentMeetingScores.pretest !== null;
+    
+    if (hasCompletedPretest || currentStep < maxStepReached) {
+        enableNextButton(btnNext);
+        const pretestScoreVal = studentMeetingScores.pretest || 0;
+        card.innerHTML = `
+            <div style="text-align:center; padding: 1rem 0; max-height:550px; overflow-y:auto;">
+                <div style="font-size: 5rem; margin-bottom: 1rem;">🧠</div>
+                <h3 style="font-size: 1.8rem; font-weight: 900; color: var(--primary); margin-bottom: 0.5rem;">Pretest Selesai!</h3>
+                <div style="background:var(--primary-light); color:var(--primary); font-size:2rem; font-weight:900; padding:10px 20px; border-radius:15px; display:inline-block; margin-bottom:1.2rem; border:2px solid var(--primary);">
+                    Nilai: ${pretestScoreVal} / 100
+                </div>
+                <p style="font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 1.5rem;">
+                    Uji kekuatan awal selesai. Nilai Anda sudah tersimpan.<br>
+                </p>
+                <button class="btn-icon" id="btn-pretest-finish" style="width:100%;">Lanjut ke Penyelidikan Awal ➔</button>
+            </div>
+        `;
+        document.getElementById("btn-pretest-finish").addEventListener("click", () => {
+            nextStep();
+        });
+        return;
+    }
+    
     btnNext.disabled = true;
-    currentPretestIdx = 0;
-    pretestCorrectCount = 0;
-    pretestAnalysis = [];
+    
+    // Load pretest progress if it exists in saved progress
+    const savedProgressJson = localStorage.getItem(activeMeeting + "_progress");
+    let loadedPretest = false;
+    if (savedProgressJson) {
+        try {
+            const progress = JSON.parse(savedProgressJson);
+            if (progress.currentStep === 5 && progress.currentPretestIdx !== undefined) {
+                currentPretestIdx = progress.currentPretestIdx;
+                pretestCorrectCount = progress.pretestCorrectCount;
+                pretestAnalysis = progress.pretestAnalysis || [];
+                loadedPretest = true;
+            }
+        } catch (e) {}
+    }
+    
+    if (!loadedPretest) {
+        currentPretestIdx = 0;
+        pretestCorrectCount = 0;
+        pretestAnalysis = [];
+    }
     
     showPretestQuestion(card, btnNext);
 }
@@ -2939,11 +3138,14 @@ function selectPretest(idx) {
         SoundEffects.playClick();
         if (currentPretestIdx < list.length - 1) {
             currentPretestIdx++;
+            saveMeetingProgress();
             showPretestQuestion(document.getElementById("step-card"), document.getElementById("btn-next-step"));
         } else {
             updateStars(15);
             const pretestTotalQ = list.length;
             const pretestScoreVal = Math.round((pretestCorrectCount / pretestTotalQ) * 100);
+            saveScoreLocal(activeMeeting, studentName, "pretest", pretestScoreVal);
+            enableNextButton(document.getElementById("btn-next-step"));
             sendDataToGoogleSheet({
                 type: "Pretest",
                 score: pretestScoreVal + "/100",
@@ -6505,6 +6707,16 @@ async function renderRefleksi(card, btnNext) {
 }
 
 async function renderPosttest(card, btnNext) {
+    const localScores = JSON.parse(localStorage.getItem("ppgStudentScores")) || {};
+    const studentMeetingScores = (localScores[activeMeeting] && localScores[activeMeeting][studentName]) || {};
+    const hasCompletedPosttest = studentMeetingScores.posttest !== undefined && studentMeetingScores.posttest !== null;
+    
+    if (hasCompletedPosttest || currentStep < maxStepReached) {
+        enableNextButton(btnNext);
+        showCompetitionPodium();
+        return;
+    }
+    
     disableNextButton(btnNext);
     compType = "posttest";
     compQuestionsList = meetingsConfig[activeMeeting].posttest;
@@ -6727,6 +6939,15 @@ function showCompetitionPodium() {
     const posttestTotalQ = compQuestionsList.length;
     const posttestScoreVal = Math.round((posttestCorrectCount / posttestTotalQ) * 100);
     
+    // Automatically save posttest score
+    saveScoreLocal(activeMeeting, studentName, "posttest", posttestScoreVal);
+    
+    // Read pretest score and calculate final score
+    const localScores = JSON.parse(localStorage.getItem("ppgStudentScores")) || {};
+    const studentMeetingScores = (localScores[activeMeeting] && localScores[activeMeeting][studentName]) || {};
+    const preScore = studentMeetingScores.pretest !== undefined && studentMeetingScores.pretest !== null ? studentMeetingScores.pretest : 0;
+    const finalScore = Math.round(0.3 * preScore + 0.7 * posttestScoreVal);
+    
     let analysisHtml = posttestAnalysis.map((item, idx) => {
         const isCorrect = item.includes("✅ Benar");
         return `
@@ -6774,10 +6995,15 @@ function showCompetitionPodium() {
                 </div>
             </div>
 
-            <div style="background:#f8fafc; border:3px solid #cbd5e1; border-radius:24px; padding:1.5rem; max-width:400px; margin:20px auto;">
-                <p style="font-weight:900; margin-bottom:10px; font-size:1.05rem;">Simpan rekor skormu ke Papan Peringkat Kelas!</p>
-                <input type="text" id="leaderboard-name-input" placeholder="Ketik namamu..." style="width:100%; padding:10px; border:2px solid #cbd5e1; border-radius:12px; font-weight:800; font-family:var(--font); text-align:center; font-size:1.1rem; margin-bottom:12px; outline:none;">
-                <button class="btn-icon" style="width:100%;" id="btn-save-leaderboard-record">Simpan Rekor 🏆</button>
+            <!-- Rekapitulasi Otomatis -->
+            <div style="background:#f8fafc; border:3px solid #cbd5e1; border-radius:24px; padding:1.5rem; max-width:400px; margin:20px auto; text-align:left; box-sizing:border-box;">
+                <p style="font-weight:900; margin-bottom:8px; font-size:1.1rem; color:var(--success); text-align:center;">🏆 Rekor Skor Otomatis Direkap!</p>
+                <div style="font-weight:800; font-size:1rem; line-height:1.6; color:var(--text);">
+                    • Nama Siswa: <span style="color:var(--primary);">${studentName || "Anonim"}</span><br>
+                    • Nilai Pretest (30%): <span style="color:var(--text-muted);">${preScore}%</span><br>
+                    • Nilai Posttest (70%): <span style="color:var(--text-muted);">${posttestScoreVal}%</span><br>
+                    • Nilai Akhir Peringkat: <span style="color:var(--secondary); font-size:1.1rem; font-weight:900;">${finalScore}</span>
+                </div>
             </div>
             
             <button class="btn-icon btn-secondary" id="btn-podium-continue" style="width:100%;">Lanjut Petualangan ➔</button>
@@ -6790,7 +7016,7 @@ function showCompetitionPodium() {
         details: `Jawaban benar: ${posttestCorrectCount} dari ${posttestTotalQ} soal. Juara: ${playerRank} dari 5 peserta (Poin game: ${compPlayerScore}). Analisis: ${posttestAnalysis.join(", ")}`
     });
     
-    document.getElementById("leaderboard-name-input").value = studentName;
+    enableNextButton(document.getElementById("btn-next-step"));
     
     if (p1.isPlayer) {
         setAvatar("celebrate", "Luar biasa! Kamu memenangkan podium JUARA 1 kelas hari ini!");
@@ -6798,24 +7024,6 @@ function showCompetitionPodium() {
     } else {
         setAvatar("happy", "Hebat! Kamu berhasil menyelesaikan kuis kompetisi dengan gemilang.");
     }
-    
-    document.getElementById("btn-save-leaderboard-record").addEventListener("click", () => {
-        SoundEffects.playClick();
-        const nameInput = document.getElementById("leaderboard-name-input").value.trim();
-        if (nameInput.length < 2) {
-            alert("Harap masukkan nama minimal 2 karakter ya!");
-            return;
-        }
-        
-        saveRecordToDatabase(nameInput, compPlayerScore);
-        if (nameInput.toLowerCase() === "guru") {
-            alert("Aktivitas Guru dideteksi. Rekor Anda tidak dicatat di Papan Peringkat Kelas.");
-        } else {
-            alert("Rekormu berhasil dicatat di Papan Peringkat Kelas!");
-        }
-        document.getElementById("btn-save-leaderboard-record").disabled = true;
-        document.getElementById("btn-save-leaderboard-record").innerText = "Rekor Tersimpan ✔";
-    });
     
     document.getElementById("btn-podium-continue").addEventListener("click", () => {
         nextStep();
@@ -6846,6 +7054,12 @@ function renderPenutup(card, btnNext) {
     spawnConfetti();
     SoundEffects.playFanfare();
     const config = meetingsConfig[activeMeeting];
+    
+    // Mark as completed
+    if (activeMeeting) {
+        localStorage.setItem(activeMeeting + "_completed", "true");
+        updateLevelCards();
+    }
     
     let summaryHtml = "";
     if (activeMeeting === "p4") {
