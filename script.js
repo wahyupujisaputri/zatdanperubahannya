@@ -1954,7 +1954,7 @@ function renderSplash(card, btnNext) {
 function renderStimulus1(card, btnNext) {
     enableNextButton(btnNext);
     
-    if (activeMeeting === "p3") {
+    if (activeMeeting === "p2") {
         setAvatar("happy", "Ayo amati fenomena genangan air ini! Kamu juga bisa langsung mengklik Lanjut.");
         card.innerHTML = `
             <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">☀️ Fenomena Genangan Air Menguap</h3>
@@ -2401,7 +2401,7 @@ function renderStimulus1(card, btnNext) {
 
         let mediaArt = "";
         if (activeMeeting === "p1") mediaArt = "🕰️ 🎸 🕯️ 🥤";
-        else if (activeMeeting === "p2") mediaArt = "❄️ ➔ 🔥 ➔ 💧 ➔ 💨";
+        else if (activeMeeting === "p3") mediaArt = "❄️ ➔ 🔥 ➔ 💧 ➔ 💨";
 
         card.innerHTML = `
             <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">📺 Video Apersepsi Pembuka</h3>
