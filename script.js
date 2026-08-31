@@ -5,6 +5,7 @@ let activeSubStep = 1;     // 1 sampai 4 (Misi Eksplorasi)
 let userStars = 0;
 let userAnswers = {};
 const studentNamesList = [
+    "GURU",
     "AHMAD ZAKI RAIHAN GUCHI",
     "AHSAN HUSAINI AL ISLAMY",
     "AL JAVAN WIRANANTA RUDHIRA",
@@ -1248,6 +1249,11 @@ function getMeetingTitle() {
 }
 
 function sendDataToGoogleSheet(data) {
+    const senderName = data.name || studentName || "Anonim";
+    if (senderName.toLowerCase() === "guru") {
+        console.log("Aktivitas guru dideteksi. Data tidak dikirim ke Google Sheet.");
+        return;
+    }
     const url = getGoogleSheetUrl();
     if (!url) {
         console.warn("Google Sheet Web App URL belum dikonfigurasi.");
@@ -1255,7 +1261,7 @@ function sendDataToGoogleSheet(data) {
     }
     
     const payload = {
-        name: data.name || studentName || "Anonim",
+        name: senderName,
         meeting: data.meeting || getMeetingTitle() || "Umum",
         type: data.type || "Umum",
         score: data.score !== undefined ? String(data.score) : "-",
@@ -6802,7 +6808,11 @@ function showCompetitionPodium() {
         }
         
         saveRecordToDatabase(nameInput, compPlayerScore);
-        alert("Rekormu berhasil dicatat di Papan Peringkat Kelas!");
+        if (nameInput.toLowerCase() === "guru") {
+            alert("Aktivitas Guru dideteksi. Rekor Anda tidak dicatat di Papan Peringkat Kelas.");
+        } else {
+            alert("Rekormu berhasil dicatat di Papan Peringkat Kelas!");
+        }
         document.getElementById("btn-save-leaderboard-record").disabled = true;
         document.getElementById("btn-save-leaderboard-record").innerText = "Rekor Tersimpan ✔";
     });
@@ -6813,6 +6823,10 @@ function showCompetitionPodium() {
 }
 
 function saveRecordToDatabase(playerName, score) {
+    if (playerName.toLowerCase() === "guru") {
+        console.log("Aktivitas guru dideteksi. Rekor tidak disimpan ke database papan peringkat.");
+        return;
+    }
     const leaderboardData = JSON.parse(localStorage.getItem("ppgClassroomLeaderboard")) || {};
     if (!leaderboardData[activeMeeting]) {
         leaderboardData[activeMeeting] = [];
