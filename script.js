@@ -2619,8 +2619,8 @@ function renderStimulus2(card, btnNext) {
         stimulusText = "Bayangkan kamu masuk ke sebuah ruangan. Di salah satu sudut ruangan terdapat seseorang yang baru saja membuka botol parfum. Beberapa saat kemudian, kamu yang berada cukup jauh dari botol tersebut dapat mencium aromanya.";
         stimulusQuestion = "Mengapa aroma parfum tersebut dapat menyebar dan tercium dari jarak jauh? Jelaskan perkiraanmu terkait gerakan partikel gas parfum tersebut!";
     } else if (activeMeeting === "p2") {
-        stimulusText = "Bayangkan kamu mengambil es batu dari freezer. Beberapa menit kemudian es tersebut berubah menjadi air. Jika air terus dipanaskan, air berubah menjadi uap. Namun, ketika uap mengalami pendinginan, uap dapat berubah kembali menjadi air.";
-        stimulusQuestion = "Perubahan wujud apa saja yang terjadi pada peristiwa di atas? Sebutkan prosesnya secara urut!";
+        stimulusText = "Bayangkan kamu adalah air. Ketika terkena panas, tubuhmu perlahan berubah menjadi uap dan naik ke udara. Ketika kehilangan panas, kamu berubah menjadi titik-titik air. Jika suhumu terus diturunkan, tubuhmu menjadi keras seperti es. Saat es mendapatkan panas, tubuhmu kembali menjadi cair. Dalam kondisi tertentu, saat berbentuk es, kamu dapat langsung berubah menjadi gas tanpa menjadi cair terlebih dahulu. Sebaliknya, ketika berbentuk gas dan mengalami pendinginan yang sangat kuat, kamu dapat langsung berubah menjadi padatan seperti kristal es.";
+        stimulusQuestion = "Perubahan wujud apa saja yang dialami oleh air pada cerita di atas? Sebutkan proses perubahannya secara urut!";
     } else if (activeMeeting === "p3") {
         stimulusText = "Setiap hari kita melihat berbagai perubahan. Es mencair, kertas dipotong, air mendidih, besi berkarat, makanan dimasak, dan kayu dibakar. Namun, tidak semua perubahan tersebut menghasilkan zat baru.";
         stimulusQuestion = "Kelompokkan peristiwa di atas mana yang termasuk perubahan yang menghasilkan zat baru (perubahan kimia) dan yang tidak menghasilkan zat baru (perubahan fisika)!";
@@ -2731,100 +2731,380 @@ function renderStimulus2(card, btnNext) {
             }
 
         } else if (activeMeeting === "p2") {
+            // Animasi Siklus 6 Perubahan Wujud Air sesuai Narasi Pengguna:
+            // 1. Air dipanaskan ➔ Uap naik ke udara (Menguap / Evaporasi)
+            // 2. Uap kehilangan panas ➔ Titik-titik air (Mengembun / Kondensasi)
+            // 3. Suhu terus diturunkan ➔ Es padat keras (Membeku / Freezing)
+            // 4. Es mendapatkan panas ➔ Kembali mencair (Mencair / Melting)
+            // 5. Es langsung berubah menjadi gas uap (Menyublim / Sublimasi)
+            // 6. Gas pendinginan sangat kuat ➔ Langsung kristal es padat (Mengkristal / Deposisi)
+
+            const totalPhases = 6;
+            const phaseDuration = 3600; // 3.6 detik per fase (Total loop: 21.6 detik)
+            const cycleTime = elapsed % (totalPhases * phaseDuration);
+            const phaseIdx = Math.floor(cycleTime / phaseDuration);
+            const progress = (cycleTime % phaseDuration) / phaseDuration; // 0.0 - 1.0
+
+            // Latar belakang bersih dengan gradasi lembut
             ctx.fillStyle = "#f8fafc";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = "#ef4444";
-            for (let i = 0; i < 5; i++) {
+            const cx = canvas.width / 2;
+            const bw = 120; // Lebar gelas kimia / wadah kaca
+            const bx = cx - bw / 2;
+            const by = 48;  // Bagian atas gelas
+            const bh = 120; // Tinggi gelas
+            const bottomY = by + bh; // Dasar gelas: y = 168
+
+            // Data Teks & Warna untuk Tiap Fase
+            const phaseConfig = [
+                {
+                    title: "1. MENGUAP: Air ➔ Uap Gas (Menyerap Panas 🔥)",
+                    caption: "Ketika terkena panas, tubuhmu perlahan berubah menjadi uap & naik ke udara",
+                    badgeBg: "#ea580c",
+                    thermal: "🔥 Dipanaskan"
+                },
+                {
+                    title: "2. MENGEMBUN: Uap ➔ Titik Air (Kehilangan Panas 💧)",
+                    caption: "Ketika kehilangan panas, tubuhmu berubah menjadi titik-titik air",
+                    badgeBg: "#0284c7",
+                    thermal: "❄️ Didinginkan"
+                },
+                {
+                    title: "3. MEMBEKU: Air ➔ Es Keras (Suhu Diturunkan 🧊)",
+                    caption: "Jika suhumu terus diturunkan, tubuhmu menjadi keras seperti es",
+                    badgeBg: "#2563eb",
+                    thermal: "❄️❄️ Suhu Ekstrem"
+                },
+                {
+                    title: "4. MENCAIR: Es ➔ Air Kembali (Mendapat Panas 💧)",
+                    caption: "Saat es mendapatkan panas, tubuhmu kembali menjadi cair",
+                    badgeBg: "#d97706",
+                    thermal: "🔥 Dipanaskan"
+                },
+                {
+                    title: "5. MENYUBLIM: Es ➔ Langsung Gas (Tanpa Mencair 💨)",
+                    caption: "Dalam kondisi tertentu, saat berbentuk es kamu langsung jadi gas tanpa mencair",
+                    badgeBg: "#7c3aed",
+                    thermal: "⚡ Sublimasi"
+                },
+                {
+                    title: "6. MENGKRISTAL: Gas ➔ Kristal Es Padat (Pendinginan Kuat ❄️)",
+                    caption: "Gas yang mengalami pendinginan sangat kuat langsung menjadi padatan kristal es",
+                    badgeBg: "#0891b2",
+                    thermal: "❄️❄️ Pendinginan Kuat"
+                }
+            ];
+
+            const cur = phaseConfig[phaseIdx];
+
+            // Banner Status Header
+            const bannerW = Math.min(canvas.width - 24, 490);
+            const bannerX = (canvas.width - bannerW) / 2;
+            ctx.fillStyle = cur.badgeBg;
+            if (ctx.roundRect) {
                 ctx.beginPath();
-                ctx.arc(canvas.width/2 - 30 + i*15, canvas.height - 20, 8 + Math.sin(elapsed/100 + i)*3, 0, Math.PI*2);
+                ctx.roundRect(bannerX, 8, bannerW, 26, 8);
                 ctx.fill();
+            } else {
+                ctx.fillRect(bannerX, 8, bannerW, 26);
             }
 
-            ctx.strokeStyle = "#475569";
-            ctx.lineWidth = 4;
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 11px var(--font), sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(cur.title, canvas.width / 2, 21);
+
+            // Banner Teks Caption Bawah
+            ctx.fillStyle = "#334155";
+            ctx.font = "bold 10px var(--font), sans-serif";
+            ctx.fillText(cur.caption, canvas.width / 2, canvas.height - 11);
+
+            // Gambar Wadah Kaca / Beaker
+            ctx.strokeStyle = "rgba(71, 85, 105, 0.65)";
+            ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.moveTo(canvas.width/2 - 50, 40);
-            ctx.lineTo(canvas.width/2 - 50, canvas.height - 30);
-            ctx.lineTo(canvas.width/2 + 50, canvas.height - 30);
-            ctx.lineTo(canvas.width/2 + 50, 40);
+            ctx.moveTo(bx, by);
+            ctx.lineTo(bx, bottomY);
+            ctx.lineTo(bx + bw, bottomY);
+            ctx.lineTo(bx + bw, by);
             ctx.stroke();
 
-            let phaseTime = (elapsed % 9000) / 1000;
+            // Bibir atas wadah
+            ctx.beginPath();
+            ctx.ellipse(cx, by, bw / 2 + 2, 4, 0, 0, Math.PI * 2);
+            ctx.stroke();
 
-            if (phaseTime < 3) {
-                let melt = phaseTime / 3;
-                ctx.fillStyle = "rgba(186, 230, 253, 0.85)";
-                ctx.fillRect(canvas.width/2 - 40, canvas.height - 80 + 30*melt, 80, 50 - 30*melt);
-                
-                ctx.fillStyle = "rgba(59, 130, 246, 0.55)";
-                ctx.fillRect(canvas.width/2 - 48, canvas.height - 30 - 30*melt, 96, 30*melt);
+            // Skala ukur pada dinding wadah
+            ctx.strokeStyle = "rgba(100, 116, 139, 0.4)";
+            ctx.lineWidth = 1.5;
+            for (let s = 1; s <= 4; s++) {
+                let sy = bottomY - s * 22;
+                ctx.beginPath();
+                ctx.moveTo(bx + 4, sy);
+                ctx.lineTo(bx + 14, sy);
+                ctx.stroke();
+            }
 
-                ctx.fillStyle = "#0284c7";
-                ctx.font = "bold 13px var(--font)";
-                ctx.fillText("Fase: Es Mencair (Menyerap Energi) ❄️➔💧", canvas.width/2 - 120, 25);
-            } else if (phaseTime < 6) {
-                ctx.fillStyle = "rgba(59, 130, 246, 0.55)";
-                ctx.fillRect(canvas.width/2 - 48, canvas.height - 60, 96, 30);
+            // Indikator Termal Samping
+            ctx.fillStyle = cur.badgeBg;
+            ctx.font = "bold 10px var(--font), sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(cur.thermal, 14, by + 15);
 
-                ctx.fillStyle = "white";
-                for(let i=0; i<6; i++) {
-                    let bx = canvas.width/2 - 40 + ((i*17 + elapsed/6) % 80);
-                    let by = canvas.height - 30 - ((i*12 + elapsed/2.5) % 30);
+            // RENDER TIAP FASE
+            if (phaseIdx === 0) {
+                // FASE 1: MENGUAP (Air ➔ Uap)
+                // Api di bawah wadah
+                for (let i = 0; i < 5; i++) {
+                    ctx.fillStyle = `rgb(${230 + Math.sin(elapsed / 80 + i) * 25}, ${100 + i * 15}, 10)`;
                     ctx.beginPath();
-                    ctx.arc(bx, by, 3, 0, Math.PI*2);
+                    ctx.arc(cx - 24 + i * 12, bottomY + 14, 7 + Math.sin(elapsed / 70 + i) * 3, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
-                ctx.fillStyle = "rgba(226, 232, 240, 0.65)";
-                for(let i=0; i<10; i++) {
-                    let sx = canvas.width/2 - 30 + Math.sin(elapsed/100 + i)*20;
-                    let sy = canvas.height - 60 - ((i*15 + elapsed/3) % 90);
-                    if (sy > 40) {
+                // Air cair berkurang seiring menguap
+                const liquidH = Math.max(16, 52 - progress * 28);
+                const waterTop = bottomY - liquidH;
+
+                ctx.fillStyle = "rgba(59, 130, 246, 0.65)";
+                ctx.fillRect(bx + 3, waterTop, bw - 6, liquidH);
+
+                // Gelembung mendidih di dalam air
+                ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+                for (let b = 0; b < 5; b++) {
+                    let bubbleX = bx + 16 + ((b * 22 + elapsed / 5) % (bw - 32));
+                    let bubbleY = bottomY - 5 - ((b * 15 + elapsed / 3) % Math.max(8, liquidH - 8));
+                    ctx.beginPath();
+                    ctx.arc(bubbleX, bubbleY, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Partikel uap air membubung ke atas keluar wadah
+                ctx.fillStyle = "rgba(224, 242, 254, 0.75)";
+                for (let u = 0; u < 8; u++) {
+                    let steamY = waterTop - ((u * 14 + elapsed / 4) % (waterTop - 12));
+                    let steamX = cx + Math.sin(elapsed / 120 + u) * 26;
+                    if (steamY > 26) {
                         ctx.beginPath();
-                        ctx.arc(sx, sy, 6 + Math.sin(elapsed/50)*2, 0, Math.PI*2);
+                        ctx.arc(steamX, steamY, 5 + Math.sin(elapsed / 80 + u) * 2, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 }
 
-                ctx.fillStyle = "#d97706";
-                ctx.font = "bold 13px var(--font)";
-                ctx.fillText("Fase: Air Menguap (Menyerap Energi) 💧➔💨", canvas.width/2 - 120, 25);
-            } else {
-                ctx.fillStyle = "rgba(59, 130, 246, 0.55)";
-                ctx.fillRect(canvas.width/2 - 48, canvas.height - 45, 96, 15);
+            } else if (phaseIdx === 1) {
+                // FASE 2: MENGEMBUN (Uap ➔ Titik Air)
+                // Tutup / pelat pendingin di atas wadah
+                ctx.fillStyle = "#38bdf8";
+                ctx.fillRect(bx - 8, by - 6, bw + 16, 8);
+                ctx.fillStyle = "#0284c7";
+                ctx.font = "bold 9px var(--font), sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("PELAT DINGIN ❄️", cx, by - 10);
 
-                ctx.fillStyle = "#94a3b8";
-                ctx.fillRect(canvas.width/2 - 60, 50, 120, 10);
-                ctx.fillStyle = "#475569";
-                ctx.font = "bold 9px var(--font)";
-                ctx.fillText("KONDENSOR DINGIN", canvas.width/2 - 45, 45);
-
-                ctx.fillStyle = "rgba(226, 232, 240, 0.65)";
-                for(let i=0; i<6; i++) {
-                    let sx = canvas.width/2 - 20 + Math.sin(elapsed/80 + i)*15;
-                    let sy = canvas.height - 45 - ((i*20 + elapsed/4) % 110);
-                    if (sy > 60) {
+                // Uap naik dari tengah wadah menuju pelat dingin
+                ctx.fillStyle = "rgba(226, 232, 240, 0.6)";
+                for (let u = 0; u < 6; u++) {
+                    let uy = bottomY - 35 - ((u * 18 + elapsed / 3.5) % 85);
+                    let ux = cx + Math.sin(elapsed / 90 + u) * 22;
+                    if (uy > by + 4) {
                         ctx.beginPath();
-                        ctx.arc(sx, sy, 5, 0, Math.PI*2);
+                        ctx.arc(ux, uy, 4.5, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 }
 
-                ctx.fillStyle = "#3b82f6";
-                for(let i=0; i<3; i++) {
-                    let dx = canvas.width/2 - 30 + i*30;
-                    let dy = 60 + ((elapsed/3.5 + i*40) % 90);
-                    if (dy < canvas.height - 45) {
+                // Titik-titik air mengembun dan menetes ke bawah
+                ctx.fillStyle = "#2563eb";
+                for (let d = 0; d < 4; d++) {
+                    let dropTime = (progress * 6 + d * 0.28) % 1;
+                    let dy = by + 6 + dropTime * (bh - 25);
+                    let dx = bx + 22 + d * 25;
+                    ctx.beginPath();
+                    ctx.arc(dx, dy, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Genangan air cair yang terkumpul di dasar gelas
+                const poolH = 14 + progress * 28;
+                ctx.fillStyle = "rgba(59, 130, 246, 0.65)";
+                ctx.fillRect(bx + 3, bottomY - poolH, bw - 6, poolH);
+
+            } else if (phaseIdx === 2) {
+                // FASE 3: MEMBEKU (Air ➔ Es Keras)
+                // Efek pendingin es di sekeliling
+                ctx.fillStyle = "rgba(186, 230, 253, 0.35)";
+                ctx.fillRect(bx - 12, by + 20, bw + 24, bh - 10);
+
+                // Salju / kristal kecil melayang di sekitar
+                ctx.fillStyle = "#38bdf8";
+                for (let s = 0; s < 4; s++) {
+                    let sx = cx - 35 + s * 24;
+                    let sy = by + 15 + ((elapsed / 20 + s * 30) % 70);
+                    ctx.font = "12px sans-serif";
+                    ctx.fillText("❄️", sx, sy);
+                }
+
+                // Pembekuan: Air membeku dari bawah ke atas menjadi blok es keras
+                const totalH = 46;
+                const freezeH = totalH * progress; // tinggi es padat yang sudah beku
+                const liquidH = totalH - freezeH;  // sisa air cair di atasnya
+
+                // Bagian air cair (di atas)
+                if (liquidH > 1) {
+                    ctx.fillStyle = "rgba(59, 130, 246, 0.6)";
+                    ctx.fillRect(bx + 3, bottomY - totalH, bw - 6, liquidH);
+                }
+
+                // Bagian es keras (di bawah)
+                if (freezeH > 1) {
+                    ctx.fillStyle = "rgba(186, 230, 253, 0.9)";
+                    ctx.fillRect(bx + 6, bottomY - freezeH, bw - 12, freezeH);
+                    ctx.strokeStyle = "#0284c7";
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(bx + 6, bottomY - freezeH, bw - 12, freezeH);
+
+                    // Garis-garis kristal es padat
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+                    ctx.beginPath();
+                    ctx.moveTo(bx + 14, bottomY - freezeH + 5);
+                    ctx.lineTo(bx + bw - 20, bottomY - 8);
+                    ctx.moveTo(bx + bw / 2, bottomY - freezeH + 8);
+                    ctx.lineTo(bx + 20, bottomY - 5);
+                    ctx.stroke();
+
+                    // Efek kilau es padat
+                    ctx.font = "12px sans-serif";
+                    ctx.fillText("✨", cx + Math.sin(elapsed / 100) * 20, bottomY - freezeH / 2);
+                }
+
+            } else if (phaseIdx === 3) {
+                // FASE 4: MENCAIR (Es ➔ Air Kembali)
+                // Api di bawah wadah menyala kembali
+                for (let i = 0; i < 5; i++) {
+                    ctx.fillStyle = `rgb(${240 + Math.sin(elapsed / 80 + i) * 15}, ${110 + i * 15}, 15)`;
+                    ctx.beginPath();
+                    ctx.arc(cx - 24 + i * 12, bottomY + 14, 7 + Math.sin(elapsed / 70 + i) * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Es mengecil/meleleh, air bertambah
+                const maxIceH = 42;
+                const curIceH = Math.max(0, maxIceH * (1 - progress));
+                const waterH = Math.min(44, progress * 40 + 8);
+
+                // Air lelehan di dasar
+                ctx.fillStyle = "rgba(59, 130, 246, 0.65)";
+                ctx.fillRect(bx + 3, bottomY - waterH, bw - 6, waterH);
+
+                // Bongkahan es yang sedang mencair di tengah
+                if (curIceH > 3) {
+                    const iceW = Math.max(15, 75 * (1 - progress * 0.7));
+                    const iceX = cx - iceW / 2;
+                    const iceY = bottomY - waterH - curIceH * 0.6;
+                    ctx.fillStyle = "rgba(186, 230, 253, 0.9)";
+                    ctx.fillRect(iceX, iceY, iceW, curIceH);
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(iceX, iceY, iceW, curIceH);
+
+                    // Tetesan air meleleh dari es
+                    ctx.fillStyle = "#3b82f6";
+                    let dripY = iceY + curIceH + ((elapsed / 4) % 15);
+                    if (dripY < bottomY) {
                         ctx.beginPath();
-                        ctx.arc(dx, dy, 4, 0, Math.PI*2);
+                        ctx.arc(cx - 10, dripY, 2.5, 0, Math.PI * 2);
+                        ctx.arc(cx + 12, dripY, 2, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 }
 
-                ctx.fillStyle = "#059669";
-                ctx.font = "bold 13px var(--font)";
-                ctx.fillText("Mengembun: Uap Menjadi Air (Melepas Energi) 💨➔💧", canvas.width/2 - 145, 25);
+            } else if (phaseIdx === 4) {
+                // FASE 5: MENYUBLIM (Es ➔ Langsung Gas, Tanpa Mencair)
+                // Wadah kering (sama sekali tanpa air cair)
+                const startIceH = 38;
+                const curIceH = Math.max(2, startIceH * (1 - progress));
+                const iceW = Math.max(16, 60 * (1 - progress));
+
+                // Balok es kering / es padat
+                ctx.fillStyle = "#e2e8f0";
+                ctx.fillRect(cx - iceW / 2, bottomY - curIceH, iceW, curIceH);
+                ctx.strokeStyle = "#94a3b8";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(cx - iceW / 2, bottomY - curIceH, iceW, curIceH);
+
+                // Tanda khusus "KERING / TANPA AIR CAIR"
+                ctx.fillStyle = "#7c3aed";
+                ctx.font = "bold 9px var(--font), sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("TANPA FASE CAIR ⚡", cx, bottomY - curIceH - 8);
+
+                // Asap / kabut gas uap tebal membubung langsung dari es ke atas
+                for (let g = 0; g < 10; g++) {
+                    let gy = bottomY - curIceH - ((g * 14 + elapsed / 3.5) % 100);
+                    let gx = cx + Math.sin(elapsed / 80 + g) * (20 + (bottomY - gy) * 0.3);
+                    if (gy > 28) {
+                        ctx.fillStyle = `rgba(${220 + g * 3}, ${210 + g * 4}, 255, ${0.75 - (bottomY - gy) / 130})`;
+                        ctx.beginPath();
+                        ctx.arc(gx, gy, 7 + g % 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+            } else if (phaseIdx === 5) {
+                // FASE 6: MENGKRISTAL / DEPOSISI (Gas ➔ Langsung Padatan Kristal Es)
+                // Kabut gas di bagian atas wadah
+                ctx.fillStyle = "rgba(199, 210, 254, 0.5)";
+                for (let g = 0; g < 6; g++) {
+                    let gy = by + 20 + Math.sin(elapsed / 90 + g) * 14;
+                    let gx = cx + Math.cos(elapsed / 110 + g) * 32;
+                    ctx.beginPath();
+                    ctx.arc(gx, gy, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Pendinginan sangat kuat: Kristal salju/es langsung terbentuk dari gas
+                // Menggambar butiran kristal es 6 sisi yang jatuh
+                for (let k = 0; k < 5; k++) {
+                    let kTime = (progress * 4 + k * 0.25) % 1;
+                    let ky = by + 30 + kTime * (bh - 45);
+                    let kx = bx + 20 + k * 20;
+
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 1.5;
+                    // Bintang kristal 6 cabang
+                    for (let a = 0; a < 3; a++) {
+                        let ang = a * Math.PI / 3;
+                        ctx.beginPath();
+                        ctx.moveTo(kx - Math.cos(ang) * 5, ky - Math.sin(ang) * 5);
+                        ctx.lineTo(kx + Math.cos(ang) * 5, ky + Math.sin(ang) * 5);
+                        ctx.stroke();
+                    }
+                }
+
+                // Lapisan kristal es padat yang langsung menumpuk di dasar tanpa pernah mencair
+                const frostH = Math.min(36, 6 + progress * 30);
+                ctx.fillStyle = "rgba(224, 242, 254, 0.95)";
+                ctx.beginPath();
+                ctx.moveTo(bx + 4, bottomY);
+                // Permukaan kristal bergerigi tajam
+                for (let p = 0; p <= 8; p++) {
+                    let px = bx + 4 + p * ((bw - 8) / 8);
+                    let py = bottomY - frostH + ((p % 2 === 0) ? -4 : 3);
+                    ctx.lineTo(px, py);
+                }
+                ctx.lineTo(bx + bw - 4, bottomY);
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = "#0891b2";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Kilau kristal es padat
+                ctx.font = "12px sans-serif";
+                ctx.fillText("✨", cx - 20, bottomY - frostH / 2);
+                ctx.fillText("❄️", cx + 20, bottomY - frostH / 2);
             }
 
         } else if (activeMeeting === "p3") {
