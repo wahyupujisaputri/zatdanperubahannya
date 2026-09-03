@@ -3133,3 +3133,360 @@ button:disabled {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* =========================================================
+   PERTEMUAN 3: APERSEPSI & MISI 2 (TABEL KARAKTERISTIK)
+   ========================================================= */
+
+/* --- Apersepsi P3: Kertas Dipotong & Kertas Dibakar --- */
+.apersepsi-p3-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 1.2rem 0;
+}
+
+@media (max-width: 768px) {
+    .apersepsi-p3-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.apersepsi-p3-card {
+    background: #ffffff;
+    border: 3px solid #cbd5e1;
+    border-radius: 22px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.apersepsi-p3-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
+}
+
+.apersepsi-p3-card.cut-card {
+    border-top: 7px solid #0284c7;
+}
+
+.apersepsi-p3-card.burn-card {
+    border-top: 7px solid #e11d48;
+}
+
+.apersepsi-p3-title {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.apersepsi-p3-illus-box {
+    width: 100%;
+    height: 160px;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 2px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.apersepsi-p3-obs-badge {
+    font-size: 0.9rem;
+    font-weight: 800;
+    padding: 10px 14px;
+    border-radius: 14px;
+    line-height: 1.45;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.apersepsi-p3-obs-badge.cut {
+    background: #f0f9ff;
+    color: #0369a1;
+    border: 2px solid #bae6fd;
+}
+
+.apersepsi-p3-obs-badge.burn {
+    background: #fff1f2;
+    color: #be123c;
+    border: 2px solid #fecdd3;
+}
+
+/* --- Misi 2 P3: Tabel Karakteristik Fisika vs Kimia --- */
+.p3-table-wrapper {
+    margin-top: 25px;
+    width: 100%;
+}
+
+.p3-table-title-box {
+    text-align: center;
+    margin-bottom: 16px;
+    background: #f8fafc;
+    border: 2px solid #cbd5e1;
+    border-radius: 18px;
+    padding: 14px 18px;
+}
+
+.p3-char-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .p3-char-table {
+        grid-template-columns: 1fr;
+    }
+}
+
+.p3-table-col {
+    background: #ffffff;
+    border: 3px solid #cbd5e1;
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    min-height: 380px;
+}
+
+.p3-table-col-header {
+    padding: 14px 16px;
+    text-align: center;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.p3-table-col-header.fisika {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+}
+
+.p3-table-col-header.kimia {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+}
+
+.p3-col-title {
+    font-size: 1.15rem;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.p3-col-subtitle {
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.95;
+    margin: 0;
+}
+
+.p3-col-counter {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.25);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 900;
+    margin-top: 4px;
+    align-self: center;
+}
+
+.p3-drop-zone {
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    margin: 10px;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    overflow-y: auto;
+    max-height: 480px;
+}
+
+.p3-drop-zone.dragover {
+    background: #ecfdf5;
+    border-color: #10b981;
+    border-style: solid;
+    transform: scale(1.01);
+}
+
+.p3-drop-zone.tap-target-active {
+    background: #eff6ff;
+    border: 2px solid #3b82f6;
+    animation: pulseGlow 1s infinite alternate;
+    cursor: pointer;
+}
+
+.p3-empty-placeholder {
+    text-align: center;
+    color: #94a3b8;
+    font-weight: 800;
+    font-size: 0.95rem;
+    margin: auto 0;
+    padding: 30px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.p3-char-bank {
+    background: #ffffff;
+    border: 3px solid #cbd5e1;
+    border-radius: 22px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.03);
+}
+
+.p3-char-bank-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.p3-char-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    min-height: 80px;
+    padding: 8px;
+}
+
+.p3-char-chip {
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-weight: 800;
+    font-size: 0.92rem;
+    color: #1e293b;
+    cursor: grab;
+    box-shadow: 0 4px 0 #cbd5e1;
+    transition: all 0.15s ease;
+    user-select: none;
+    line-height: 1.35;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.p3-char-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #94a3b8;
+    border-color: #64748b;
+}
+
+.p3-char-chip:active {
+    cursor: grabbing;
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #cbd5e1;
+}
+
+.p3-char-chip.selected {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    transform: scale(1.03);
+    animation: bounceSelect 0.4s ease;
+}
+
+.p3-placed-item {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    line-height: 1.4;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+    animation: snapIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.p3-placed-item.fisika {
+    border-left: 5px solid #0284c7;
+    border-top: 1px solid #bae6fd;
+    border-right: 1px solid #bae6fd;
+    border-bottom: 2px solid #bae6fd;
+    background: #f0f9ff;
+}
+
+.p3-placed-item.kimia {
+    border-left: 5px solid #dc2626;
+    border-top: 1px solid #fecaca;
+    border-right: 1px solid #fecaca;
+    border-bottom: 2px solid #fecaca;
+    background: #fff5f5;
+}
+
+.p3-chip-remove {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-weight: 800;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.p3-chip-remove:hover {
+    color: #ffffff;
+    background: #ef4444;
+    border-color: #dc2626;
+}
+
+@keyframes snapIn {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 6px rgba(59, 130, 246, 0.25); }
+    100% { box-shadow: 0 0 16px rgba(59, 130, 246, 0.6); }
+}
+
+@keyframes bounceSelect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1.03); }
+}
+
+@keyframes shakeBox {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-7px); }
+    40%, 80% { transform: translateX(7px); }
+}
+
+.shake-box {
+    animation: shakeBox 0.4s ease !important;
+}
+

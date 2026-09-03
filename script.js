@@ -1221,18 +1221,8 @@ function updateLevelCards() {
         let unlocked = false;
         let alertMsg = "";
         
-        if (meetingId === "p1") {
+        if (meetingId === "p1" || meetingId === "p2" || meetingId === "p3" || meetingId === "p4") {
             unlocked = true;
-        } else if (meetingId === "p2") {
-            unlocked = true;
-        } else if (meetingId === "p3") {
-            const p2Completed = localStorage.getItem("p2_completed") === "true";
-            unlocked = p2Completed;
-            alertMsg = "Level ini terkunci! Selesaikan Pertemuan 2 terlebih dahulu.";
-        } else if (meetingId === "p4") {
-            const p3Completed = localStorage.getItem("p3_completed") === "true";
-            unlocked = p3Completed;
-            alertMsg = "Level ini terkunci! Selesaikan Pertemuan 3 terlebih dahulu.";
         }
         
         const orig = originalContent[meetingId];
@@ -1626,6 +1616,9 @@ async function startMeeting(meetingId) {
             posttestCorrectCount = progress.posttestCorrectCount !== undefined ? progress.posttestCorrectCount : 0;
             posttestAnalysis = progress.posttestAnalysis || [];
             compPlayerScore = progress.compPlayerScore !== undefined ? progress.compPlayerScore : 0;
+            if (meetingId === "p3" && currentStep === 1) {
+                currentStep = 2;
+            }
         } catch (e) {
             console.warn("Gagal memuat progress tersimpan:", e);
             currentStep = 0;
@@ -1693,17 +1686,33 @@ function updateProgressBar() {
     const fillEl = document.getElementById("meeting-progress-fill");
     const textEl = document.getElementById("meeting-progress-text");
     
-    const percent = (currentStep / 14) * 100;
-    if (fillEl) {
-        fillEl.style.width = `${percent}%`;
-    }
-    if (textEl) {
-        let stepNames = [
-            "Splash Screen", "Stimulus Pembuka", "Apersepsi", "Motivasi Belajar", 
-            "Tujuan Belajar", "Pretest Tantangan", "Stimulus Eksplorasi", "Misi Eksplorasi", 
-            "Presentasi Hasil", "Penguatan Guru", "Kesimpulan", "Game Latihan", "Refleksi Mandiri", "Ujian Posttest", "Lencana Penutup"
-        ];
-        textEl.innerText = `Langkah ${currentStep + 1} dari 15: ${stepNames[currentStep]}`;
+    if (activeMeeting === "p3") {
+        const displayStep = currentStep === 0 ? 1 : currentStep;
+        const percent = ((displayStep - 1) / 13) * 100;
+        if (fillEl) {
+            fillEl.style.width = `${percent}%`;
+        }
+        if (textEl) {
+            let stepNames = [
+                "Splash Screen", "", "Apersepsi", "Motivasi Belajar", 
+                "Tujuan Belajar", "Pretest Tantangan", "Stimulus Eksplorasi", "Misi Eksplorasi", 
+                "Presentasi Hasil", "Penguatan Guru", "Kesimpulan", "Game Latihan", "Refleksi Mandiri", "Ujian Posttest", "Lencana Penutup"
+            ];
+            textEl.innerText = `Langkah ${displayStep} dari 14: ${stepNames[currentStep]}`;
+        }
+    } else {
+        const percent = (currentStep / 14) * 100;
+        if (fillEl) {
+            fillEl.style.width = `${percent}%`;
+        }
+        if (textEl) {
+            let stepNames = [
+                "Splash Screen", "Stimulus Pembuka", "Apersepsi", "Motivasi Belajar", 
+                "Tujuan Belajar", "Pretest Tantangan", "Stimulus Eksplorasi", "Misi Eksplorasi", 
+                "Presentasi Hasil", "Penguatan Guru", "Kesimpulan", "Game Latihan", "Refleksi Mandiri", "Ujian Posttest", "Lencana Penutup"
+            ];
+            textEl.innerText = `Langkah ${currentStep + 1} dari 15: ${stepNames[currentStep]}`;
+        }
     }
 }
 
@@ -1734,6 +1743,9 @@ function skipToPretest() {
 }
 
 function renderCurrentStep() {
+    if (activeMeeting === "p3" && currentStep === 1) {
+        currentStep = 2;
+    }
     updateProgressBar();
     maxStepReached = Math.max(maxStepReached, currentStep);
     saveMeetingProgress();
@@ -1861,6 +1873,9 @@ function nextStep() {
     
     if (currentStep < 14) {
         currentStep++;
+        if (activeMeeting === "p3" && currentStep === 1) {
+            currentStep = 2;
+        }
         activeSubStep = 1;
         renderCurrentStep();
     } else {
@@ -1885,6 +1900,9 @@ function prevStep() {
     
     if (currentStep > 0) {
         currentStep--;
+        if (activeMeeting === "p3" && currentStep === 1) {
+            currentStep = 0;
+        }
         if (currentStep === 7) {
             activeSubStep = 4;
         } else {
@@ -1952,6 +1970,11 @@ function renderSplash(card, btnNext) {
 
 // 2. Stimulus Pembuka (Stimulus 1)
 function renderStimulus1(card, btnNext) {
+    if (activeMeeting === "p3") {
+        currentStep = 2;
+        renderCurrentStep();
+        return;
+    }
     enableNextButton(btnNext);
     
     if (activeMeeting === "p2") {
@@ -2399,9 +2422,7 @@ function renderStimulus1(card, btnNext) {
     } else {
         setAvatar("happy", "Ayo amati video pembuka ini! Kamu juga bisa langsung mengklik Lanjut.");
 
-        let mediaArt = "";
-        if (activeMeeting === "p1") mediaArt = "🕰️ 🎸 🕯️ 🥤";
-        else if (activeMeeting === "p3") mediaArt = "❄️ ➔ 🔥 ➔ 💧 ➔ 💨";
+        let mediaArt = "🕰️ 🎸 🕯️ 🥤";
 
         card.innerHTML = `
             <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem;">📺 Video Apersepsi Pembuka</h3>
@@ -2438,6 +2459,11 @@ function renderStimulus1(card, btnNext) {
 function renderApersepsi(card, btnNext) {
     disableNextButton(btnNext);
 
+    if (activeMeeting === "p3") {
+        renderP3Apersepsi(card, btnNext);
+        return;
+    }
+
     let qData = {};
     if (activeMeeting === "p1") {
         qData = {
@@ -2454,14 +2480,6 @@ function renderApersepsi(card, btnNext) {
             correctIdx: 0,
             feedbackCorrect: "Tepat! Proses ini disebut **menguap** (evaporation), di mana partikel air menyerap energi panas dari matahari dan berubah wujud menjadi uap gas.",
             feedbackIncorrect: "Kurang tepat. Air tidak hilang begitu saja, melainkan menyerap energi panas dari matahari sehingga partikel air bergerak cepat, melemahkan ikatannya, dan **menguap** ke udara sebagai gas."
-        };
-    } else if (activeMeeting === "p3") {
-        qData = {
-            question: "Jika kalian memasukkan gula pasir ke dalam segelas air hangat lalu mengaduknya, apakah yang terjadi pada zat gula?",
-            options: ["Gula larut, merupakan perubahan fisika karena tidak terbentuk zat baru", "Terjadi perubahan kimia"],
-            correctIdx: 0,
-            feedbackCorrect: "Benar sekali! Proses melarutkan gula adalah perubahan fisika karena rasa manis gula masih ada dan gula dapat diperoleh kembali dengan menguapkan airnya (Buku Halaman 62).",
-            feedbackIncorrect: "Kurang tepat. Melarutkan gula adalah **perubahan fisika** karena rasa manis gula masih ada, tidak terbentuk zat baru, dan gula dapat diperoleh kembali dengan menguapkan airnya (Buku Halaman 62)."
         };
     } else if (activeMeeting === "p4") {
         qData = {
@@ -2518,6 +2536,241 @@ function renderApersepsi(card, btnNext) {
                 SoundEffects.playWrong();
                 updateStars(2);
                 setAvatar("sad", "Terima kasih telah menjawab! Kamu mendapat bonus ⭐ 2 Bintang partisipasi.");
+            }
+            enableNextButton(btnNext);
+        });
+    });
+}
+
+// Apersepsi Khusus Pertemuan 3: Kertas Dipotong & Kertas Dibakar
+function renderP3Apersepsi(card, btnNext) {
+    let isCut = false;
+    let isBurned = false;
+
+    card.innerHTML = `
+        <h3 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 0.8rem;">🙋 Apersepsi: Hubungkan Pengalamanmu</h3>
+        <p style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1.2rem; line-height: 1.5; color: #334155;">
+            Pernahkah kamu memotong selembar kertas dengan gunting, atau melihat selembar kertas dibakar api hingga menjadi abu? Amati dan coba simulasi kedua peristiwa di bawah ini:
+        </p>
+
+        <div class="apersepsi-p3-container">
+            <!-- Kartu A: Kertas Dipotong -->
+            <div class="apersepsi-p3-card cut-card">
+                <h4 class="apersepsi-p3-title">✂️ Peristiwa A: Kertas Dipotong</h4>
+                <div class="apersepsi-p3-illus-box" id="apersepsi-illus-cut"></div>
+                <button class="btn-icon btn-secondary" id="btn-apersepsi-cut-anim" style="font-size: 0.95rem; padding: 9px 18px;">
+                    ✂️ Coba Potong Kertas
+                </button>
+                <div class="apersepsi-p3-obs-badge cut" id="obs-badge-cut">
+                    📄 <strong>Pengamatan A:</strong> Kertas terpotong menjadi serpihan-serpihan kecil. Ukuran dan bentuknya berubah, namun materinya <strong>tetaplah KERTAS</strong> (tidak ada zat baru).
+                </div>
+            </div>
+
+            <!-- Kartu B: Kertas Dibakar -->
+            <div class="apersepsi-p3-card burn-card">
+                <h4 class="apersepsi-p3-title">🔥 Peristiwa B: Kertas Dibakar</h4>
+                <div class="apersepsi-p3-illus-box" id="apersepsi-illus-burn"></div>
+                <button class="btn-icon btn-exit" id="btn-apersepsi-burn-anim" style="font-size: 0.95rem; padding: 9px 18px;">
+                    🔥 Coba Bakar Kertas
+                </button>
+                <div class="apersepsi-p3-obs-badge burn" id="obs-badge-burn">
+                    🔥 <strong>Pengamatan B:</strong> Kertas terbakar menyala menghasilkan <strong>abu arang hitam dan asap gas</strong>. Telah <strong>terbentuk zat baru</strong> yang tidak dapat kembali menjadi kertas!
+                </div>
+            </div>
+        </div>
+
+        <p style="font-size: 1.2rem; font-weight: 800; margin: 1.6rem 0 1rem 0; line-height: 1.5; color: #1e293b;">
+            Berdasarkan pengamatan pada kedua ilustrasi peristiwa di atas, manakah pernyataan yang paling tepat mengenai perubahan yang terjadi pada kertas?
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:1.5rem;" id="apersepsi-options">
+            <button class="quiz-btn" data-idx="0" style="text-align:left; padding:15px; font-size:1.05rem; line-height:1.4;">
+                👍 Kertas dipotong tidak menghasilkan zat baru (Perubahan Fisika), sedangkan kertas dibakar menghasilkan zat baru berupa abu arang dan asap (Perubahan Kimia).
+            </button>
+            <button class="quiz-btn" data-idx="1" style="text-align:left; padding:15px; font-size:1.05rem; line-height:1.4;">
+                👎 Kertas dipotong menghasilkan zat baru karena ukurannya sudah menjadi serpihan, sedangkan kertas dibakar tidak menghasilkan apa-apa.
+            </button>
+            <button class="quiz-btn" data-idx="2" style="text-align:left; padding:15px; font-size:1.05rem; line-height:1.4;">
+                👎 Kedua peristiwa sama-sama menghasilkan zat baru karena bentuk awal lembaran kertas sama-sama hilang.
+            </button>
+        </div>
+
+        <div class="quiz-feedback hidden" id="apersepsi-feedback" style="padding:16px; border-radius:18px; font-weight:700; line-height:1.55; font-size:1.05rem;">
+        </div>
+    `;
+
+    // Gambar SVG Kertas Dipotong
+    function drawCutSvg(cut) {
+        const box = document.getElementById("apersepsi-illus-cut");
+        if (!box) return;
+        if (!cut) {
+            box.innerHTML = `
+                <svg width="220" height="150" viewBox="0 0 200 130" style="transition:all 0.4s ease;">
+                    <!-- Selembar kertas putih utuh -->
+                    <rect x="55" y="15" width="90" height="95" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="2" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.08));" />
+                    <!-- Lipatan sudut kertas -->
+                    <path d="M 125 15 L 145 35 L 125 35 Z" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5" />
+                    <!-- Garis-garis tulisan kertas -->
+                    <line x1="68" y1="42" x2="132" y2="42" stroke="#e2e8f0" stroke-width="2.5" stroke-linecap="round" />
+                    <line x1="68" y1="56" x2="132" y2="56" stroke="#e2e8f0" stroke-width="2.5" stroke-linecap="round" />
+                    <line x1="68" y1="70" x2="132" y2="70" stroke="#e2e8f0" stroke-width="2.5" stroke-linecap="round" />
+                    <line x1="68" y1="84" x2="115" y2="84" stroke="#e2e8f0" stroke-width="2.5" stroke-linecap="round" />
+                    <!-- Garis putus-putus rencana potong -->
+                    <line x1="100" y1="15" x2="100" y2="110" stroke="#0284c7" stroke-width="2" stroke-dasharray="5,4" />
+                    <!-- Ikon Gunting siap memotong -->
+                    <g transform="translate(86, 0)">
+                        <text x="0" y="24" font-size="28">✂️</text>
+                    </g>
+                    <text x="100" y="124" font-size="11" font-weight="900" fill="#0284c7" text-anchor="middle">Kertas Utuh Siap Dipotong</text>
+                </svg>
+            `;
+        } else {
+            box.innerHTML = `
+                <svg width="230" height="150" viewBox="0 0 210 130" style="transition:all 0.4s ease;">
+                    <!-- Potongan kiri kertas yang terbelah -->
+                    <g style="transform: rotate(-10deg) translate(18px, 12px); transform-origin: 50px 60px;">
+                        <path d="M 25 15 L 60 15 L 54 35 L 63 55 L 55 75 L 62 95 L 56 110 L 25 110 Z" fill="#ffffff" stroke="#0284c7" stroke-width="2" style="filter: drop-shadow(-3px 5px 6px rgba(2,132,199,0.15));" />
+                        <line x1="32" y1="40" x2="50" y2="40" stroke="#cbd5e1" stroke-width="2" />
+                        <line x1="32" y1="60" x2="52" y2="60" stroke="#cbd5e1" stroke-width="2" />
+                        <line x1="32" y1="80" x2="48" y2="80" stroke="#cbd5e1" stroke-width="2" />
+                    </g>
+                    <!-- Potongan kanan kertas yang terbelah -->
+                    <g style="transform: rotate(10deg) translate(85px, 6px); transform-origin: 120px 60px;">
+                        <path d="M 60 15 L 95 15 L 95 110 L 56 110 L 62 95 L 55 75 L 63 55 L 54 35 Z" fill="#ffffff" stroke="#0284c7" stroke-width="2" style="filter: drop-shadow(3px 5px 6px rgba(2,132,199,0.15));" />
+                        <line x1="68" y1="40" x2="88" y2="40" stroke="#cbd5e1" stroke-width="2" />
+                        <line x1="68" y1="60" x2="88" y2="60" stroke="#cbd5e1" stroke-width="2" />
+                        <line x1="68" y1="80" x2="84" y2="80" stroke="#cbd5e1" stroke-width="2" />
+                    </g>
+                    <!-- Serpihan kecil kertas yang bertebaran -->
+                    <rect x="92" y="75" width="12" height="15" rx="2" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" transform="rotate(25 98 82)" />
+                    <rect x="88" y="45" width="10" height="12" rx="2" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" transform="rotate(-18 93 51)" />
+                    <!-- Gunting aktif -->
+                    <text x="88" y="32" font-size="26">✂️</text>
+                    <text x="105" y="124" font-size="11" font-weight="900" fill="#059669" text-anchor="middle">Terbagi Menjadi Potongan Kertas</text>
+                </svg>
+            `;
+        }
+    }
+
+    // Gambar SVG Kertas Dibakar
+    function drawBurnSvg(burned) {
+        const box = document.getElementById("apersepsi-illus-burn");
+        if (!box) return;
+        if (!burned) {
+            box.innerHTML = `
+                <svg width="220" height="150" viewBox="0 0 200 130" style="transition:all 0.4s ease;">
+                    <!-- Cawan laboratorium / alas tahan api -->
+                    <ellipse cx="100" cy="112" rx="70" ry="12" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2" />
+                    <ellipse cx="100" cy="109" rx="66" ry="10" fill="#f8fafc" />
+                    <!-- Kertas putih sebelum dibakar -->
+                    <rect x="65" y="30" width="70" height="75" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="2" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.08));" />
+                    <line x1="75" y1="50" x2="125" y2="50" stroke="#e2e8f0" stroke-width="2" />
+                    <line x1="75" y1="65" x2="125" y2="65" stroke="#e2e8f0" stroke-width="2" />
+                    <line x1="75" y1="80" x2="110" y2="80" stroke="#e2e8f0" stroke-width="2" />
+                    <!-- Korek api / percikan api siap membakar -->
+                    <g transform="translate(132, 20)">
+                        <text x="0" y="24" font-size="26">🔥</text>
+                    </g>
+                    <text x="100" y="125" font-size="11" font-weight="900" fill="#64748b" text-anchor="middle">Kertas Sebelum Tersulut Api</text>
+                </svg>
+            `;
+        } else {
+            box.innerHTML = `
+                <svg width="220" height="150" viewBox="0 0 200 130" style="transition:all 0.4s ease;">
+                    <!-- Cawan abu -->
+                    <ellipse cx="100" cy="112" rx="70" ry="12" fill="#cbd5e1" stroke="#64748b" stroke-width="2" />
+                    <!-- Gumpalan abu arang hitam rapuh -->
+                    <path d="M 60 75 Q 68 55 90 60 Q 110 50 125 65 Q 140 85 130 102 Q 110 114 85 110 Q 60 106 60 75 Z" fill="#1e293b" stroke="#0f172a" stroke-width="2" style="filter: drop-shadow(0 4px 10px rgba(239,68,68,0.4));" />
+                    <path d="M 75 80 Q 95 72 115 82" stroke="#334155" stroke-width="2" fill="none" />
+                    <path d="M 80 92 Q 100 88 120 95" stroke="#334155" stroke-width="2" fill="none" />
+                    <!-- Bara api merah oranye -->
+                    <circle cx="82" cy="78" r="4" fill="#f97316" />
+                    <circle cx="112" cy="85" r="4.5" fill="#ef4444" />
+                    <circle cx="98" cy="98" r="3" fill="#facc15" />
+                    <!-- Kobaran lidah api -->
+                    <text x="82" y="55" font-size="28">🔥</text>
+                    <text x="108" y="45" font-size="20">🔥</text>
+                    <!-- Asap gas yang mengepul ke atas -->
+                    <text x="65" y="36" font-size="18">💨</text>
+                    <text x="118" y="26" font-size="22">💨</text>
+                    <text x="100" y="125" font-size="11" font-weight="900" fill="#dc2626" text-anchor="middle">Hangus Jadi Abu Arang & Gas Asap</text>
+                </svg>
+            `;
+        }
+    }
+
+    drawCutSvg(false);
+    drawBurnSvg(false);
+
+    // Tombol animasi Potong Kertas
+    document.getElementById("btn-apersepsi-cut-anim").addEventListener("click", () => {
+        SoundEffects.playClick();
+        isCut = !isCut;
+        drawCutSvg(isCut);
+        const btn = document.getElementById("btn-apersepsi-cut-anim");
+        if (isCut) {
+            btn.innerHTML = "🔄 Satukan Kertas Lagi";
+            btn.classList.add("correct");
+            setAvatar("happy", "Lihat! Kertas dipotong menjadi bagian kecil, tetapi setiap potongannya tetap berupa KERTAS!");
+        } else {
+            btn.innerHTML = "✂️ Coba Potong Kertas";
+            btn.classList.remove("correct");
+        }
+    });
+
+    // Tombol animasi Bakar Kertas
+    document.getElementById("btn-apersepsi-burn-anim").addEventListener("click", () => {
+        SoundEffects.playClick();
+        isBurned = !isBurned;
+        drawBurnSvg(isBurned);
+        const btn = document.getElementById("btn-apersepsi-burn-anim");
+        if (isBurned) {
+            btn.innerHTML = "🔄 Amati Abu Lagi";
+            btn.classList.add("correct");
+            setAvatar("shocked", "Api membakar kertas! Terbentuk zat baru yaitu abu hitam arang dan asap gas yang tidak dapat kembali menjadi kertas!");
+        } else {
+            btn.innerHTML = "🔥 Coba Bakar Kertas";
+            btn.classList.remove("correct");
+        }
+    });
+
+    // Evaluasi Jawaban Apersepsi
+    document.querySelectorAll("#apersepsi-options button").forEach(btn => {
+        btn.addEventListener("click", () => {
+            SoundEffects.playClick();
+            document.querySelectorAll("#apersepsi-options button").forEach(b => b.disabled = true);
+
+            const chosenIdx = parseInt(btn.getAttribute("data-idx"));
+            const feedbackEl = document.getElementById("apersepsi-feedback");
+            feedbackEl.classList.remove("hidden");
+
+            if (chosenIdx === 0) {
+                btn.classList.add("correct");
+                feedbackEl.innerHTML = `
+                    🎉 <strong>Luar Biasa, Tepat Sekali!</strong><br>
+                    • <strong>Kertas Dipotong:</strong> Hanya ukuran dan bentuk fisiknya yang berubah, sifat zatnya tetap sama yaitu kertas (<strong>Perubahan Fisika</strong>).<br>
+                    • <strong>Kertas Dibakar:</strong> Menghasilkan zat baru berupa abu arang hitam dan asap gas yang memiliki sifat sama sekali baru dan tidak dapat kembali menjadi kertas lagi (<strong>Perubahan Kimia</strong>).<br>
+                    Mari kita selidiki lebih dalam karakteristik keduanya di petualangan hari ini!
+                `;
+                feedbackEl.style.background = "#dcfce7";
+                feedbackEl.style.color = "#15803d";
+                feedbackEl.style.border = "2px solid #bbf7d0";
+                SoundEffects.playCorrect();
+                updateStars(5);
+                setAvatar("celebrate", "Hebat sekali! Pemahaman dasarmu tentang perubahan fisika dan kimia sangat tajam. Dapat ⭐ 5 Bintang! Klik Lanjut!");
+            } else {
+                btn.classList.add("wrong");
+                feedbackEl.innerHTML = `
+                    💡 <strong>Mari Perhatikan Pengamatannya:</strong><br>
+                    Serpihan kertas yang dipotong <em>masih tetap berupa kertas</em> (tidak membentuk zat baru). Namun, kertas yang dibakar telah berubah secara kimiawi menjadi <em>abu arang dan asap gas</em> yang merupakan zat baru dan tidak dapat kembali menjadi kertas semula.<br>
+                    Jadi, memotong kertas adalah <strong>Perubahan Fisika</strong> dan membakar kertas adalah <strong>Perubahan Kimia</strong>!
+                `;
+                feedbackEl.style.background = "#fee2e2";
+                feedbackEl.style.color = "#b91c1c";
+                feedbackEl.style.border = "2px solid #fecaca";
+                SoundEffects.playWrong();
+                updateStars(2);
+                setAvatar("sad", "Terima kasih atas jawabanmu! Kamu mendapat bonus ⭐ 2 Bintang. Mari kita pelajari bersama!");
             }
             enableNextButton(btnNext);
         });
@@ -5145,62 +5398,145 @@ function renderP3Missions(wrapper, btnNext) {
         }
         
     } else if (activeSubStep === 2) {
-        setAvatar("thinking", "Percobaan Halaman 61-64: Klik tombol sobek atau bakar kertas untuk memicu perubahan zat di laboratorium virtual!");
+        setAvatar("thinking", "Laboratorium Virtual (Hal 61-64): Coba eksperimen potong dan bakar kertas, lalu kelompokkan seluruh kotak karakteristik ke dalam tabel!");
         
         const container = document.createElement("div");
         container.innerHTML = `
-            <div style="display:flex; flex-direction:column; align-items:center; gap:20px; margin: 1.5rem 0;">
-                <div id="paper-graphic-box" style="width:200px; height:150px; display:flex; align-items:center; justify-content:center; transition: all 0.3s ease;"></div>
-                <div class="syringe-buttons">
-                    <button class="btn-icon btn-secondary" id="btn-paper-tear">✂️ Sobek Kertas</button>
-                    <button class="btn-icon btn-exit" id="btn-paper-burn">🔥 Bakar Kertas</button>
+            <!-- BAGIAN 1: EKSPERIMEN KERTAS DIPOTONG VS DIBAKAR -->
+            <div style="background:#ffffff; border:3px solid #cbd5e1; border-radius:24px; padding:18px; margin: 1.2rem 0; box-shadow:0 6px 14px rgba(0,0,0,0.03);">
+                <h4 style="text-align:center; font-weight:900; font-size:1.2rem; color:#1e293b; margin:0 0 12px 0;">
+                    🔬 Laboratorium Virtual: Eksperimen Kertas Dipotong vs Dibakar
+                </h4>
+                <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+                    <div id="paper-graphic-box" style="width:220px; height:150px; display:flex; align-items:center; justify-content:center; transition: all 0.3s ease;"></div>
+                    <div class="syringe-buttons" style="gap:12px; flex-wrap:wrap; justify-content:center;">
+                        <button class="btn-icon btn-secondary" id="btn-paper-tear" style="padding:10px 18px; font-size:1rem;">✂️ Potong / Sobek Kertas</button>
+                        <button class="btn-icon btn-exit" id="btn-paper-burn" style="padding:10px 18px; font-size:1rem;">🔥 Bakar Kertas</button>
+                    </div>
+                    <div class="hidden" id="paper-feedback" style="background:#f8fafc; border:2px solid #cbd5e1; border-radius:18px; padding:15px; text-align:center; max-width:620px;">
+                        <p style="font-weight:800; margin:0; line-height:1.5; font-size:1rem;" id="paper-feedback-text"></p>
+                    </div>
                 </div>
-                <div class="hidden" id="paper-feedback" style="background:#f8fafc; border:2px solid #cbd5e1; border-radius:18px; padding:15px; text-align:center; max-width:550px;">
-                    <p style="font-weight:800; margin:0;" id="paper-feedback-text"></p>
+            </div>
+
+            <!-- BAGIAN 2: TABEL KOSONG ANALISIS KARAKTERISTIK -->
+            <div class="p3-table-wrapper">
+                <div class="p3-table-title-box">
+                    <h3 style="font-size:1.35rem; font-weight:900; color:#1e293b; margin:0 0 6px 0;">
+                        📋 Tabel Analisis Karakteristik Perubahan Fisika &amp; Kimia
+                    </h3>
+                    <p style="font-size:1rem; font-weight:700; color:#475569; margin:0;">
+                        Pindahkan kotak-kotak ciri di bawah ke dalam kolom tabel yang sesuai (bisa seret/drag atau klik kotak lalu klik kolom tujuan)!
+                    </p>
+                </div>
+
+                <!-- Indikator Progress Keseluruhan -->
+                <div style="margin-bottom:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-weight:800; font-size:0.95rem; color:#334155;">
+                        <span>Progres Pengisian Tabel:</span>
+                        <span id="p3-table-progress-text">0 / 17 Karakteristik (0%)</span>
+                    </div>
+                    <div style="width:100%; height:12px; background:#e2e8f0; border-radius:10px; overflow:hidden; border:1px solid #cbd5e1;">
+                        <div id="p3-table-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #0284c7, #10b981); transition:width 0.3s ease;"></div>
+                    </div>
+                </div>
+
+                <!-- Struktur Grid Tabel 2 Kolom -->
+                <div class="p3-char-table">
+                    <!-- Kolom 1: Ciri Perubahan Fisika -->
+                    <div class="p3-table-col" id="col-fisika">
+                        <div class="p3-table-col-header fisika">
+                            <span class="p3-col-title">🔄 PERUBAHAN FISIKA</span>
+                            <span class="p3-col-subtitle">(Contoh: Kertas Dipotong / Disobek)</span>
+                            <span class="p3-col-counter" id="cnt-fisika">0 / 8 Ciri</span>
+                        </div>
+                        <div class="p3-drop-zone" id="zone-fisika-table" data-type="fisika">
+                            <div class="p3-empty-placeholder" id="placeholder-fisika">
+                                <span style="font-size:2.2rem;">📥</span>
+                                <span>Tarik atau klik kotak ciri Perubahan Fisika ke sini</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kolom 2: Ciri Perubahan Kimia -->
+                    <div class="p3-table-col" id="col-kimia">
+                        <div class="p3-table-col-header kimia">
+                            <span class="p3-col-title">⚗️ PERUBAHAN KIMIA</span>
+                            <span class="p3-col-subtitle">(Contoh: Kertas Dibakar Jadi Abu)</span>
+                            <span class="p3-col-counter" id="cnt-kimia">0 / 9 Ciri</span>
+                        </div>
+                        <div class="p3-drop-zone" id="zone-kimia-table" data-type="kimia">
+                            <div class="p3-empty-placeholder" id="placeholder-kimia">
+                                <span style="font-size:2.2rem;">📥</span>
+                                <span>Tarik atau klik kotak ciri Perubahan Kimia ke sini</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BAGIAN 3: BANK PILIHAN KOTAK KARAKTERISTIK -->
+                <div class="p3-char-bank">
+                    <div class="p3-char-bank-header">
+                        <span style="font-weight:900; font-size:1.05rem; color:#1e293b;">
+                            📦 Pilihan Kotak Karakteristik (<span id="bank-remaining-count">17</span> Ciri Belum Dipindahkan):
+                        </span>
+                        <button class="btn-icon btn-secondary" id="btn-reset-p3-table" style="font-size:0.85rem; padding:6px 14px;">
+                            🔄 Acak &amp; Reset Tabel
+                        </button>
+                    </div>
+                    <p style="font-size:0.88rem; color:#64748b; font-weight:700; margin:0 0 12px 0;">
+                        💡 <strong>Cara Memindahkan:</strong> Seret (drag) kotak langsung ke kolom tabel, ATAU klik salah satu kotak di bawah (akan menyala biru) lalu klik kolom tabel tujuan!
+                    </p>
+                    <div class="p3-char-items" id="p3-char-items-pool"></div>
                 </div>
             </div>
         `;
         wrapper.appendChild(container);
         
+        // Fungsi menggambar status eksperimen kertas di bagian atas
         function drawPaperState(state) {
             const box = document.getElementById("paper-graphic-box");
             if (!box) return;
             if (state === "normal") {
                 box.innerHTML = `
-                    <svg width="120" height="140" viewBox="0 0 100 100" style="transition: all 0.5s ease;">
+                    <svg width="140" height="145" viewBox="0 0 100 100" style="transition: all 0.5s ease;">
                         <rect x="25" y="10" width="50" height="70" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="2" style="filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));" />
                         <path d="M 65 10 L 75 20 L 65 20 Z" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1" />
                         <line x1="35" y1="30" x2="65" y2="30" stroke="#cbd5e1" stroke-width="2" />
                         <line x1="35" y1="45" x2="65" y2="45" stroke="#cbd5e1" stroke-width="2" />
                         <line x1="35" y1="60" x2="55" y2="60" stroke="#cbd5e1" stroke-width="2" />
+                        <text x="50" y="93" font-size="8" font-weight="bold" fill="#64748b" text-anchor="middle">Kertas Utuh</text>
                     </svg>
                 `;
             } else if (state === "torn") {
                 box.innerHTML = `
-                    <svg width="160" height="140" viewBox="0 0 120 100" style="transition: all 0.5s ease;">
-                        <g style="transform: rotate(-10deg) translate(5px, 15px);">
-                            <path d="M 15 10 L 45 10 L 40 25 L 47 40 L 42 55 L 48 70 L 40 80 L 15 80 Z" fill="#ffffff" stroke="#94a3b8" stroke-width="2" style="filter: drop-shadow(-2px 4px 5px rgba(0,0,0,0.1));" />
+                    <svg width="180" height="145" viewBox="0 0 120 100" style="transition: all 0.5s ease;">
+                        <g style="transform: rotate(-10deg) translate(5px, 12px);">
+                            <path d="M 15 10 L 45 10 L 40 25 L 47 40 L 42 55 L 48 70 L 40 80 L 15 80 Z" fill="#ffffff" stroke="#0284c7" stroke-width="2" style="filter: drop-shadow(-2px 4px 5px rgba(2,132,199,0.2));" />
                             <line x1="22" y1="30" x2="38" y2="30" stroke="#cbd5e1" stroke-width="2" />
                             <line x1="22" y1="45" x2="40" y2="45" stroke="#cbd5e1" stroke-width="2" />
                         </g>
-                        <g style="transform: rotate(10deg) translate(60px, 10px);">
-                            <path d="M 45 10 L 75 10 L 75 80 L 40 80 L 48 70 L 42 55 L 47 40 L 40 25 Z" fill="#ffffff" stroke="#94a3b8" stroke-width="2" style="filter: drop-shadow(2px 4px 5px rgba(0,0,0,0.1));" />
+                        <g style="transform: rotate(10deg) translate(60px, 8px);">
+                            <path d="M 45 10 L 75 10 L 75 80 L 40 80 L 48 70 L 42 55 L 47 40 L 40 25 Z" fill="#ffffff" stroke="#0284c7" stroke-width="2" style="filter: drop-shadow(2px 4px 5px rgba(2,132,199,0.2));" />
                             <line x1="50" y1="30" x2="68" y2="30" stroke="#cbd5e1" stroke-width="2" />
                             <line x1="48" y1="45" x2="68" y2="45" stroke="#cbd5e1" stroke-width="2" />
                         </g>
+                        <text x="45" y="24" font-size="16">✂️</text>
+                        <text x="60" y="96" font-size="8" font-weight="bold" fill="#0284c7" text-anchor="middle">Kertas Dipotong (Fisika)</text>
                     </svg>
                 `;
             } else if (state === "burned") {
                 box.innerHTML = `
-                    <svg width="130" height="140" viewBox="0 0 100 100" style="transition: all 0.5s ease;">
-                        <path d="M 25 20 Q 30 15 45 22 Q 60 15 70 25 Q 75 45 65 65 Q 45 75 30 65 Q 20 45 25 20 Z" fill="#334155" stroke="#1e293b" stroke-width="2" style="filter: drop-shadow(0px 6px 12px rgba(239,68,68,0.45));" />
-                        <path d="M 30 35 L 60 38" stroke="#1e293b" stroke-width="2" />
-                        <path d="M 32 50 L 55 52" stroke="#1e293b" stroke-width="2" />
+                    <svg width="150" height="145" viewBox="0 0 100 100" style="transition: all 0.5s ease;">
+                        <path d="M 25 20 Q 30 15 45 22 Q 60 15 70 25 Q 75 45 65 65 Q 45 75 30 65 Q 20 45 25 20 Z" fill="#1e293b" stroke="#0f172a" stroke-width="2" style="filter: drop-shadow(0px 6px 12px rgba(239,68,68,0.45));" />
+                        <path d="M 30 35 L 60 38" stroke="#334155" stroke-width="2" />
+                        <path d="M 32 50 L 55 52" stroke="#334155" stroke-width="2" />
                         <circle cx="35" cy="30" r="3" fill="#f97316" />
                         <circle cx="55" cy="45" r="4" fill="#ef4444" />
                         <circle cx="48" cy="25" r="2" fill="#facc15" />
-                        <text x="35" y="62" font-size="22">🔥</text>
-                        <text x="50" y="38" font-size="14">💨</text>
+                        <text x="32" y="60" font-size="20">🔥</text>
+                        <text x="52" y="38" font-size="16">💨</text>
+                        <text x="50" y="93" font-size="8" font-weight="bold" fill="#dc2626" text-anchor="middle">Kertas Dibakar Jadi Abu (Kimia)</text>
                     </svg>
                 `;
             }
@@ -5208,16 +5544,17 @@ function renderP3Missions(wrapper, btnNext) {
         
         drawPaperState("normal");
         
-        let done = new Set();
+        // Status eksperimen kertas
+        let donePaper = new Set();
         
         document.getElementById("btn-paper-tear").addEventListener("click", () => {
             SoundEffects.playClick();
             drawPaperState("torn");
             const feedback = document.getElementById("paper-feedback");
             feedback.classList.remove("hidden");
-            document.getElementById("paper-feedback-text").innerHTML = "<strong>Perubahan Fisika (Sobek Kertas):</strong> Ukuran kertas mengecil, komposisi kimianya tetap sama (tetap kertas), tidak terbentuk zat baru.";
-            done.add("tear");
-            updateStars(10);
+            document.getElementById("paper-feedback-text").innerHTML = "<strong>Perubahan Fisika (Potong/Sobek Kertas):</strong> Ukuran dan bentuk kertas mengecil menjadi serpihan, namun sifat dan komposisi kimianya tetap sama (tetap kertas), tidak terbentuk zat baru.";
+            donePaper.add("tear");
+            updateStars(5);
             checkWin();
         });
         
@@ -5226,20 +5563,278 @@ function renderP3Missions(wrapper, btnNext) {
             drawPaperState("burned");
             const feedback = document.getElementById("paper-feedback");
             feedback.classList.remove("hidden");
-            document.getElementById("paper-feedback-text").innerHTML = "<strong>Perubahan Kimia (Bakar Kertas):</strong> Terbentuk zat jenis baru berupa abu arang hitam dan asap gas. Perubahan bersifat tidak bisa balik (irreversible).";
-            done.add("burn");
-            updateStars(10);
+            document.getElementById("paper-feedback-text").innerHTML = "<strong>Perubahan Kimia (Bakar Kertas):</strong> Terbentuk zat jenis baru berupa abu arang hitam dan asap gas. Sifatnya berbeda total dari kertas asal dan perubahan bersifat tidak bisa kembali (irreversible).";
+            donePaper.add("burn");
+            updateStars(5);
             checkWin();
         });
-        
-        function checkWin() {
-            if (done.size === 2) {
-                enableNextButton(btnNext);
-                setAvatar("celebrate", "Kamu sudah mencoba kedua eksperimen kertas! Klik Lanjut!");
+
+        // ==========================================
+        // DAFTAR KARAKTERISTIK FISIKA & KIMIA (17 Ciri)
+        // ==========================================
+        const characteristicList = [
+            // 8 Ciri Perubahan Fisika
+            { id: "c_f1", text: "Tidak menghasilkan zat jenis baru", type: "fisika" },
+            { id: "c_f2", text: "Komposisi materi & sifat kimia zat tetap sama", type: "fisika" },
+            { id: "c_f3", text: "Bersifat sementara & dapat kembali ke bentuk semula (reversible)", type: "fisika" },
+            { id: "c_f4", text: "Hanya wujud, bentuk, atau ukuran fisik yang berubah", type: "fisika" },
+            { id: "c_f5", text: "Sifat asli zat sebelum dan sesudah perubahan tetap identik", type: "fisika" },
+            { id: "c_f6", text: "Dapat dipisahkan kembali dengan metode fisika (penguapan/penyaringan)", type: "fisika" },
+            { id: "c_f7", text: "Tidak disertai pembentukan endapan reaksi atau gas baru", type: "fisika" },
+            { id: "c_f8", text: "Contoh: Kertas dipotong, es mencair, gula dilarutkan ke air", type: "fisika" },
+
+            // 9 Ciri Perubahan Kimia
+            { id: "c_k1", text: "Menghasilkan satu atau lebih zat jenis baru", type: "kimia" },
+            { id: "c_k2", text: "Komposisi partikel & susunan ikatan kimia molekul berubah", type: "kimia" },
+            { id: "c_k3", text: "Bersifat tetap & sulit / tidak dapat kembali ke asal (irreversible)", type: "kimia" },
+            { id: "c_k4", text: "Sifat zat baru berbeda secara nyata dari sifat asalnya", type: "kimia" },
+            { id: "c_k5", text: "Sering disertai perubahan warna yang permanen", type: "kimia" },
+            { id: "c_k6", text: "Sering disertai pembentukan gelembung gas baru hasil reaksi", type: "kimia" },
+            { id: "c_k7", text: "Sering disertai pembentukan endapan padat baru (presipitat)", type: "kimia" },
+            { id: "c_k8", text: "Disertai pelepasan atau penyerapan energi (panas, cahaya, api)", type: "kimia" },
+            { id: "c_k9", text: "Contoh: Kertas dibakar jadi abu, paku berkarat, memasak makanan", type: "kimia" }
+        ];
+
+        let placedItems = new Map(); // id -> targetType
+        let selectedChip = null;
+
+        const poolContainer = document.getElementById("p3-char-items-pool");
+        const zoneFisika = document.getElementById("zone-fisika-table");
+        const zoneKimia = document.getElementById("zone-kimia-table");
+        const placeholderFisika = document.getElementById("placeholder-fisika");
+        const placeholderKimia = document.getElementById("placeholder-kimia");
+        const cntFisika = document.getElementById("cnt-fisika");
+        const cntKimia = document.getElementById("cnt-kimia");
+        const progressBar = document.getElementById("p3-table-progress-bar");
+        const progressText = document.getElementById("p3-table-progress-text");
+        const remainingCountEl = document.getElementById("bank-remaining-count");
+
+        // Perbarui Tampilan Progres & Counter Tabel
+        function updateTableCounters() {
+            let fisikaCount = 0;
+            let kimiaCount = 0;
+            placedItems.forEach((type) => {
+                if (type === "fisika") fisikaCount++;
+                else if (type === "kimia") kimiaCount++;
+            });
+
+            cntFisika.innerText = `${fisikaCount} / 8 Ciri`;
+            cntKimia.innerText = `${kimiaCount} / 9 Ciri`;
+
+            const totalPlaced = placedItems.size;
+            const totalItems = characteristicList.length;
+            const percent = Math.round((totalPlaced / totalItems) * 100);
+
+            progressBar.style.width = `${percent}%`;
+            progressText.innerText = `${totalPlaced} / ${totalItems} Karakteristik (${percent}%)`;
+            remainingCountEl.innerText = `${totalItems - totalPlaced}`;
+
+            // Tampilkan atau sembunyikan placeholder kosong
+            placeholderFisika.style.display = (fisikaCount === 0) ? "flex" : "none";
+            placeholderKimia.style.display = (kimiaCount === 0) ? "flex" : "none";
+        }
+
+        // Hapus seleksi aktif tap
+        function clearChipSelection() {
+            if (selectedChip) {
+                selectedChip.classList.remove("selected");
+                selectedChip = null;
+            }
+            zoneFisika.classList.remove("tap-target-active");
+            zoneKimia.classList.remove("tap-target-active");
+        }
+
+        // Buat chip kotak karakteristik di bank pilihan
+        function createChipElement(item) {
+            const chip = document.createElement("div");
+            chip.className = "p3-char-chip";
+            chip.id = item.id;
+            chip.draggable = true;
+            chip.dataset.type = item.type;
+            chip.dataset.text = item.text;
+            chip.innerHTML = `<span>📄</span> <span>${item.text}</span>`;
+
+            // Event Drag Start
+            chip.addEventListener("dragstart", (e) => {
+                SoundEffects.playClick();
+                clearChipSelection();
+                e.dataTransfer.setData("text/plain", item.id);
+            });
+
+            // Event Klik / Tap untuk memilih (ramah layar sentuh)
+            chip.addEventListener("click", (e) => {
+                e.stopPropagation();
+                SoundEffects.playClick();
+
+                if (selectedChip === chip) {
+                    clearChipSelection();
+                    return;
+                }
+
+                clearChipSelection();
+                selectedChip = chip;
+                chip.classList.add("selected");
+                zoneFisika.classList.add("tap-target-active");
+                zoneKimia.classList.add("tap-target-active");
+                setAvatar("thinking", "Kotak ciri terpilih! Sekarang klik kolom tabel: Perubahan Fisika atau Perubahan Kimia!");
+            });
+
+            return chip;
+        }
+
+        // Tempatkan item ke dalam zona tabel
+        function attemptPlace(chipEl, targetZone) {
+            if (!chipEl) return;
+            const itemId = chipEl.id;
+            const itemData = characteristicList.find(c => c.id === itemId);
+            if (!itemData) return;
+
+            const targetType = targetZone.dataset.type;
+
+            if (itemData.type === targetType) {
+                // Penempatan Benar
+                SoundEffects.playCorrect();
+                placedItems.set(itemId, targetType);
+
+                // Buat elemen di dalam tabel
+                const placedDiv = document.createElement("div");
+                placedDiv.className = `p3-placed-item ${targetType}`;
+                placedDiv.id = `placed-${itemId}`;
+                placedDiv.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:1.15rem;">${targetType === 'fisika' ? '🔄' : '⚗️'}</span>
+                        <span>${itemData.text}</span>
+                    </div>
+                    <button class="p3-chip-remove" title="Kembalikan kotak ini ke bank pilihan">✖</button>
+                `;
+
+                // Tombol batal / kembalikan ke bank
+                placedDiv.querySelector(".p3-chip-remove").addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    SoundEffects.playClick();
+                    placedItems.delete(itemId);
+                    placedDiv.remove();
+                    // Kembalikan ke pool
+                    const newChip = createChipElement(itemData);
+                    poolContainer.appendChild(newChip);
+                    updateTableCounters();
+                    checkWin();
+                });
+
+                targetZone.appendChild(placedDiv);
+                chipEl.remove();
+                clearChipSelection();
+                updateTableCounters();
+                updateStars(2);
+                checkWin();
+
             } else {
-                setAvatar("thinking", `Bagus! Kamu sudah mempelajari ${done.size}/2 jenis perubahan kertas. Coba eksperimen satunya lagi!`);
+                // Penempatan Salah
+                SoundEffects.playWrong();
+                chipEl.classList.add("shake-box");
+                chipEl.style.borderColor = "#ef4444";
+                chipEl.style.color = "#dc2626";
+
+                setTimeout(() => {
+                    chipEl.classList.remove("shake-box");
+                    chipEl.style.borderColor = "";
+                    chipEl.style.color = "";
+                }, 500);
+
+                clearChipSelection();
+
+                if (itemData.type === "fisika") {
+                    setAvatar("sad", "Salah kolom! Ciri tersebut tidak menghasilkan zat baru, jadi merupakan ciri Perubahan Fisika.");
+                } else {
+                    setAvatar("sad", "Salah kolom! Ciri tersebut menghasilkan zat baru / reaksi kimia, jadi merupakan ciri Perubahan Kimia.");
+                }
             }
         }
+
+        // Setup drop zone events
+        [zoneFisika, zoneKimia].forEach(zone => {
+            zone.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                zone.classList.add("dragover");
+            });
+
+            zone.addEventListener("dragleave", () => {
+                zone.classList.remove("dragover");
+            });
+
+            zone.addEventListener("drop", (e) => {
+                e.preventDefault();
+                zone.classList.remove("dragover");
+                const id = e.dataTransfer.getData("text/plain");
+                const chip = document.getElementById(id);
+                if (chip) {
+                    attemptPlace(chip, zone);
+                }
+            });
+
+            // Klik zona saat ada chip yang dipilih
+            zone.addEventListener("click", () => {
+                if (selectedChip) {
+                    attemptPlace(selectedChip, zone);
+                }
+            });
+        });
+
+        // Klik di luar membatalkan seleksi chip
+        container.addEventListener("click", (e) => {
+            if (!e.target.closest(".p3-char-chip") && !e.target.closest(".p3-drop-zone")) {
+                clearChipSelection();
+            }
+        });
+
+        // Inisialisasi dan Acak Bank Karakteristik
+        function initBank() {
+            placedItems.clear();
+            clearChipSelection();
+            poolContainer.innerHTML = "";
+
+            // Bersihkan item di tabel
+            zoneFisika.querySelectorAll(".p3-placed-item").forEach(el => el.remove());
+            zoneKimia.querySelectorAll(".p3-placed-item").forEach(el => el.remove());
+
+            // Acak urutan kartu karakteristik
+            const shuffled = [...characteristicList].sort(() => Math.random() - 0.5);
+            shuffled.forEach(item => {
+                const chip = createChipElement(item);
+                poolContainer.appendChild(chip);
+            });
+
+            updateTableCounters();
+        }
+
+        // Tombol Reset / Acak Tabel
+        document.getElementById("btn-reset-p3-table").addEventListener("click", () => {
+            SoundEffects.playClick();
+            initBank();
+            setAvatar("thinking", "Tabel telah di-reset! Ayo pasang kembali setiap kotak ciri ke kolom Perubahan Fisika atau Kimia!");
+        });
+
+        // Cek Syarat Kemenangan Misi 2
+        function checkWin() {
+            const paperDone = (donePaper.size >= 2);
+            const tableDone = (placedItems.size === characteristicList.length);
+
+            if (paperDone && tableDone) {
+                enableNextButton(btnNext);
+                SoundEffects.playCorrect();
+                updateStars(15);
+                setAvatar("celebrate", "Luar biasa ilmuwan cilik! Eksperimen kertas selesai dan seluruh 17 karakteristik Perubahan Fisika & Kimia telah terpasang dengan sempurna di tabel! Klik Lanjut!");
+            } else if (tableDone && !paperDone) {
+                setAvatar("thinking", "Tabel karakteristik sudah 100% lengkap! Sekarang coba kedua eksperimen kertas (potong & bakar) di atas untuk membuka tombol Lanjut!");
+            } else if (paperDone && !tableDone) {
+                setAvatar("thinking", `Eksperimen kertas selesai! Sekarang lengkapi tabel karakteristik: ${placedItems.size}/${characteristicList.length} kotak terpasang.`);
+            } else {
+                setAvatar("thinking", `Progress: ${donePaper.size}/2 eksperimen kertas, ${placedItems.size}/${characteristicList.length} tabel ciri.`);
+            }
+        }
+
+        // Jalankan inisialisasi awal bank
+        initBank();
         
     } else if (activeSubStep === 3) {
         setAvatar("thinking", "Siklus Air Dunia (Halaman 63): Klik tahapan siklus air pada ilustrasi di bawah!");
