@@ -3224,249 +3224,234 @@ button:disabled {
     border: 2px solid #fecdd3;
 }
 
-/* --- Misi 2 P3: Tabel Karakteristik Fisika vs Kimia --- */
+/* --- Misi 2 P3: Tabel Matriks Karakteristik Fisika vs Kimia (Model 3 Kolom) --- */
 .p3-table-wrapper {
     margin-top: 25px;
     width: 100%;
 }
 
 .p3-table-title-box {
-    text-align: center;
     margin-bottom: 16px;
     background: #f8fafc;
     border: 2px solid #cbd5e1;
-    border-radius: 18px;
-    padding: 14px 18px;
-}
-
-.p3-char-table {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
-}
-
-@media (max-width: 768px) {
-    .p3-char-table {
-        grid-template-columns: 1fr;
-    }
-}
-
-.p3-table-col {
-    background: #ffffff;
-    border: 3px solid #cbd5e1;
-    border-radius: 22px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    min-height: 380px;
-}
-
-.p3-table-col-header {
-    padding: 14px 16px;
-    text-align: center;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.p3-table-col-header.fisika {
-    background: linear-gradient(135deg, #0284c7, #0369a1);
-}
-
-.p3-table-col-header.kimia {
-    background: linear-gradient(135deg, #dc2626, #991b1b);
-}
-
-.p3-col-title {
-    font-size: 1.15rem;
-    font-weight: 900;
-    margin: 0;
-    letter-spacing: 0.5px;
-}
-
-.p3-col-subtitle {
-    font-size: 0.85rem;
-    font-weight: 700;
-    opacity: 0.95;
-    margin: 0;
-}
-
-.p3-col-counter {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.25);
-    padding: 3px 12px;
     border-radius: 20px;
-    font-size: 0.82rem;
-    font-weight: 900;
-    margin-top: 4px;
-    align-self: center;
+    padding: 16px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
-.p3-drop-zone {
-    flex: 1;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: #f8fafc;
-    border: 2px dashed #cbd5e1;
-    margin: 10px;
-    border-radius: 16px;
-    transition: all 0.2s ease;
-    overflow-y: auto;
-    max-height: 480px;
-}
-
-.p3-drop-zone.dragover {
-    background: #ecfdf5;
-    border-color: #10b981;
-    border-style: solid;
-    transform: scale(1.01);
-}
-
-.p3-drop-zone.tap-target-active {
-    background: #eff6ff;
-    border: 2px solid #3b82f6;
-    animation: pulseGlow 1s infinite alternate;
-    cursor: pointer;
-}
-
-.p3-empty-placeholder {
-    text-align: center;
-    color: #94a3b8;
-    font-weight: 800;
-    font-size: 0.95rem;
-    margin: auto 0;
-    padding: 30px 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-.p3-char-bank {
-    background: #ffffff;
+.p3-matrix-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 20px;
     border: 3px solid #cbd5e1;
-    border-radius: 22px;
-    padding: 18px;
-    margin-bottom: 16px;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.03);
-}
-
-.p3-char-bank-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-
-.p3-char-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    min-height: 80px;
-    padding: 8px;
-}
-
-.p3-char-chip {
     background: #ffffff;
-    border: 2px solid #cbd5e1;
-    border-radius: 14px;
-    padding: 10px 14px;
-    font-weight: 800;
-    font-size: 0.92rem;
-    color: #1e293b;
-    cursor: grab;
-    box-shadow: 0 4px 0 #cbd5e1;
-    transition: all 0.15s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    margin-bottom: 22px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.p3-matrix-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    table-layout: fixed;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.p3-matrix-table.victory {
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);
+}
+
+.p3-matrix-table thead th {
+    padding: 15px 14px;
+    vertical-align: middle;
+    text-align: left;
+    color: #ffffff;
     user-select: none;
-    line-height: 1.35;
+}
+
+.p3-matrix-table thead th.th-char {
+    background: #1e293b;
+    border-bottom: 4px solid #0f172a;
+}
+
+.p3-matrix-table thead th.th-fisika {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    border-bottom: 4px solid #075985;
+}
+
+.p3-matrix-table thead th.th-kimia {
+    background: linear-gradient(135deg, #e11d48, #be123c);
+    border-bottom: 4px solid #9f1239;
+}
+
+.th-head-box {
     display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-.p3-char-chip:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 #94a3b8;
-    border-color: #64748b;
-}
-
-.p3-char-chip:active {
-    cursor: grabbing;
-    transform: translateY(2px);
-    box-shadow: 0 1px 0 #cbd5e1;
-}
-
-.p3-char-chip.selected {
-    border-color: #3b82f6;
-    background: #eff6ff;
-    color: #1d4ed8;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
-    transform: scale(1.03);
-    animation: bounceSelect 0.4s ease;
-}
-
-.p3-placed-item {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 10px 12px;
-    font-size: 0.88rem;
-    font-weight: 800;
-    color: #1e293b;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     gap: 10px;
-    line-height: 1.4;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
-    animation: snapIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.p3-placed-item.fisika {
-    border-left: 5px solid #0284c7;
-    border-top: 1px solid #bae6fd;
-    border-right: 1px solid #bae6fd;
-    border-bottom: 2px solid #bae6fd;
-    background: #f0f9ff;
-}
-
-.p3-placed-item.kimia {
-    border-left: 5px solid #dc2626;
-    border-top: 1px solid #fecaca;
-    border-right: 1px solid #fecaca;
-    border-bottom: 2px solid #fecaca;
-    background: #fff5f5;
-}
-
-.p3-chip-remove {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    color: #64748b;
-    font-size: 0.8rem;
-    cursor: pointer;
-    padding: 3px 8px;
-    border-radius: 8px;
-    font-weight: 800;
-    transition: all 0.15s ease;
+.th-head-icon {
+    font-size: 1.5rem;
     flex-shrink: 0;
 }
 
-.p3-chip-remove:hover {
-    color: #ffffff;
-    background: #ef4444;
-    border-color: #dc2626;
+.th-head-title {
+    font-size: 1.05rem;
+    font-weight: 900;
+    letter-spacing: 0.3px;
 }
 
-@keyframes snapIn {
-    0% { transform: scale(0.85); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+.th-head-sub {
+    font-size: 0.78rem;
+    font-weight: 700;
+    opacity: 0.92;
+    margin-top: 2px;
+}
+
+.p3-matrix-table tbody tr {
+    border-bottom: 2px solid #e2e8f0;
+    transition: background-color 0.2s ease;
+}
+
+.p3-matrix-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.p3-matrix-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.p3-matrix-table tbody tr:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+.p3-matrix-table td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    border-right: 1px solid #e2e8f0;
+}
+
+.p3-matrix-table td:last-child {
+    border-right: none;
+}
+
+/* Kolom Karakteristik */
+.p3-cell-char {
+    background: #f8fafc;
+    border-left: 6px solid #6366f1 !important;
+}
+
+.p3-char-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.p3-char-icon {
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.p3-char-name {
+    font-weight: 900;
+    color: #1e293b;
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
+/* Kolom Sel Pilihan Dropdown */
+.p3-cell-target {
+    position: relative;
+    padding: 10px 12px;
+    vertical-align: middle;
+    transition: background-color 0.2s ease;
+}
+
+.p3-cell-target.fisika {
+    background: rgba(240, 249, 255, 0.4);
+}
+
+.p3-cell-target.kimia {
+    background: rgba(255, 241, 242, 0.4);
+}
+
+.p3-select-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.p3-table-select {
+    width: 100%;
+    padding: 10px 32px 10px 14px;
+    border-radius: 12px;
+    border: 2px solid #cbd5e1;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #1e293b;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    line-height: 1.4;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.p3-table-select:hover {
+    border-color: #3b82f6;
+    background-color: #f8fafc;
+}
+
+.p3-table-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.p3-table-select.correct {
+    background-color: #ecfdf5 !important;
+    border-color: #10b981 !important;
+    color: #065f46 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E') !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+.p3-table-select.wrong {
+    background-color: #fef2f2 !important;
+    border-color: #ef4444 !important;
+    color: #991b1b !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E') !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+    animation: shakeBox 0.4s ease;
+}
+
+.p3-cell-status {
+    font-size: 0.78rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 18px;
+    padding: 0 4px;
+}
+
+.p3-cell-status.correct {
+    color: #059669;
+}
+
+.p3-cell-status.wrong {
+    color: #dc2626;
 }
 
 @keyframes pulseGlow {
@@ -3474,16 +3459,10 @@ button:disabled {
     100% { box-shadow: 0 0 16px rgba(59, 130, 246, 0.6); }
 }
 
-@keyframes bounceSelect {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-    100% { transform: scale(1.03); }
-}
-
 @keyframes shakeBox {
     0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-7px); }
-    40%, 80% { transform: translateX(7px); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
 }
 
 .shake-box {

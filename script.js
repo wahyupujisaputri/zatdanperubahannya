@@ -936,7 +936,46 @@ const teacherSlidesDeck = {
             </svg>`
         },
         {
-            title: "2. Empat Tanda Reaksi Kimia",
+            title: "2. Tabel 8 Karakteristik Fisika vs Kimia",
+            content: `<div style="max-height:195px; overflow-y:auto; border-radius:12px; border:2px solid #cbd5e1; font-size:0.75rem; background:white; -webkit-overflow-scrolling:touch;">
+                <table style="width:100%; border-collapse:collapse; text-align:left;">
+                    <thead>
+                        <tr style="background:#1e293b; color:white; font-size:0.75rem;">
+                            <th style="padding:6px 8px;">Karakteristik</th>
+                            <th style="padding:6px 8px; background:#0284c7;">🔄 Perubahan Fisika</th>
+                            <th style="padding:6px 8px; background:#e11d48;">⚗️ Perubahan Kimia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 8px; font-weight:800;">📖 Pengertian</td><td>Tidak menghasilkan zat baru</td><td>Menghasilkan zat baru</td></tr>
+                        <tr style="border-bottom:1px solid #e2e8f0; background:#f8fafc;"><td style="padding:4px 8px; font-weight:800;">🧪 Zat yang dihasilkan</td><td>Tidak menghasilkan zat baru</td><td>Menghasilkan zat baru (sifat beda)</td></tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 8px; font-weight:800;">🔍 Sifat zat</td><td>Sifat zat tetap</td><td>Sifat zat berubah</td></tr>
+                        <tr style="border-bottom:1px solid #e2e8f0; background:#f8fafc;"><td style="padding:4px 8px; font-weight:800;">⚛️ Komposisi zat</td><td>Tidak berubah</td><td>Berubah</td></tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 8px; font-weight:800;">🔁 Dapat kembali</td><td>Umumnya dapat dikembalikan</td><td>Sulit / tidak dapat kembali</td></tr>
+                        <tr style="border-bottom:1px solid #e2e8f0; background:#f8fafc;"><td style="padding:4px 8px; font-weight:800;">💡 Ciri-ciri</td><td>Bentuk, ukuran, atau wujud</td><td>Gas, warna, endapan, suhu, bau</td></tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 8px; font-weight:800;">🌟 Contoh</td><td>Es cair, kertas dipotong</td><td>Kayu terbakar, besi berkarat</td></tr>
+                        <tr><td style="padding:4px 8px; font-weight:800;">⚡ Perubahan energi</td><td>Biasanya relatif kecil</td><td>Disertai energi lebih besar</td></tr>
+                    </tbody>
+                </table>
+            </div>`,
+            graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
+                <rect x="15" y="25" width="80" height="135" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+                <text x="25" y="48" font-size="9" font-weight="900" fill="#0369a1">FISIKA 🔄</text>
+                <text x="22" y="70" font-size="7.5" font-weight="bold" fill="#0284c7">• Zat Tetap</text>
+                <text x="22" y="90" font-size="7.5" font-weight="bold" fill="#0284c7">• Reversible</text>
+                <text x="22" y="110" font-size="7.5" font-weight="bold" fill="#0284c7">• Bentuk Berubah</text>
+                <text x="22" y="130" font-size="7.5" font-weight="bold" fill="#0284c7">• Es / Kertas</text>
+
+                <rect x="105" y="25" width="80" height="135" rx="8" fill="#ffe4e6" stroke="#e11d48" stroke-width="2"/>
+                <text x="117" y="48" font-size="9" font-weight="900" fill="#9f1239">KIMIA ⚗️</text>
+                <text x="112" y="70" font-size="7.5" font-weight="bold" fill="#e11d48">• Zat Baru</text>
+                <text x="112" y="90" font-size="7.5" font-weight="bold" fill="#e11d48">• Irreversible</text>
+                <text x="112" y="110" font-size="7.5" font-weight="bold" fill="#e11d48">• Gas / Endapan</text>
+                <text x="112" y="130" font-size="7.5" font-weight="bold" fill="#e11d48">• Api / Karat</text>
+            </svg>`
+        },
+        {
+            title: "3. Empat Tanda Reaksi Kimia",
             content: "Reaksi kimia ditandai dengan 4 hal:<br>1. <strong>Warna berubah nyata</strong> (kuning iodida).<br>2. <strong>Gas terbentuk</strong> (gelembung gas hidrogen).<br>3. <strong>Endapan timbul</strong> (padatan tidak larut di dasar tabung).<br>4. <strong>Perubahan energi</strong> (kilatan cahaya/panas pembakaran).",
             graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
                 <rect x="15" y="25" width="75" height="60" rx="8" fill="#e0f2fe" stroke="#3b82f6" stroke-width="2"/>
@@ -950,7 +989,7 @@ const teacherSlidesDeck = {
             </svg>`
         },
         {
-            title: "3. Persamaan Reaksi Kata",
+            title: "4. Persamaan Reaksi Kata",
             content: "Persamaan reaksi ditulis dengan format:<br><div style='text-align:center; font-weight:800; font-size:1.15rem; color:var(--secondary);'>Pereaksi ➔ Produk</div>• Pembakaran kertas: Kertas + Oksigen ➔ Abu arang + asap.<br>• Pembuatan donat: Tepung + mentega + telur + gula ➔ Donat.",
             graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
                 <rect x="15" y="60" width="65" height="40" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
@@ -961,7 +1000,7 @@ const teacherSlidesDeck = {
             </svg>`
         },
         {
-            title: "4. Proses Mengunyah Nasi",
+            title: "5. Proses Mengunyah Nasi",
             content: "• <strong>Proses (1) Gigi memecah nasi</strong>: Perubahan Fisika (nasi hancur secara mekanis tanpa membentuk zat baru).<br>• <strong>Proses (2) Air liur mengurai karbohidrat</strong>: Perubahan Kimia (enzim amilase mengubah karbohidrat menjadi zat gula manis).",
             graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
                 <path d="M40 70 Q100 20 160 70 Q100 120 40 70 Z" fill="none" stroke="#64748b" stroke-width="3"/>
@@ -971,7 +1010,7 @@ const teacherSlidesDeck = {
             </svg>`
         },
         {
-            title: "5. Reaksi Endapan & Gas Hidrogen",
+            title: "6. Reaksi Endapan & Gas Hidrogen",
             content: "• <strong>Magnesium + Asam Klorida</strong>: Menghasilkan gelembung gas hidrogen melimpah.<br>• <strong>Endapan</strong>: Padatan tidak larut yang terbentuk setelah dua zat cair dicampurkan (membuat larutan menjadi keruh and menumpuk di dasar).",
             graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
                 <rect x="40" y="40" width="30" height="110" fill="none" stroke="#64748b" stroke-width="2"/>
@@ -984,7 +1023,7 @@ const teacherSlidesDeck = {
             </svg>`
         },
         {
-            title: "6. Daur Abadi Siklus Air",
+            title: "7. Daur Abadi Siklus Air",
             content: "Siklus air melibatkan perubahan fisika berulang yang digerakkan oleh <strong>panas matahari</strong> and <strong>gravitasi bumi</strong>:<br>• <strong>Evaporasi</strong>: Penguapan air.<br>• <strong>Kondensasi</strong>: Terbentuk awan dingin.<br>• <strong>Presipitasi</strong>: Hujan jatuh.<br>• <strong>Infiltrasi</strong>: Air meresap masuk pori tanah.",
             graphic: `<svg viewBox="0 0 200 200" width="100%" height="100%">
                 <circle cx="170" cy="30" r="15" fill="#f87171"/>
@@ -5398,7 +5437,7 @@ function renderP3Missions(wrapper, btnNext) {
         }
         
     } else if (activeSubStep === 2) {
-        setAvatar("thinking", "Laboratorium Virtual (Hal 61-64): Coba eksperimen potong dan bakar kertas, lalu kelompokkan seluruh kotak karakteristik ke dalam tabel!");
+        setAvatar("thinking", "Laboratorium Virtual (Hal 61-64): Coba eksperimen potong dan bakar kertas, lalu lengkapi tabel 8 karakteristik Perubahan Fisika & Kimia!");
         
         const container = document.createElement("div");
         container.innerHTML = `
@@ -5419,75 +5458,75 @@ function renderP3Missions(wrapper, btnNext) {
                 </div>
             </div>
 
-            <!-- BAGIAN 2: TABEL KOSONG ANALISIS KARAKTERISTIK -->
+            <!-- BAGIAN 2: TABEL MODEL PILIHAN KARAKTERISTIK PERUBAHAN FISIKA & KIMIA -->
             <div class="p3-table-wrapper">
                 <div class="p3-table-title-box">
-                    <h3 style="font-size:1.35rem; font-weight:900; color:#1e293b; margin:0 0 6px 0;">
-                        📋 Tabel Analisis Karakteristik Perubahan Fisika &amp; Kimia
-                    </h3>
-                    <p style="font-size:1rem; font-weight:700; color:#475569; margin:0;">
-                        Pindahkan kotak-kotak ciri di bawah ke dalam kolom tabel yang sesuai (bisa seret/drag atau klik kotak lalu klik kolom tujuan)!
-                    </p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                        <div style="text-align:left;">
+                            <h3 style="font-size:1.35rem; font-weight:900; color:#1e293b; margin:0 0 6px 0;">
+                                📋 Tabel Analisis Karakteristik Perubahan Fisika &amp; Kimia
+                            </h3>
+                            <p style="font-size:0.95rem; font-weight:700; color:#475569; margin:0;">
+                                Tentukan pilihan karakteristik yang tepat pada kolom Perubahan Fisika dan Perubahan Kimia untuk setiap baris!
+                            </p>
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn-icon btn-secondary" id="btn-show-all-answers" style="font-size:0.85rem; padding:8px 14px; background:#eff6ff; color:#1d4ed8; border:2px solid #93c5fd;">
+                                💡 Tampilkan Kunci Jawaban
+                            </button>
+                            <button class="btn-icon btn-secondary" id="btn-reset-p3-table" style="font-size:0.85rem; padding:8px 14px;">
+                                🔄 Reset Pilihan
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Indikator Progress Keseluruhan -->
-                <div style="margin-bottom:14px;">
+                <div style="margin-bottom:16px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-weight:800; font-size:0.95rem; color:#334155;">
-                        <span>Progres Pengisian Tabel:</span>
-                        <span id="p3-table-progress-text">0 / 17 Karakteristik (0%)</span>
+                        <span>Progres Karakteristik Terpilih:</span>
+                        <span id="p3-table-progress-text">0 / 16 Karakteristik Benar (0%)</span>
                     </div>
                     <div style="width:100%; height:12px; background:#e2e8f0; border-radius:10px; overflow:hidden; border:1px solid #cbd5e1;">
                         <div id="p3-table-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #0284c7, #10b981); transition:width 0.3s ease;"></div>
                     </div>
                 </div>
 
-                <!-- Struktur Grid Tabel 2 Kolom -->
-                <div class="p3-char-table">
-                    <!-- Kolom 1: Ciri Perubahan Fisika -->
-                    <div class="p3-table-col" id="col-fisika">
-                        <div class="p3-table-col-header fisika">
-                            <span class="p3-col-title">🔄 PERUBAHAN FISIKA</span>
-                            <span class="p3-col-subtitle">(Contoh: Kertas Dipotong / Disobek)</span>
-                            <span class="p3-col-counter" id="cnt-fisika">0 / 8 Ciri</span>
-                        </div>
-                        <div class="p3-drop-zone" id="zone-fisika-table" data-type="fisika">
-                            <div class="p3-empty-placeholder" id="placeholder-fisika">
-                                <span style="font-size:2.2rem;">📥</span>
-                                <span>Tarik atau klik kotak ciri Perubahan Fisika ke sini</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Kolom 2: Ciri Perubahan Kimia -->
-                    <div class="p3-table-col" id="col-kimia">
-                        <div class="p3-table-col-header kimia">
-                            <span class="p3-col-title">⚗️ PERUBAHAN KIMIA</span>
-                            <span class="p3-col-subtitle">(Contoh: Kertas Dibakar Jadi Abu)</span>
-                            <span class="p3-col-counter" id="cnt-kimia">0 / 9 Ciri</span>
-                        </div>
-                        <div class="p3-drop-zone" id="zone-kimia-table" data-type="kimia">
-                            <div class="p3-empty-placeholder" id="placeholder-kimia">
-                                <span style="font-size:2.2rem;">📥</span>
-                                <span>Tarik atau klik kotak ciri Perubahan Kimia ke sini</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- BAGIAN 3: BANK PILIHAN KOTAK KARAKTERISTIK -->
-                <div class="p3-char-bank">
-                    <div class="p3-char-bank-header">
-                        <span style="font-weight:900; font-size:1.05rem; color:#1e293b;">
-                            📦 Pilihan Kotak Karakteristik (<span id="bank-remaining-count">17</span> Ciri Belum Dipindahkan):
-                        </span>
-                        <button class="btn-icon btn-secondary" id="btn-reset-p3-table" style="font-size:0.85rem; padding:6px 14px;">
-                            🔄 Acak &amp; Reset Tabel
-                        </button>
-                    </div>
-                    <p style="font-size:0.88rem; color:#64748b; font-weight:700; margin:0 0 12px 0;">
-                        💡 <strong>Cara Memindahkan:</strong> Seret (drag) kotak langsung ke kolom tabel, ATAU klik salah satu kotak di bawah (akan menyala biru) lalu klik kolom tabel tujuan!
-                    </p>
-                    <div class="p3-char-items" id="p3-char-items-pool"></div>
+                <!-- Struktur Tabel 3 Kolom Responsif -->
+                <div class="p3-matrix-scroll-wrapper">
+                    <table class="p3-matrix-table" id="p3-matrix-table">
+                        <thead>
+                            <tr>
+                                <th class="th-char" style="width:26%;">
+                                    <div class="th-head-box">
+                                        <span class="th-head-icon">📋</span>
+                                        <span>Karakteristik</span>
+                                    </div>
+                                </th>
+                                <th class="th-fisika" style="width:37%;">
+                                    <div class="th-head-box">
+                                        <span class="th-head-icon">🔄</span>
+                                        <div>
+                                            <div class="th-head-title">Perubahan Fisika</div>
+                                            <div class="th-head-sub">(Komposisi Tetap / Reversible)</div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="th-kimia" style="width:37%;">
+                                    <div class="th-head-box">
+                                        <span class="th-head-icon">⚗️</span>
+                                        <div>
+                                            <div class="th-head-title">Perubahan Kimia</div>
+                                            <div class="th-head-sub">(Terbentuk Zat Baru / Irreversible)</div>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="p3-matrix-tbody">
+                            <!-- Diisi secara dinamis oleh JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         `;
@@ -5569,272 +5608,230 @@ function renderP3Missions(wrapper, btnNext) {
             checkWin();
         });
 
-        // ==========================================
-        // DAFTAR KARAKTERISTIK FISIKA & KIMIA (17 Ciri)
-        // ==========================================
-        const characteristicList = [
-            // 8 Ciri Perubahan Fisika
-            { id: "c_f1", text: "Tidak menghasilkan zat jenis baru", type: "fisika" },
-            { id: "c_f2", text: "Komposisi materi & sifat kimia zat tetap sama", type: "fisika" },
-            { id: "c_f3", text: "Bersifat sementara & dapat kembali ke bentuk semula (reversible)", type: "fisika" },
-            { id: "c_f4", text: "Hanya wujud, bentuk, atau ukuran fisik yang berubah", type: "fisika" },
-            { id: "c_f5", text: "Sifat asli zat sebelum dan sesudah perubahan tetap identik", type: "fisika" },
-            { id: "c_f6", text: "Dapat dipisahkan kembali dengan metode fisika (penguapan/penyaringan)", type: "fisika" },
-            { id: "c_f7", text: "Tidak disertai pembentukan endapan reaksi atau gas baru", type: "fisika" },
-            { id: "c_f8", text: "Contoh: Kertas dipotong, es mencair, gula dilarutkan ke air", type: "fisika" },
-
-            // 9 Ciri Perubahan Kimia
-            { id: "c_k1", text: "Menghasilkan satu atau lebih zat jenis baru", type: "kimia" },
-            { id: "c_k2", text: "Komposisi partikel & susunan ikatan kimia molekul berubah", type: "kimia" },
-            { id: "c_k3", text: "Bersifat tetap & sulit / tidak dapat kembali ke asal (irreversible)", type: "kimia" },
-            { id: "c_k4", text: "Sifat zat baru berbeda secara nyata dari sifat asalnya", type: "kimia" },
-            { id: "c_k5", text: "Sering disertai perubahan warna yang permanen", type: "kimia" },
-            { id: "c_k6", text: "Sering disertai pembentukan gelembung gas baru hasil reaksi", type: "kimia" },
-            { id: "c_k7", text: "Sering disertai pembentukan endapan padat baru (presipitat)", type: "kimia" },
-            { id: "c_k8", text: "Disertai pelepasan atau penyerapan energi (panas, cahaya, api)", type: "kimia" },
-            { id: "c_k9", text: "Contoh: Kertas dibakar jadi abu, paku berkarat, memasak makanan", type: "kimia" }
+        // =========================================================================
+        // DATA MODEL TABEL KARAKTERISTIK (8 BARIS x 2 PILIHAN TIAP BARIS)
+        // =========================================================================
+        const characteristicRows = [
+            {
+                key: "pengertian",
+                name: "Pengertian",
+                icon: "📖",
+                fisika: "Perubahan yang tidak menghasilkan zat baru",
+                kimia: "Perubahan yang menghasilkan zat baru"
+            },
+            {
+                key: "zat_dihasilkan",
+                name: "Zat yang dihasilkan",
+                icon: "🧪",
+                fisika: "Tidak menghasilkan zat baru",
+                kimia: "Menghasilkan zat baru dengan sifat berbeda"
+            },
+            {
+                key: "sifat_zat",
+                name: "Sifat zat",
+                icon: "🔍",
+                fisika: "Sifat zat tetap",
+                kimia: "Sifat zat berubah"
+            },
+            {
+                key: "komposisi",
+                name: "Komposisi zat",
+                icon: "⚛️",
+                fisika: "Tidak berubah",
+                kimia: "Berubah"
+            },
+            {
+                key: "dapat_kembali",
+                name: "Dapat kembali seperti semula",
+                icon: "🔁",
+                fisika: "Umumnya dapat dikembalikan",
+                kimia: "Umumnya sulit atau tidak dapat dikembalikan"
+            },
+            {
+                key: "ciri_ciri",
+                name: "Ciri-ciri",
+                icon: "💡",
+                fisika: "Perubahan bentuk, ukuran, atau wujud",
+                kimia: "Muncul gas, perubahan warna, terbentuk endapan, perubahan suhu, atau muncul bau"
+            },
+            {
+                key: "contoh",
+                name: "Contoh",
+                icon: "🌟",
+                fisika: "Es mencair, air membeku, kertas dipotong, gula larut dalam air",
+                kimia: "Kayu terbakar, besi berkarat, makanan membusuk, telur dimasak"
+            },
+            {
+                key: "perubahan_energi",
+                name: "Perubahan energi",
+                icon: "⚡",
+                fisika: "Biasanya relatif kecil",
+                kimia: "Biasanya disertai perubahan energi yang lebih besar"
+            }
         ];
 
-        let placedItems = new Map(); // id -> targetType
-        let selectedChip = null;
+        let correctMap = new Map(); // key: `${rowKey}_${type}` -> boolean
 
-        const poolContainer = document.getElementById("p3-char-items-pool");
-        const zoneFisika = document.getElementById("zone-fisika-table");
-        const zoneKimia = document.getElementById("zone-kimia-table");
-        const placeholderFisika = document.getElementById("placeholder-fisika");
-        const placeholderKimia = document.getElementById("placeholder-kimia");
-        const cntFisika = document.getElementById("cnt-fisika");
-        const cntKimia = document.getElementById("cnt-kimia");
+        const tbodyEl = document.getElementById("p3-matrix-tbody");
         const progressBar = document.getElementById("p3-table-progress-bar");
         const progressText = document.getElementById("p3-table-progress-text");
-        const remainingCountEl = document.getElementById("bank-remaining-count");
+        const tableEl = document.getElementById("p3-matrix-table");
 
-        // Perbarui Tampilan Progres & Counter Tabel
         function updateTableCounters() {
-            let fisikaCount = 0;
-            let kimiaCount = 0;
-            placedItems.forEach((type) => {
-                if (type === "fisika") fisikaCount++;
-                else if (type === "kimia") kimiaCount++;
-            });
-
-            cntFisika.innerText = `${fisikaCount} / 8 Ciri`;
-            cntKimia.innerText = `${kimiaCount} / 9 Ciri`;
-
-            const totalPlaced = placedItems.size;
-            const totalItems = characteristicList.length;
-            const percent = Math.round((totalPlaced / totalItems) * 100);
+            const totalCorrect = correctMap.size;
+            const totalTarget = characteristicRows.length * 2; // 16
+            const percent = Math.round((totalCorrect / totalTarget) * 100);
 
             progressBar.style.width = `${percent}%`;
-            progressText.innerText = `${totalPlaced} / ${totalItems} Karakteristik (${percent}%)`;
-            remainingCountEl.innerText = `${totalItems - totalPlaced}`;
+            progressText.innerText = `${totalCorrect} / ${totalTarget} Karakteristik Benar (${percent}%)`;
 
-            // Tampilkan atau sembunyikan placeholder kosong
-            placeholderFisika.style.display = (fisikaCount === 0) ? "flex" : "none";
-            placeholderKimia.style.display = (kimiaCount === 0) ? "flex" : "none";
-        }
-
-        // Hapus seleksi aktif tap
-        function clearChipSelection() {
-            if (selectedChip) {
-                selectedChip.classList.remove("selected");
-                selectedChip = null;
-            }
-            zoneFisika.classList.remove("tap-target-active");
-            zoneKimia.classList.remove("tap-target-active");
-        }
-
-        // Buat chip kotak karakteristik di bank pilihan
-        function createChipElement(item) {
-            const chip = document.createElement("div");
-            chip.className = "p3-char-chip";
-            chip.id = item.id;
-            chip.draggable = true;
-            chip.dataset.type = item.type;
-            chip.dataset.text = item.text;
-            chip.innerHTML = `<span>📄</span> <span>${item.text}</span>`;
-
-            // Event Drag Start
-            chip.addEventListener("dragstart", (e) => {
-                SoundEffects.playClick();
-                clearChipSelection();
-                e.dataTransfer.setData("text/plain", item.id);
-            });
-
-            // Event Klik / Tap untuk memilih (ramah layar sentuh)
-            chip.addEventListener("click", (e) => {
-                e.stopPropagation();
-                SoundEffects.playClick();
-
-                if (selectedChip === chip) {
-                    clearChipSelection();
-                    return;
-                }
-
-                clearChipSelection();
-                selectedChip = chip;
-                chip.classList.add("selected");
-                zoneFisika.classList.add("tap-target-active");
-                zoneKimia.classList.add("tap-target-active");
-                setAvatar("thinking", "Kotak ciri terpilih! Sekarang klik kolom tabel: Perubahan Fisika atau Perubahan Kimia!");
-            });
-
-            return chip;
-        }
-
-        // Tempatkan item ke dalam zona tabel
-        function attemptPlace(chipEl, targetZone) {
-            if (!chipEl) return;
-            const itemId = chipEl.id;
-            const itemData = characteristicList.find(c => c.id === itemId);
-            if (!itemData) return;
-
-            const targetType = targetZone.dataset.type;
-
-            if (itemData.type === targetType) {
-                // Penempatan Benar
-                SoundEffects.playCorrect();
-                placedItems.set(itemId, targetType);
-
-                // Buat elemen di dalam tabel
-                const placedDiv = document.createElement("div");
-                placedDiv.className = `p3-placed-item ${targetType}`;
-                placedDiv.id = `placed-${itemId}`;
-                placedDiv.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-size:1.15rem;">${targetType === 'fisika' ? '🔄' : '⚗️'}</span>
-                        <span>${itemData.text}</span>
-                    </div>
-                    <button class="p3-chip-remove" title="Kembalikan kotak ini ke bank pilihan">✖</button>
-                `;
-
-                // Tombol batal / kembalikan ke bank
-                placedDiv.querySelector(".p3-chip-remove").addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    SoundEffects.playClick();
-                    placedItems.delete(itemId);
-                    placedDiv.remove();
-                    // Kembalikan ke pool
-                    const newChip = createChipElement(itemData);
-                    poolContainer.appendChild(newChip);
-                    updateTableCounters();
-                    checkWin();
-                });
-
-                targetZone.appendChild(placedDiv);
-                chipEl.remove();
-                clearChipSelection();
-                updateTableCounters();
-                updateStars(2);
-                checkWin();
-
+            if (totalCorrect === totalTarget) {
+                tableEl.classList.add("victory");
             } else {
-                // Penempatan Salah
-                SoundEffects.playWrong();
-                chipEl.classList.add("shake-box");
-                chipEl.style.borderColor = "#ef4444";
-                chipEl.style.color = "#dc2626";
-
-                setTimeout(() => {
-                    chipEl.classList.remove("shake-box");
-                    chipEl.style.borderColor = "";
-                    chipEl.style.color = "";
-                }, 500);
-
-                clearChipSelection();
-
-                if (itemData.type === "fisika") {
-                    setAvatar("sad", "Salah kolom! Ciri tersebut tidak menghasilkan zat baru, jadi merupakan ciri Perubahan Fisika.");
-                } else {
-                    setAvatar("sad", "Salah kolom! Ciri tersebut menghasilkan zat baru / reaksi kimia, jadi merupakan ciri Perubahan Kimia.");
-                }
+                tableEl.classList.remove("victory");
             }
         }
 
-        // Setup drop zone events
-        [zoneFisika, zoneKimia].forEach(zone => {
-            zone.addEventListener("dragover", (e) => {
-                e.preventDefault();
-                zone.classList.add("dragover");
+        // Bangun tabel dengan select dropdown untuk tiap kolom
+        function buildTable() {
+            tbodyEl.innerHTML = "";
+            correctMap.clear();
+
+            characteristicRows.forEach(row => {
+                const tr = document.createElement("tr");
+                tr.className = "p3-matrix-row";
+                tr.id = `row-${row.key}`;
+
+                // Pilihan opsi (campuran fisika & kimia)
+                const optionsFisika = [
+                    { val: "fisika", text: row.fisika },
+                    { val: "kimia", text: row.kimia }
+                ];
+                const optionsKimia = [
+                    { val: "kimia", text: row.kimia },
+                    { val: "fisika", text: row.fisika }
+                ];
+
+                tr.innerHTML = `
+                    <td class="p3-cell-char">
+                        <div class="p3-char-title">
+                            <span class="p3-char-icon">${row.icon}</span>
+                            <span class="p3-char-name">${row.name}</span>
+                        </div>
+                    </td>
+                    <td class="p3-cell-target fisika">
+                        <div class="p3-select-wrapper">
+                            <select class="p3-table-select" id="select-${row.key}-fisika" data-row="${row.key}" data-type="fisika">
+                                <option value="" disabled selected>👉 Pilih jawaban...</option>
+                                <option value="${optionsFisika[0].val}">${optionsFisika[0].text}</option>
+                                <option value="${optionsFisika[1].val}">${optionsFisika[1].text}</option>
+                            </select>
+                            <div class="p3-cell-status" id="status-${row.key}-fisika"></div>
+                        </div>
+                    </td>
+                    <td class="p3-cell-target kimia">
+                        <div class="p3-select-wrapper">
+                            <select class="p3-table-select" id="select-${row.key}-kimia" data-row="${row.key}" data-type="kimia">
+                                <option value="" disabled selected>👉 Pilih jawaban...</option>
+                                <option value="${optionsKimia[0].val}">${optionsKimia[0].text}</option>
+                                <option value="${optionsKimia[1].val}">${optionsKimia[1].text}</option>
+                            </select>
+                            <div class="p3-cell-status" id="status-${row.key}-kimia"></div>
+                        </div>
+                    </td>
+                `;
+                tbodyEl.appendChild(tr);
             });
 
-            zone.addEventListener("dragleave", () => {
-                zone.classList.remove("dragover");
-            });
+            // Pasang event change pada setiap select dropdown
+            characteristicRows.forEach(row => {
+                ["fisika", "kimia"].forEach(type => {
+                    const select = document.getElementById(`select-${row.key}-${type}`);
+                    const statusEl = document.getElementById(`status-${row.key}-${type}`);
 
-            zone.addEventListener("drop", (e) => {
-                e.preventDefault();
-                zone.classList.remove("dragover");
-                const id = e.dataTransfer.getData("text/plain");
-                const chip = document.getElementById(id);
-                if (chip) {
-                    attemptPlace(chip, zone);
-                }
-            });
+                    select.addEventListener("change", (e) => {
+                        const val = e.target.value;
+                        const isCorrect = (val === type);
 
-            // Klik zona saat ada chip yang dipilih
-            zone.addEventListener("click", () => {
-                if (selectedChip) {
-                    attemptPlace(selectedChip, zone);
-                }
-            });
-        });
-
-        // Klik di luar membatalkan seleksi chip
-        container.addEventListener("click", (e) => {
-            if (!e.target.closest(".p3-char-chip") && !e.target.closest(".p3-drop-zone")) {
-                clearChipSelection();
-            }
-        });
-
-        // Inisialisasi dan Acak Bank Karakteristik
-        function initBank() {
-            placedItems.clear();
-            clearChipSelection();
-            poolContainer.innerHTML = "";
-
-            // Bersihkan item di tabel
-            zoneFisika.querySelectorAll(".p3-placed-item").forEach(el => el.remove());
-            zoneKimia.querySelectorAll(".p3-placed-item").forEach(el => el.remove());
-
-            // Acak urutan kartu karakteristik
-            const shuffled = [...characteristicList].sort(() => Math.random() - 0.5);
-            shuffled.forEach(item => {
-                const chip = createChipElement(item);
-                poolContainer.appendChild(chip);
+                        if (isCorrect) {
+                            SoundEffects.playCorrect();
+                            select.classList.remove("wrong");
+                            select.classList.add("correct");
+                            statusEl.className = "p3-cell-status correct";
+                            statusEl.innerHTML = `<span>✅ Tepat!</span>`;
+                            correctMap.set(`${row.key}_${type}`, true);
+                            updateStars(2);
+                            setAvatar("celebrate", `Tepat sekali! Pilihan untuk '${row.name}' pada Perubahan ${type === 'fisika' ? 'Fisika' : 'Kimia'} benar!`);
+                        } else {
+                            SoundEffects.playWrong();
+                            select.classList.remove("correct");
+                            select.classList.add("wrong");
+                            statusEl.className = "p3-cell-status wrong";
+                            statusEl.innerHTML = `<span>❌ Kurang tepat, coba pilih lagi!</span>`;
+                            correctMap.delete(`${row.key}_${type}`);
+                            setAvatar("sad", `Kurang tepat untuk Perubahan ${type === 'fisika' ? 'Fisika' : 'Kimia'}. Coba baca dan pilih kembali jawabannya!`);
+                        }
+                        updateTableCounters();
+                        checkWin();
+                    });
+                });
             });
 
             updateTableCounters();
         }
 
-        // Tombol Reset / Acak Tabel
+        // Tombol Tampilkan Kunci Jawaban Lengkap
+        document.getElementById("btn-show-all-answers").addEventListener("click", () => {
+            SoundEffects.playCorrect();
+            characteristicRows.forEach(row => {
+                ["fisika", "kimia"].forEach(type => {
+                    const select = document.getElementById(`select-${row.key}-${type}`);
+                    const statusEl = document.getElementById(`status-${row.key}-${type}`);
+                    if (select) {
+                        select.value = type;
+                        select.classList.remove("wrong");
+                        select.classList.add("correct");
+                        if (statusEl) {
+                            statusEl.className = "p3-cell-status correct";
+                            statusEl.innerHTML = `<span>✅ Tepat!</span>`;
+                        }
+                        correctMap.set(`${row.key}_${type}`, true);
+                    }
+                });
+            });
+            updateTableCounters();
+            updateStars(10);
+            checkWin();
+            setAvatar("celebrate", "Kunci jawaban seluruh karakteristik telah terpasang! Pelajari perbedaan Fisika & Kimia dengan seksama!");
+        });
+
+        // Tombol Reset Pilihan
         document.getElementById("btn-reset-p3-table").addEventListener("click", () => {
             SoundEffects.playClick();
-            initBank();
-            setAvatar("thinking", "Tabel telah di-reset! Ayo pasang kembali setiap kotak ciri ke kolom Perubahan Fisika atau Kimia!");
+            buildTable();
+            setAvatar("thinking", "Pilihan tabel telah di-reset! Ayo pilih jawaban yang benar di setiap kolom!");
         });
 
         // Cek Syarat Kemenangan Misi 2
         function checkWin() {
             const paperDone = (donePaper.size >= 2);
-            const tableDone = (placedItems.size === characteristicList.length);
+            const tableDone = (correctMap.size === 16);
 
             if (paperDone && tableDone) {
                 enableNextButton(btnNext);
                 SoundEffects.playCorrect();
                 updateStars(15);
-                setAvatar("celebrate", "Luar biasa ilmuwan cilik! Eksperimen kertas selesai dan seluruh 17 karakteristik Perubahan Fisika & Kimia telah terpasang dengan sempurna di tabel! Klik Lanjut!");
+                setAvatar("celebrate", "Luar biasa ilmuwan cilik! Eksperimen kertas selesai dan seluruh 8 karakteristik Perubahan Fisika & Kimia berhasil kamu jawab dengan benar! Klik Lanjut!");
             } else if (tableDone && !paperDone) {
-                setAvatar("thinking", "Tabel karakteristik sudah 100% lengkap! Sekarang coba kedua eksperimen kertas (potong & bakar) di atas untuk membuka tombol Lanjut!");
+                setAvatar("thinking", "Tabel karakteristik sudah 100% benar! Sekarang coba kedua eksperimen kertas (potong & bakar) di atas untuk membuka tombol Lanjut!");
             } else if (paperDone && !tableDone) {
-                setAvatar("thinking", `Eksperimen kertas selesai! Sekarang lengkapi tabel karakteristik: ${placedItems.size}/${characteristicList.length} kotak terpasang.`);
+                setAvatar("thinking", `Eksperimen kertas selesai! Sekarang lengkapi tabel karakteristik: ${correctMap.size}/16 karakteristik benar.`);
             } else {
-                setAvatar("thinking", `Progress: ${donePaper.size}/2 eksperimen kertas, ${placedItems.size}/${characteristicList.length} tabel ciri.`);
+                setAvatar("thinking", `Progress: ${donePaper.size}/2 eksperimen kertas, ${correctMap.size}/16 karakteristik benar.`);
             }
         }
 
-        // Jalankan inisialisasi awal bank
-        initBank();
+        buildTable();
         
     } else if (activeSubStep === 3) {
         setAvatar("thinking", "Siklus Air Dunia (Halaman 63): Klik tahapan siklus air pada ilustrasi di bawah!");
