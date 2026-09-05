@@ -925,6 +925,24 @@ input[type=range]::-webkit-slider-thumb:hover {
     color: var(--text-muted);
 }
 
+.step-select-nav {
+    padding: 4px 10px;
+    border-radius: 12px;
+    border: 2px solid #cbd5e1;
+    font-family: var(--font);
+    font-weight: 800;
+    font-size: 0.85rem;
+    background: #f8fafc;
+    color: var(--primary);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.step-select-nav:hover, .step-select-nav:focus {
+    border-color: var(--primary);
+    background: #eff6ff;
+}
+
 .progress-track {
     background: #e2e8f0;
     border-radius: 10px;

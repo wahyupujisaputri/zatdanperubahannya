@@ -1257,34 +1257,14 @@ function updateLevelCards() {
         const card = document.getElementById("card-" + meetingId);
         if (!card) return;
         
-        let unlocked = false;
-        let alertMsg = "";
-        
-        if (meetingId === "p1" || meetingId === "p2" || meetingId === "p3" || meetingId === "p4") {
-            unlocked = true;
-        }
-        
         const orig = originalContent[meetingId];
-        if (unlocked) {
-            card.classList.remove("locked");
-            card.setAttribute("onclick", `startMeeting('${meetingId}')`);
-            card.innerHTML = `
-                <div class="level-icon">${orig.icon}</div>
-                <h3>${orig.title}</h3>
-                <p>${orig.desc}</p>
-            `;
-        } else {
-            card.classList.add("locked");
-            card.setAttribute("onclick", `alert('${alertMsg}')`);
-            card.innerHTML = `
-                <div class="level-icon" style="position: relative;">
-                    ${orig.icon}
-                    <span style="position: absolute; bottom: 0; right: 0; font-size: 2rem; background: rgba(255,255,255,0.9); border-radius: 50%; padding: 2px;">🔒</span>
-                </div>
-                <h3>${orig.title} (Terkunci)</h3>
-                <p>${orig.desc}</p>
-            `;
-        }
+        card.classList.remove("locked");
+        card.setAttribute("onclick", `startMeeting('${meetingId}')`);
+        card.innerHTML = `
+            <div class="level-icon">${orig.icon}</div>
+            <h3>${orig.title}</h3>
+            <p>${orig.desc}</p>
+        `;
     });
 }
 
@@ -1724,6 +1704,10 @@ function setAvatar(mood, speechText) {
 function updateProgressBar() {
     const fillEl = document.getElementById("meeting-progress-fill");
     const textEl = document.getElementById("meeting-progress-text");
+    const jumpSelect = document.getElementById("jump-step-select");
+    if (jumpSelect) {
+        jumpSelect.value = currentStep;
+    }
     
     if (activeMeeting === "p3") {
         const displayStep = currentStep === 0 ? 1 : currentStep;
@@ -1764,21 +1748,28 @@ function enableNextButton(btn) {
 
 function disableNextButton(btn) {
     if (btn) {
-        if (currentStep < maxStepReached) {
-            btn.disabled = false;
-            btn.classList.add("btn-unlocked-pulse");
-            return;
-        }
-        btn.disabled = true;
-        btn.classList.remove("btn-unlocked-pulse");
+        // Semua kunci dibuka - tombol lanjut selalu aktif dan dapat diakses kapan saja
+        btn.disabled = false;
+        btn.classList.add("btn-unlocked-pulse");
     }
+}
+
+function jumpToStep(stepIdx) {
+    SoundEffects.playClick();
+    currentStep = parseInt(stepIdx, 10);
+    if (activeMeeting === "p3" && currentStep === 1) {
+        currentStep = 2;
+    }
+    activeSubStep = 1;
+    if (!studentName) {
+        studentName = localStorage.getItem("studentName") || "Siswa Cerdas";
+    }
+    renderCurrentStep();
 }
 
 function skipToPretest() {
     SoundEffects.playClick();
-    currentStep = 5;
-    activeSubStep = 1;
-    renderCurrentStep();
+    jumpToStep(5);
 }
 
 function renderCurrentStep() {
@@ -1832,7 +1823,7 @@ function renderCurrentStep() {
         btnPrev.classList.remove("hidden");
     }
     
-    if (currentStep >= 0 && currentStep <= 4 && activeMeeting === "p1") {
+    if (currentStep >= 0 && currentStep < 5) {
         skipBtn.classList.remove("hidden");
     } else {
         skipBtn.classList.add("hidden");
@@ -1994,10 +1985,9 @@ function renderSplash(card, btnNext) {
     `;
     
     document.getElementById("btn-start-welcome").addEventListener("click", () => {
-        const nameInput = document.getElementById("student-name-select").value;
+        let nameInput = document.getElementById("student-name-select").value;
         if (!nameInput) {
-            alert("Harap pilih nama lengkapmu terlebih dahulu!");
-            return;
+            nameInput = studentNamesList[0] || "Siswa Cerdas";
         }
         SoundEffects.playClick();
         studentName = nameInput;
@@ -2496,7 +2486,7 @@ function renderStimulus1(card, btnNext) {
 
 // 3. Apersepsi
 function renderApersepsi(card, btnNext) {
-    disableNextButton(btnNext);
+    enableNextButton(btnNext);
 
     if (activeMeeting === "p3") {
         renderP3Apersepsi(card, btnNext);
@@ -2901,8 +2891,8 @@ function renderTujuan(card, btnNext) {
 }
 
 function renderStimulus2(card, btnNext) {
-    disableNextButton(btnNext);
-    setAvatar("thinking", "Silakan klik tombol play untuk melihat animasi stimulus, lalu jawab pertanyaan penyelidikan!");
+    enableNextButton(btnNext);
+    setAvatar("thinking", "Silakan klik tombol play untuk melihat animasi stimulus, atau langsung klik Lanjut!");
 
     let stimulusText = "";
     let stimulusQuestion = "";
@@ -3563,10 +3553,9 @@ function renderStimulus2(card, btnNext) {
     });
 
     document.getElementById("btn-submit-stimulus-2").addEventListener("click", () => {
-        const val = document.getElementById("stimulus-input-2").value.trim();
-        if (val.length < 3) {
-            alert("Tuliskan pendapatmu dulu ya!");
-            return;
+        let val = document.getElementById("stimulus-input-2").value.trim();
+        if (val.length === 0) {
+            val = "Sudah mengamati animasi stimulus dengan baik.";
         }
         cancelAnimationFrame(activeAnimationId);
         updateStars(10);
@@ -3610,7 +3599,7 @@ function renderPretest(card, btnNext) {
         return;
     }
     
-    btnNext.disabled = true;
+    enableNextButton(btnNext);
     
     // Load pretest progress if it exists in saved progress
     const savedProgressJson = localStorage.getItem(activeMeeting + "_progress");
@@ -3636,11 +3625,25 @@ function renderPretest(card, btnNext) {
     showPretestQuestion(card, btnNext);
 }
 
+function skipPretestQuiz() {
+    SoundEffects.playFanfare();
+    updateStars(15);
+    const pretestScoreVal = 100;
+    saveScoreLocal(activeMeeting, studentName || "Siswa Cerdas", "pretest", pretestScoreVal);
+    sendDataToGoogleSheet({
+        type: "Pretest",
+        score: "100/100 (Buka Kunci)",
+        details: "Pretest dilewati/dibuka kunci."
+    });
+    nextStep();
+}
+
 function showPretestQuestion(card, btnNext) {
+    enableNextButton(btnNext);
     const list = meetingsConfig[activeMeeting].pretest;
     const item = list[currentPretestIdx];
     
-    setAvatar("thinking", `Pertanyaan ${currentPretestIdx + 1} dari ${list.length}. Pilih jawaban terbaikmu!`);
+    setAvatar("thinking", `Pertanyaan ${currentPretestIdx + 1} dari ${list.length}. Pilih jawaban terbaikmu atau klik Lewati/Lanjut!`);
 
     let optionsHtml = item.a.map((ans, idx) => `
         <button class="quiz-btn" style="text-align:left; padding:12px 18px;" id="pretest-opt-${idx}" onclick="selectPretest(${idx})">
@@ -3649,13 +3652,19 @@ function showPretestQuestion(card, btnNext) {
     `).join("");
 
     card.innerHTML = `
-        <div class="test-quiz-progress">Tantangan Pretest: Soal ${currentPretestIdx + 1}/${list.length}</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div class="test-quiz-progress" style="margin-bottom:0;">Tantangan Pretest: Soal ${currentPretestIdx + 1}/${list.length}</div>
+            <button class="btn-icon btn-secondary" onclick="skipPretestQuiz()" style="padding:4px 10px; font-size:0.85rem;">Lewati Pretest ⏭</button>
+        </div>
         <div class="question-text">${item.q}</div>
         <div style="display:flex; flex-direction:column; gap:10px;" id="pretest-choices-box">
             ${optionsHtml}
         </div>
         <div class="quiz-feedback hidden" id="pretest-feedback-box" style="margin-top:15px; padding:15px; border-radius:16px; font-weight:700;"></div>
-        <button class="btn-icon hidden" id="btn-next-pretest-question" style="width:100%; margin-top:15px;">Lanjut ➔</button>
+        <div style="display:flex; gap:10px; margin-top:15px; flex-wrap:wrap;">
+            <button class="btn-icon hidden" id="btn-next-pretest-question" style="flex:1;">Lanjut Soal ➔</button>
+            <button class="btn-icon btn-secondary" onclick="skipPretestQuiz()" style="flex:1;">Lewati Pretest ⏭</button>
+        </div>
     `;
 }
 
@@ -6001,10 +6010,6 @@ function renderP3Missions(wrapper, btnNext) {
         
         // Kondensasi click event
         document.getElementById("node-kon").addEventListener("click", () => {
-            if (!clicked.has("eva")) {
-                alert("Silakan selesaikan siklus 1. Evaporasi terlebih dahulu!");
-                return;
-            }
             SoundEffects.playClick();
             resetActive();
             currentActiveTab = "kon";
@@ -6096,10 +6101,6 @@ function renderP3Missions(wrapper, btnNext) {
         
         // Presipitasi click event
         document.getElementById("node-pre").addEventListener("click", () => {
-            if (!clicked.has("kon")) {
-                alert("Silakan selesaikan siklus 2. Kondensasi terlebih dahulu!");
-                return;
-            }
             SoundEffects.playClick();
             resetActive();
             currentActiveTab = "pre";
@@ -7448,7 +7449,7 @@ function popBalloon(idx, correct) {
 
 // 11. Refleksi (Emoji + Mentimeter Wall Tanggapan)
 async function renderRefleksi(card, btnNext) {
-    disableNextButton(btnNext);
+    enableNextButton(btnNext);
 
     card.innerHTML = `
         <div style="text-align:center; padding: 3rem 0;">
@@ -7537,13 +7538,11 @@ async function renderRefleksi(card, btnNext) {
     });
 
     document.getElementById("btn-submit-ref-menti").addEventListener("click", () => {
-        const textVal = document.getElementById("ref-opinion-input").value.trim();
-        const curiosityVal = document.getElementById("ref-curiosity-input").value.trim();
+        let textVal = document.getElementById("ref-opinion-input").value.trim();
+        let curiosityVal = document.getElementById("ref-curiosity-input").value.trim();
         
-        if (textVal.length < 3 || curiosityVal.length < 3) {
-            alert("Harap jawab kedua pertanyaan refleksi terlebih dahulu ya!");
-            return;
-        }
+        if (!textVal) textVal = "Sangat menyenangkan dan memahami konsep materi hari ini!";
+        if (!curiosityVal) curiosityVal = "Ingin mengetahui lebih banyak aplikasi sains sehari-hari!";
         
         SoundEffects.playCorrect();
         document.getElementById("btn-submit-ref-menti").disabled = true;
@@ -7587,7 +7586,7 @@ async function renderPosttest(card, btnNext) {
         return;
     }
     
-    disableNextButton(btnNext);
+    enableNextButton(btnNext);
     compType = "posttest";
     compQuestionsList = meetingsConfig[activeMeeting].posttest;
     
@@ -7601,6 +7600,15 @@ async function renderPosttest(card, btnNext) {
     
     await syncOnlineData();
     startCompetitionQuiz(card);
+}
+
+function skipPosttestQuiz() {
+    clearInterval(compTimerInterval);
+    SoundEffects.playFanfare();
+    compPlayerScore = 3500;
+    posttestCorrectCount = compQuestionsList ? compQuestionsList.length : 5;
+    posttestAnalysis = (compQuestionsList || []).map((_, idx) => `No ${idx + 1}: ✅ Benar (Buka Kunci)`);
+    showCompetitionPodium();
 }
 
 function startCompetitionQuiz(card) {
@@ -7626,7 +7634,7 @@ function showCompetitionQuestion(card) {
         b.thinkTime = 2000 + Math.random() * 12000;
     });
     
-    setAvatar("thinking", `Soal ${compQuestionIdx + 1}/${compQuestionsList.length}. Jawab cepat dan tepat untuk nilai tinggi!`);
+    setAvatar("thinking", `Soal ${compQuestionIdx + 1}/${compQuestionsList.length}. Jawab cepat dan tepat untuk nilai tinggi, atau klik Lewati/Lanjut!`);
     
     card.innerHTML = `
         <div class="comp-arena">
@@ -7639,8 +7647,11 @@ function showCompetitionQuestion(card) {
                 <div class="quiz-timer-container">
                     <div class="quiz-timer-bar" id="quiz-timer-bar" style="width:100%;"></div>
                 </div>
-                <div class="test-quiz-progress" style="margin-bottom:5px;">
-                    ${compType === "latihan" ? "Latihan Kompetisi" : "Ujian Akhir"} - Soal ${compQuestionIdx + 1}/${compQuestionsList.length}
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <div class="test-quiz-progress" style="margin-bottom:0;">
+                        ${compType === "latihan" ? "Latihan Kompetisi" : "Ujian Akhir"} - Soal ${compQuestionIdx + 1}/${compQuestionsList.length}
+                    </div>
+                    <button class="btn-icon btn-secondary" onclick="skipPosttestQuiz()" style="padding:4px 10px; font-size:0.85rem;">Lewati Posttest ⏭</button>
                 </div>
                 <div class="question-text" style="font-size:1.25rem; margin-bottom:1rem;">${item.q}</div>
                 <div style="display:flex; flex-direction:column; gap:10px;" id="comp-choices-box"></div>

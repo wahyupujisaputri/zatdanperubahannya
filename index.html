@@ -253,7 +253,26 @@ function doGet(e) {
             <div class="meeting-header">
                 <button class="btn-icon btn-exit" onclick="exitMeeting()">Exit</button>
                 <div class="progress-container">
-                    <span id="meeting-progress-text">Langkah 1 dari 15</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                        <span id="meeting-progress-text">Langkah 1 dari 15</span>
+                        <select id="jump-step-select" onchange="jumpToStep(this.value)" title="Lompat Cepat ke Langkah Manapun (Semua Kunci Terbuka)" class="step-select-nav">
+                            <option value="0">1. Splash Screen</option>
+                            <option value="1">2. Stimulus Pembuka 🔓</option>
+                            <option value="2">3. Apersepsi 🔓</option>
+                            <option value="3">4. Motivasi Belajar 🔓</option>
+                            <option value="4">5. Tujuan Belajar 🔓</option>
+                            <option value="5">6. Pretest Tantangan 🔓</option>
+                            <option value="6">7. Stimulus Eksplorasi 🔓</option>
+                            <option value="7">8. Misi Eksplorasi 🔓</option>
+                            <option value="8">9. Presentasi Hasil 🔓</option>
+                            <option value="9">10. Penguatan Guru 🔓</option>
+                            <option value="10">11. Kesimpulan 🔓</option>
+                            <option value="11">12. Game Latihan 🔓</option>
+                            <option value="12">13. Refleksi &amp; Mentimeter 🔓</option>
+                            <option value="13">14. Ujian Posttest 🔓</option>
+                            <option value="14">15. Lencana Penutup 🏆</option>
+                        </select>
+                    </div>
                     <div class="progress-track">
                         <div class="progress-fill" id="meeting-progress-fill"></div>
                     </div>
